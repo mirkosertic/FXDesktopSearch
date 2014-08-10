@@ -2,7 +2,6 @@ package de.mirkosertic.desktopsearch;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 public class DirectoryWatcher {
@@ -39,12 +38,14 @@ public class DirectoryWatcher {
         fileTimers = new HashMap<>();
         waitForAction = aWaitForAction;
         watchService = aPath.getFileSystem().newWatchService();
-        Files.walkFileTree(aPath, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult preVisitDirectory(Path aDirectory, BasicFileAttributes aAttributes) throws IOException {
-                System.out.println("Registering watches for " + aDirectory);
-                registerWatcher(aDirectory);
-                return FileVisitResult.CONTINUE;
+        Files.walk(aPath).parallel().forEach(path -> {
+            if (Files.isDirectory(path)) {
+                System.out.println("Registering watches for " + path);
+                try {
+                    registerWatcher(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         watcherThread = new Thread("WatcherThread-"+aPath) {
@@ -54,18 +55,17 @@ public class DirectoryWatcher {
 
                     try {
                         WatchKey theKey = watchService.take();
-                        for (WatchEvent theEvent : theKey.pollEvents()) {
+                        theKey.pollEvents().stream().forEach(theEvent -> {
                             if (theEvent.kind() == StandardWatchEventKinds.OVERFLOW) {
                                 System.out.println("Overflow for "+theEvent.context()+" count = "+theEvent.count());
                                 // Overflow events are not handled
-                                continue;
+                            } else {
+                                Path thePath = (Path) theEvent.context();
+                                System.out.println(theEvent.kind() + " for " + theEvent.context() + " count = " + theEvent.count());
+
+                                publishActionFor(thePath, theEvent.kind());
                             }
-
-                            Path thePath = (Path) theEvent.context();
-                            System.out.println(theEvent.kind()+" for "+theEvent.context()+" count = "+theEvent.count());
-
-                            publishActionFor(thePath, theEvent.kind());
-                        }
+                        });
                         theKey.reset();
 
                         Thread.sleep(1000);
@@ -93,13 +93,13 @@ public class DirectoryWatcher {
     private void actionCountDown() {
         synchronized (fileTimers) {
             Set<Path> theKeysToRemove = new HashSet<>();
-            for (Map.Entry<Path, ActionTimer> theEntry : fileTimers.entrySet()) {
+            fileTimers.entrySet().stream().forEach(theEntry -> {
                 if (theEntry.getValue().runOneCycle()) {
                     theKeysToRemove.add(theEntry.getKey());
                     // Trigger the action
                     System.out.println("Triggering action "+theEntry.getValue().kind+" for "+theEntry.getKey());
                 }
-            }
+            });
             for (Path thePath : theKeysToRemove) {
                 fileTimers.remove(thePath);
             }
