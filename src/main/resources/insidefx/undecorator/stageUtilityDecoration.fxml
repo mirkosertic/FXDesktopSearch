@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" pickOnBounds="false" prefHeight="400.0" prefWidth="600.0" snapToPixel="true" xmlns:fx="http://javafx.com/fxml">
+  <children>
+    <Label fx:id="title" layoutY="7.0" mouseTransparent="true" prefHeight="21.0" prefWidth="546.0" styleClass="undecorator-label-titlebar" text="title bar" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="22.0">
+      <effect>
+        <Glow />
+      </effect>
+    </Label>
+    <Button fx:id="close" mnemonicParsing="false" prefHeight="15.0" prefWidth="17.0" scaleX="1.0" scaleY="1.0" style="" styleClass="decoration-button-close" text="" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    <Button fx:id="resize" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" mouseTransparent="true" prefHeight="10.0" prefWidth="10.0" styleClass="decoration-button-resize" text="" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" />
+    <Button id="close" fx:id="menu" layoutX="0.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="25.0" scaleX="1.0" scaleY="1.0" style="" styleClass="decoration-button-menu" text="" AnchorPane.topAnchor="0.0" />
+  </children>
+  <stylesheets>
+    <URL value="@../../skin/undecoratorUtilityStage.css" />
+  </stylesheets>
+</AnchorPane>

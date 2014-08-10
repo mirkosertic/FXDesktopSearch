@@ -1,0 +1,31 @@
+.progressindicator {
+    -fx-background-color: #336699;
+}
+
+.statusbar {
+    -fx-background-color: white;
+    -fx-opacity: 1;
+}
+
+.dialogButtonArea {
+    -fx-background-color: #336699;
+}
+
+.progresstext {
+    -fx-text-fill: white;
+}
+
+.buttonAdd {
+    -fx-background-image: url("plus.png");
+    -fx-background-repeat: no-repeat;
+}
+
+.buttonRemove {
+    -fx-background-image: url("minus.png");
+    -fx-background-repeat: no-repeat;
+}
+
+.buttonIndex {
+    -fx-background-image: url("storage.png");
+    -fx-background-repeat: no-repeat;
+}
