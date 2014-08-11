@@ -3,6 +3,7 @@ package de.mirkosertic.desktopsearch;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
 
 public class DirectoryWatcher {
 
@@ -33,12 +34,21 @@ public class DirectoryWatcher {
     private final Map<Path, ActionTimer> fileTimers;
     private final int waitForAction;
     private final Timer actionTimer;
+    private final DirectoryListener directoryListener;
+    private final FilesystemLocation filesystemLocation;
+    private final ForkJoinPool forkJoinPool;
 
-    public DirectoryWatcher(Path aPath, int aWaitForAction) throws IOException {
+    public DirectoryWatcher(FilesystemLocation aFileSystemLocation, int aWaitForAction, DirectoryListener aDirectoryListener) throws IOException {
+        forkJoinPool = new ForkJoinPool();
         fileTimers = new HashMap<>();
         waitForAction = aWaitForAction;
-        watchService = aPath.getFileSystem().newWatchService();
-        Files.walk(aPath).parallel().forEach(path -> {
+        directoryListener = aDirectoryListener;
+        filesystemLocation = aFileSystemLocation;
+
+        Path thePath = aFileSystemLocation.getDirectory().toPath();
+
+        watchService = thePath.getFileSystem().newWatchService();
+        Files.walk(thePath).forEach(path -> {
             if (Files.isDirectory(path)) {
                 System.out.println("Registering watches for " + path);
                 try {
@@ -48,7 +58,7 @@ public class DirectoryWatcher {
                 }
             }
         });
-        watcherThread = new Thread("WatcherThread-"+aPath) {
+        watcherThread = new Thread("WatcherThread-"+thePath) {
             @Override
             public void run() {
                 while(!isInterrupted()) {
@@ -96,8 +106,28 @@ public class DirectoryWatcher {
             fileTimers.entrySet().stream().forEach(theEntry -> {
                 if (theEntry.getValue().runOneCycle()) {
                     theKeysToRemove.add(theEntry.getKey());
-                    // Trigger the action
-                    System.out.println("Triggering action "+theEntry.getValue().kind+" for "+theEntry.getKey());
+                    if (!Files.isDirectory(theEntry.getKey())) {
+                        if (theEntry.getValue().kind == StandardWatchEventKinds.ENTRY_CREATE) {
+                            directoryListener.fileCreatedOrModified(filesystemLocation, theEntry.getKey());
+                        }
+                        if (theEntry.getValue().kind == StandardWatchEventKinds.ENTRY_DELETE) {
+                            directoryListener.fileDeleted(filesystemLocation, theEntry.getKey());
+                        }
+                        if (theEntry.getValue().kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+                            directoryListener.fileCreatedOrModified(filesystemLocation, theEntry.getKey());
+                        }
+                    } else {
+                        try {
+                            if (theEntry.getValue().kind == StandardWatchEventKinds.ENTRY_CREATE) {
+                                registerWatcher(theEntry.getKey());
+                            }
+                            if (theEntry.getValue().kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+                                registerWatcher(theEntry.getKey());
+                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
             });
             for (Path thePath : theKeysToRemove) {
@@ -123,5 +153,18 @@ public class DirectoryWatcher {
     public void stopWatching() {
         actionTimer.cancel();
         watcherThread.interrupt();
+    }
+
+    public void crawl() throws IOException {
+
+        Path thePath = filesystemLocation.getDirectory().toPath();
+
+        Files.walk(thePath).forEach(aPath -> {
+            if (!Files.isDirectory(aPath)) {
+                forkJoinPool.execute(() -> {
+                    directoryListener.fileCreatedOrModified(filesystemLocation, aPath);
+                });
+            }
+        });
     }
 }
