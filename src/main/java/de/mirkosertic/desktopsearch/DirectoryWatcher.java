@@ -3,7 +3,6 @@ package de.mirkosertic.desktopsearch;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
-import java.util.concurrent.ForkJoinPool;
 
 public class DirectoryWatcher {
 
@@ -36,10 +35,10 @@ public class DirectoryWatcher {
     private final Timer actionTimer;
     private final DirectoryListener directoryListener;
     private final FilesystemLocation filesystemLocation;
-    private final ForkJoinPool forkJoinPool;
+    private final ExecutorPool executorPool;
 
-    public DirectoryWatcher(FilesystemLocation aFileSystemLocation, int aWaitForAction, DirectoryListener aDirectoryListener) throws IOException {
-        forkJoinPool = new ForkJoinPool();
+    public DirectoryWatcher(FilesystemLocation aFileSystemLocation, int aWaitForAction, DirectoryListener aDirectoryListener, ExecutorPool aExecutorPool) throws IOException {
+        executorPool = aExecutorPool;
         fileTimers = new HashMap<>();
         waitForAction = aWaitForAction;
         directoryListener = aDirectoryListener;
@@ -65,12 +64,13 @@ public class DirectoryWatcher {
 
                     try {
                         WatchKey theKey = watchService.take();
+                        Path theParent = (Path) theKey.watchable();
                         theKey.pollEvents().stream().forEach(theEvent -> {
                             if (theEvent.kind() == StandardWatchEventKinds.OVERFLOW) {
                                 System.out.println("Overflow for "+theEvent.context()+" count = "+theEvent.count());
                                 // Overflow events are not handled
                             } else {
-                                Path thePath = (Path) theEvent.context();
+                                Path thePath = theParent.resolve((Path) theEvent.context());
                                 System.out.println(theEvent.kind() + " for " + theEvent.context() + " count = " + theEvent.count());
 
                                 publishActionFor(thePath, theEvent.kind());
@@ -140,7 +140,7 @@ public class DirectoryWatcher {
         aDirectory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
     }
 
-    public void startWatching() {
+    public DirectoryWatcher startWatching() {
         watcherThread.start();
         actionTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -148,6 +148,7 @@ public class DirectoryWatcher {
                 actionCountDown();
             }
         }, 1000, 1000);
+        return this;
     }
 
     public void stopWatching() {
@@ -161,7 +162,7 @@ public class DirectoryWatcher {
 
         Files.walk(thePath).forEach(aPath -> {
             if (!Files.isDirectory(aPath)) {
-                forkJoinPool.execute(() -> {
+                executorPool.execute(() -> {
                     directoryListener.fileCreatedOrModified(filesystemLocation, aPath);
                 });
             }

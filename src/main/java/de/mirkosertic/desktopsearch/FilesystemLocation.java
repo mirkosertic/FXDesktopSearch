@@ -16,8 +16,8 @@ import java.io.File;
 
 public class FilesystemLocation {
 
-    private String id;
-    private File directory;
+    private final String id;
+    private final File directory;
 
     public FilesystemLocation(String id, File directory) {
         this.id = id;
@@ -30,10 +30,6 @@ public class FilesystemLocation {
 
     public File getDirectory() {
         return directory;
-    }
-
-    public void crawl(FileCrawler aCrawler) {
-        aCrawler.crawl(id, directory);
     }
 
     @Override

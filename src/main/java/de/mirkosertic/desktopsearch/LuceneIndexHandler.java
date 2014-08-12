@@ -12,54 +12,35 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.*;
+import org.apache.lucene.index.*;
+import org.apache.lucene.queries.mlt.MoreLikeThis;
+import org.apache.lucene.search.*;
+import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.NRTCachingDirectory;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.Version;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.LongField;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.MultiFields;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.Terms;
-import org.apache.lucene.index.TermsEnum;
-import org.apache.lucene.queries.mlt.MoreLikeThis;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.SearcherFactory;
-import org.apache.lucene.search.SearcherManager;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.highlight.Highlighter;
-import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.Version;
+class LuceneIndexHandler {
 
-public class LuceneIndexHandler {
-
-    private static final Version LUCENE_VERSION = Version.LUCENE_48;
+    private static final Version LUCENE_VERSION = Version.LUCENE_4_9;
     private static final int NUMBER_OF_FRAGMENTS = 5;
 
-    private File indexLocation;
-    private Analyzer analyzer;
+    private final File indexLocation;
+    private final Analyzer analyzer;
     private IndexWriter indexWriter;
     private SearcherManager searcherManager;
 
@@ -68,11 +49,19 @@ public class LuceneIndexHandler {
     public LuceneIndexHandler(File aIndexDir) throws IOException {
         indexLocation = aIndexDir;
 
+        File theIndexDir = new File(aIndexDir, "index");
+        theIndexDir.mkdirs();
+        File theTaxoDir = new File(aIndexDir, "taxonomy");
+        theTaxoDir.mkdirs();
+
         analyzer = new StandardAnalyzer(LUCENE_VERSION);
-        FSDirectory theIndexFSDirectory = FSDirectory.open(indexLocation);
-        if (theIndexFSDirectory.fileExists(IndexWriter.WRITE_LOCK_NAME)) {
+        Directory theIndexFSDirectory = new NRTCachingDirectory(FSDirectory.open(theIndexDir), 100, 100);
+        try {
             theIndexFSDirectory.clearLock(IndexWriter.WRITE_LOCK_NAME);
+        } catch (IOException e) {
+            // No Lock there
         }
+
         IndexWriterConfig theConfig = new IndexWriterConfig(LUCENE_VERSION, analyzer);
         indexWriter = new IndexWriter(theIndexFSDirectory, theConfig);
         searcherManager = new SearcherManager(indexWriter, true, new SearcherFactory());
@@ -80,7 +69,7 @@ public class LuceneIndexHandler {
         commitThread = new Thread() {
             @Override
             public void run() {
-                while(!isInterrupted()) {
+                while (!isInterrupted()) {
 
                     if (indexWriter.hasUncommittedChanges()) {
                         try {
@@ -121,6 +110,10 @@ public class LuceneIndexHandler {
         }
 
         indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), theDocument);
+    }
+
+    public void removeFromIndex(String aFileName) throws IOException {
+        indexWriter.deleteDocuments(new Term(IndexFields.FILENAME, aFileName));
     }
 
     public void shutdown() {
@@ -184,7 +177,7 @@ public class LuceneIndexHandler {
 
                 TopDocs theDocs = theSearcher.search(theQuery, null, aMaxDocs);
 
-                for (int i=0;i<theDocs.scoreDocs.length;i++) {
+                for (int i = 0; i < theDocs.scoreDocs.length; i++) {
                     ScoreDoc theScoreDoc = theDocs.scoreDocs[i];
                     Document theDocument = theSearcher.doc(theScoreDoc.doc);
 
@@ -289,16 +282,16 @@ public class LuceneIndexHandler {
 
                     DocFlareElement theYearElement = theYearMappings.get(theYear);
                     if (theYearElement == null) {
-                        theYearElement = new DocFlareElement(""+theYear);
+                        theYearElement = new DocFlareElement("" + theYear);
                         theYearMappings.put(theYear, theYearElement);
 
                         theLastEditedElement.getChildren().add(theYearElement);
                     }
-                    DocFlareElement theYearMonthElement = theYearMonthMappings.get(theYear+"_"+theMonth);
+                    DocFlareElement theYearMonthElement = theYearMonthMappings.get(theYear + "_" + theMonth);
                     if (theYearMonthElement == null) {
                         theYearMonthElement = new DocFlareElement(theCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH), 1);
                         theYearElement.getChildren().add(theYearMonthElement);
-                        theYearMonthMappings.put(theYear+"_"+theMonth, theYearMonthElement);
+                        theYearMonthMappings.put(theYear + "_" + theMonth, theYearMonthElement);
                     } else {
                         theYearMonthElement.incrementWeight();
                     }

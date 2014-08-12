@@ -14,25 +14,27 @@ package de.mirkosertic.desktopsearch;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
 
 public class Backend {
 
-    private FilesToIndexQueue filesToIndexQueue;
-    private IndexWriterQueue indexWriterQueue;
     private LuceneIndexHandler luceneIndexHandler;
-    private ContentExtractor contentExtractor;
-    private List<FilesystemLocation> locations;
-    private ProgressMonitor progressMonitor;
+    private final ContentExtractor contentExtractor;
+    private final ProgressMonitor progressMonitor;
     private ProgressListener progressListener;
+    private final Map<FilesystemLocation, DirectoryWatcher> locations;
+    private final DirectoryListener directoryListener;
+    private final ExecutorPool executorPool;
 
     private boolean includeSimilarDocuments;
     private int numberOfSearchResults;
 
     public Backend() {
-        locations = new ArrayList<>();
+        locations = new HashMap<>();
+        executorPool = new ExecutorPool();
         contentExtractor = new ContentExtractor();
         progressMonitor = new ProgressMonitor(new ProgressListener() {
 
@@ -54,14 +56,46 @@ public class Backend {
                 }
             }
         });
+        directoryListener = new DirectoryListener() {
+            @Override
+            public void fileDeleted(FilesystemLocation aFileSystemLocation, Path aFile) {
+                try {
+                    luceneIndexHandler.removeFromIndex(aFile.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void fileCreatedOrModified(FilesystemLocation aFileSystemLocation, Path aFile) {
+                String theFileName = aFile.toString();
+                if (contentExtractor.supportsFile(theFileName)) {
+                    try {
+                        progressMonitor.addNewFileFound(theFileName);
+
+                        BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                        UpdateCheckResult theUpdateCheckResult = luceneIndexHandler.checkIfModified(theFileName, theAttributes.size());
+                        if (theUpdateCheckResult == UpdateCheckResult.UPDATED) {
+                            Content theContent = contentExtractor.extractContentFrom(aFile, theAttributes);
+                            if (theContent != null) {
+                                luceneIndexHandler.addToIndex(aFileSystemLocation.getId(), theContent);
+                                progressMonitor.addFilesIndexed();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
     }
 
     public void setProgressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
     }
 
-    public void add(FilesystemLocation aLocation) {
-        locations.add(aLocation);
+    public void add(FilesystemLocation aLocation) throws IOException {
+        locations.put(aLocation, new DirectoryWatcher(aLocation, DirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener, executorPool).startWatching());
     }
 
     public void setIndexLocation(File aFile) throws IOException {
@@ -69,8 +103,6 @@ public class Backend {
             shutdown();
         }
         luceneIndexHandler = new LuceneIndexHandler(aFile);
-        indexWriterQueue = new IndexWriterQueue(progressMonitor, luceneIndexHandler);
-        filesToIndexQueue = new FilesToIndexQueue(progressMonitor, indexWriterQueue, contentExtractor, luceneIndexHandler);
     }
 
     public void crawlLocations() throws IOException {
@@ -79,14 +111,18 @@ public class Backend {
 
         progressMonitor.resetStats();
 
-        final FileCrawler theCrawler = new FileCrawler(filesToIndexQueue, contentExtractor);
-
         Thread theRunner = new Thread() {
             @Override
             public void run() {
-                for (FilesystemLocation theLocation : locations) {
-                    theLocation.crawl(theCrawler);
-                }
+
+                locations.values().stream().forEach(theWatcher -> {
+                    try {
+                        theWatcher.crawl();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
                 progressMonitor.crawlingFinished();
             }
         };
@@ -94,8 +130,6 @@ public class Backend {
     }
 
     public void shutdown() {
-        filesToIndexQueue.shutdown();
-        indexWriterQueue.shutdown();
         luceneIndexHandler.shutdown();
     }
 
@@ -120,7 +154,7 @@ public class Backend {
     }
 
     public List<FilesystemLocation> getFileSystemLocations() {
-        return Collections.unmodifiableList(locations);
+        return Collections.unmodifiableList(new ArrayList<>(locations.keySet()));
     }
 
     public void setIncludeSimilarDocuments(boolean includeSimilarDocuments) {
@@ -128,7 +162,11 @@ public class Backend {
     }
 
     public void remove(FilesystemLocation aLocation) {
-        locations.remove(aLocation);
+        DirectoryWatcher theWatcher = locations.get(aLocation);
+        if (theWatcher != null) {
+            theWatcher.stopWatching();
+            locations.remove(aLocation);
+        }
     }
 
     public DocFlareElement getDocFlare() throws IOException {
