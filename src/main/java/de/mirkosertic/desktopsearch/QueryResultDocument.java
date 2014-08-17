@@ -14,20 +14,21 @@ package de.mirkosertic.desktopsearch;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Future;
 
 public class QueryResultDocument {
 
-    private String fileName;
+    private final String fileName;
 
-    private String highlightedSearchResult;
+    private final Future<String> highlightedSearchResult;
 
-    private long lastModified;
+    private final long lastModified;
 
-    private List<String> similarFiles;
+    private final List<String> similarFiles;
 
-    public QueryResultDocument(String fileName, String highlightedSearchResult, long lastModified, List<String> similarFiles) {
+    public QueryResultDocument(String fileName, Future<String> aHighlighterResult, long lastModified, List<String> similarFiles) {
         this.fileName = fileName;
-        this.highlightedSearchResult = highlightedSearchResult;
+        highlightedSearchResult = aHighlighterResult;
         this.lastModified = lastModified;
         this.similarFiles = similarFiles;
     }
@@ -37,7 +38,11 @@ public class QueryResultDocument {
     }
 
     public String getHighlightedSearchResult() {
-        return highlightedSearchResult;
+        try {
+            return highlightedSearchResult.get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public long getLastModified() {

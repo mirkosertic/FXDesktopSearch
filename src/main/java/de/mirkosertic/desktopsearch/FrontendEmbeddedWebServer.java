@@ -27,9 +27,9 @@ public class FrontendEmbeddedWebServer {
     private static final String SEARCH_URI = "/search";
     private static final String BRINGTOFRONT_URI = "/bringToFront";
 
-    private Server jetty;
+    private final Server jetty;
 
-    private Backend backend;
+    private final Backend backend;
 
     public FrontendEmbeddedWebServer(Stage aStage, Backend aBackend) {
         backend = aBackend;

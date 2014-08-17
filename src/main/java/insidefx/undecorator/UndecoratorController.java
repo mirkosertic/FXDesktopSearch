@@ -33,7 +33,7 @@ public class UndecoratorController {
     private static double newY;
     private static int RESIZE_PADDING;
     private static int SHADOW_WIDTH;
-    Undecorator undecorator;
+    final Undecorator undecorator;
     BoundingBox savedBounds, savedFullScreenBounds;
     boolean maximized = false;
     static boolean isMacOS = false;

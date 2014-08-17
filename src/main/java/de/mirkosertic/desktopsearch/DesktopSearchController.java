@@ -78,7 +78,7 @@ public class DesktopSearchController implements Initializable {
 
     class ProgressWatcherThread extends Thread {
 
-        private AtomicLong lastActivity;
+        private final AtomicLong lastActivity;
 
         public ProgressWatcherThread() {
             lastActivity = new AtomicLong();
@@ -184,6 +184,7 @@ public class DesktopSearchController implements Initializable {
                 }
             }
         });
+        webView.setContextMenuEnabled(false);
         webView.getEngine().load(aSearchURL);
         webView.getEngine().setJavaScriptEnabled(true);
     }
@@ -243,7 +244,7 @@ public class DesktopSearchController implements Initializable {
             stage.initStyle(StageStyle.UTILITY);
 
             FXMLLoader theLoader = new FXMLLoader(getClass().getResource("/scenes/configuration.fxml"));
-            AnchorPane theConfigurationRoot = (AnchorPane) theLoader.load();
+            AnchorPane theConfigurationRoot = theLoader.load();
             stage.setScene(new Scene(theConfigurationRoot));
             stage.setTitle("Configuration");
             stage.initModality(Modality.APPLICATION_MODAL);

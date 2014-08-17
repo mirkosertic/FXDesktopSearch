@@ -16,14 +16,16 @@ import java.util.List;
 
 public class QueryResult {
 
-    private long elapsedTime;
-    private List<QueryResultDocument> documents;
-    private long totalDocuments;
+    private final long elapsedTime;
+    private final List<QueryResultDocument> documents;
+    private final List<FacetDimension> facetDimensions;
+    private final long totalDocuments;
 
-    public QueryResult(long elapsedTime, List<QueryResultDocument> documents, long totalDocuments) {
+    public QueryResult(long elapsedTime, List<QueryResultDocument> documents, List<FacetDimension> aFacetDimensions, long totalDocuments) {
         this.elapsedTime = elapsedTime;
         this.documents = documents;
         this.totalDocuments = totalDocuments;
+        facetDimensions = aFacetDimensions;
     }
 
     public long getElapsedTime() {
@@ -48,5 +50,9 @@ public class QueryResult {
             return aFileName.substring(p+1);
         }
         return aFileName;
+    }
+
+    public List<FacetDimension> getFacetDimensions() {
+        return facetDimensions;
     }
 }

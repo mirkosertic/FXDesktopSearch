@@ -12,25 +12,33 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class Content {
 
-    private String fileName;
-    private long fileSize;
-    private long lastModified;
-    private Map<String, String> metadata;
-    private String fileContent;
+    public final class KeyValuePair {
+        public final String key;
+        public final Object value;
+
+        private KeyValuePair(String key, Object value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private final String fileName;
+    private final long fileSize;
+    private final long lastModified;
+    private final List<KeyValuePair> metadata;
+    private final String fileContent;
 
     public Content(String fileName, String aFileContent, long fileSize, long lastModified) {
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.lastModified = lastModified;
-        metadata = new HashMap<>();
+        metadata = new ArrayList<>();
         fileContent = aFileContent;
     }
 
@@ -50,11 +58,11 @@ public class Content {
         return lastModified;
     }
 
-    public Map<String, String> getMetadata() {
-        return Collections.unmodifiableMap(metadata);
+    public Stream<KeyValuePair> getMetadata() {
+        return metadata.stream();
     }
 
-    public void addMetaData(String aKey, String aValue) {
-        metadata.put(aKey, aValue);
+    public void addMetaData(String aKey, Object aValue) {
+        metadata.add(new KeyValuePair(aKey, aValue));
     }
 }

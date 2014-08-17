@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DocFlareServlet extends HttpServlet {
 
-    private Backend backend;
+    private final Backend backend;
 
     public DocFlareServlet(Backend aBackend) {
         backend = aBackend;

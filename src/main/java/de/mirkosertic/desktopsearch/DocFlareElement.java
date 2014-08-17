@@ -5,9 +5,9 @@ import java.util.List;
 
 public class DocFlareElement {
 
-    private String name;
+    private final String name;
     private Integer size;
-    private List<DocFlareElement> children;
+    private final List<DocFlareElement> children;
 
     public DocFlareElement(String aName, Integer aSize) {
         name = aName;

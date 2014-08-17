@@ -1,3 +1,13 @@
+a {
+    cursor: hand;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: Arial, sans-serif;
+}
+
 
 em {
     color: #000000;
@@ -12,7 +22,7 @@ em {
 
 .titlebar {
     background-color: rgb(241,241,241);
-    padding: 5 5 5 5;
+    padding: 5px;
     border: 1px solid rgb(229,229,229);
     color: white;
     font-weight: bold;
@@ -54,26 +64,58 @@ input:focus {
     border: 1px solid black;
 }
 
-.searchResultFileName {
-    color: rgb(17,34,204);
-    text-decoration: underline;
+.searchResult {
+    padding-left: 5px;
 }
 
-.searchResultFileNameComplete {
+.afterSearchNavigationArea {
+    float: left;
+    width: 20%;
+}
+
+.dimension {
+    float: clear;
+}
+
+.dimensionTitle {
+    font-weight: bold;
+    padding-bottom: 5px;
+}
+
+.dimensionValues {
+    padding-left: 10px;
+    inset-botttom: 10px;
+}
+
+.dimensionValue {
+}
+
+.dimensionValueLink {
+    color: rgb(17,34,204);
+    text-decoration: none;
+}
+
+.searchResultArea {
+    float: left;
+    width: 80%;
+}
+
+.searchResultAreaFileName {
+    color: rgb(17,34,204);
+    text-decoration: none;
+}
+
+.searchResultAreaFileNameComplete {
     color: rgb(0, 153, 51);
 }
 
-.searchResultContentHighlighted {
+.searchResultAreaContentHighlighted {
     color: rgb(68, 68, 68);
 }
 
-.searchResultSimilar {
+.searchResultAreaResultSimilar {
     color: rgb(0, 153, 51);
     padding-left: 20px;
-}
-
-.searchResult {
-    padding-left: 40px;
 }
 
 .logoDiv {
@@ -85,12 +127,3 @@ input:focus {
     border: 0px;
 }
 
-a {
-    cursor: hand;
-}
-
-body {
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-    font-family: arial;
-}

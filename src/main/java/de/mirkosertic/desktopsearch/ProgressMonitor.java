@@ -18,7 +18,7 @@ public class ProgressMonitor {
 
     private long filesIndexed;
 
-    private ProgressListener progressListener;
+    private final ProgressListener progressListener;
 
     public ProgressMonitor(ProgressListener aListener) {
         progressListener = aListener;

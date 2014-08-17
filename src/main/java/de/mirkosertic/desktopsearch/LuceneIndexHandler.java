@@ -16,6 +16,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.LabelAndValue;
+import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
+import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
+import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
+import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.*;
 import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.search.*;
@@ -27,12 +35,15 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.NRTCachingDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
+import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 class LuceneIndexHandler {
 
@@ -43,6 +54,7 @@ class LuceneIndexHandler {
     private final Analyzer analyzer;
     private IndexWriter indexWriter;
     private SearcherManager searcherManager;
+    private final FacetsConfig facetsConfig;
 
     private Thread commitThread;
 
@@ -51,8 +63,6 @@ class LuceneIndexHandler {
 
         File theIndexDir = new File(aIndexDir, "index");
         theIndexDir.mkdirs();
-        File theTaxoDir = new File(aIndexDir, "taxonomy");
-        theTaxoDir.mkdirs();
 
         analyzer = new StandardAnalyzer(LUCENE_VERSION);
         Directory theIndexFSDirectory = new NRTCachingDirectory(FSDirectory.open(theIndexDir), 100, 100);
@@ -64,6 +74,7 @@ class LuceneIndexHandler {
 
         IndexWriterConfig theConfig = new IndexWriterConfig(LUCENE_VERSION, analyzer);
         indexWriter = new IndexWriter(theIndexFSDirectory, theConfig);
+
         searcherManager = new SearcherManager(indexWriter, true, new SearcherFactory());
 
         commitThread = new Thread() {
@@ -89,6 +100,8 @@ class LuceneIndexHandler {
         };
 
         commitThread.start();
+
+        facetsConfig = new FacetsConfig();
     }
 
     public void crawlingStarts() throws IOException {
@@ -105,11 +118,58 @@ class LuceneIndexHandler {
         theDocument.add(new LongField(IndexFields.FILESIZE, aContent.getFileSize(), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LASTMODIFIED, "" + aContent.getLastModified(), Field.Store.YES));
 
-        for (Map.Entry<String, String> theEntry : aContent.getMetadata().entrySet()) {
-            theDocument.add(new StringField(IndexFields.META_PREFIX + theEntry.getKey(), theEntry.getValue(), Field.Store.YES));
-        }
+        aContent.getMetadata().forEach(theEntry -> {
+            if (!StringUtils.isEmpty(theEntry.key)) {
+                Object theValue = theEntry.value;
+                if (theValue instanceof String) {
+                    facetsConfig.setMultiValued(theEntry.key, true);
+                    String theStringValue = (String) theValue;
+                    if (!StringUtils.isEmpty(theStringValue)) {
+                        theDocument.add(new SortedSetDocValuesFacetField(theEntry.key, theStringValue));
+                    }
+                }
+                if (theValue instanceof Date) {
+                    facetsConfig.setHierarchical(theEntry.key, true);
+                    Date theDateValue = (Date) theValue;
+                    Calendar theCalendar = GregorianCalendar.getInstance(DateUtils.UTC, Locale.US);
+                    theCalendar.setTime(theDateValue);
 
-        indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), theDocument);
+                    // Full-Path
+                    {
+                        String thePathInfo = String.format(
+                                "%04d/%02d/%02d",
+                                theCalendar.get(Calendar.YEAR),
+                                theCalendar.get(Calendar.MONTH) + 1,
+                                theCalendar.get(Calendar.DAY_OF_MONTH));
+
+                        facetsConfig.setMultiValued(theEntry.key+"-year-month-day", true);
+                        theDocument.add(new SortedSetDocValuesFacetField(theEntry.key+"-year-month-day", thePathInfo));
+                    }
+                    // Year
+                    {
+                        String thePathInfo = String.format(
+                                "%04d",
+                                theCalendar.get(Calendar.YEAR));
+
+                        facetsConfig.setMultiValued(theEntry.key+"-year", true);
+                        theDocument.add(new SortedSetDocValuesFacetField(theEntry.key+"-year", thePathInfo));
+                    }
+                    // Year-month
+                    {
+                        String thePathInfo = String.format(
+                                "%04d/%02d",
+                                theCalendar.get(Calendar.YEAR),
+                                theCalendar.get(Calendar.MONTH) + 1);
+
+                        facetsConfig.setMultiValued(theEntry.key+"-year-month", true);
+                        theDocument.add(new SortedSetDocValuesFacetField(theEntry.key+"-year-month", thePathInfo));
+                    }
+
+                }
+            }
+        });
+
+        indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), facetsConfig.build(theDocument));
     }
 
     public void removeFromIndex(String aFileName) throws IOException {
@@ -154,6 +214,7 @@ class LuceneIndexHandler {
 
         searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
+        SortedSetDocValuesReaderState theSortedSetState = new DefaultSortedSetDocValuesReaderState(theSearcher.getIndexReader());
 
         List<QueryResultDocument> theResultDocuments = new ArrayList<>();
 
@@ -162,6 +223,9 @@ class LuceneIndexHandler {
         DateFormat theDateFormat = new SimpleDateFormat("dd.MMMM.yyyy", Locale.ENGLISH);
 
         try {
+
+            List<FacetDimension> theDimensions = new ArrayList<>();
+
             // Search only if a search query is given
             if (!StringUtils.isEmpty(aQueryString)) {
 
@@ -175,7 +239,16 @@ class LuceneIndexHandler {
                 theMoreLikeThis.setMinDocFreq(1);
                 theMoreLikeThis.setFieldNames(new String[]{IndexFields.CONTENT});
 
-                TopDocs theDocs = theSearcher.search(theQuery, null, aMaxDocs);
+                FacetsCollector theFacetCollector = new FacetsCollector();
+
+                TopDocs theDocs = FacetsCollector.search(theSearcher, theQuery, null, aMaxDocs, theFacetCollector);
+                SortedSetDocValuesFacetCounts theFacetCounts = new SortedSetDocValuesFacetCounts(theSortedSetState, theFacetCollector);
+
+                List<Facet> theAuthorFacets = new ArrayList<>();
+                List<Facet> theFileTypesFacets = new ArrayList<>();
+                List<Facet> theLastModifiedYearFacet = new ArrayList<>();
+
+                ForkJoinPool theCommonPool = ForkJoinPool.commonPool();
 
                 for (int i = 0; i < theDocs.scoreDocs.length; i++) {
                     ScoreDoc theScoreDoc = theDocs.scoreDocs[i];
@@ -186,15 +259,18 @@ class LuceneIndexHandler {
 
                     String theOriginalContent = theDocument.getField(IndexFields.CONTENT).stringValue();
 
-                    StringBuilder theHighlightedResult = new StringBuilder(theDateFormat.format(theLastModified));
-                    theHighlightedResult.append("&nbsp;-&nbsp;");
-                    Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theQuery));
-                    for (String theFragment : theHighlighter.getBestFragments(analyzer, IndexFields.CONTENT, theOriginalContent, NUMBER_OF_FRAGMENTS)) {
-                        if (theHighlightedResult.length() > 0) {
-                            theHighlightedResult = theHighlightedResult.append("...");
+                    ForkJoinTask<String> theHighligherResult = theCommonPool.submit(() -> {
+                        StringBuilder theResult = new StringBuilder(theDateFormat.format(theLastModified));
+                        theResult.append("&nbsp;-&nbsp;");
+                        Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theQuery));
+                        for (String theFragment : theHighlighter.getBestFragments(analyzer, IndexFields.CONTENT, theOriginalContent, NUMBER_OF_FRAGMENTS)) {
+                            if (theResult.length() > 0) {
+                                theResult = theResult.append("...");
+                            }
+                            theResult = theResult.append(theFragment);
                         }
-                        theHighlightedResult = theHighlightedResult.append(theFragment);
-                    }
+                        return theResult.toString();
+                    });
 
                     List<String> theSimilarFiles = new ArrayList<>();
 
@@ -214,11 +290,43 @@ class LuceneIndexHandler {
                         }
                     }
 
-                    theResultDocuments.add(new QueryResultDocument(theFoundFileName, theHighlightedResult.toString(), Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()), theSimilarFiles));
+                    theResultDocuments.add(new QueryResultDocument(theFoundFileName, theHighligherResult, Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()), theSimilarFiles));
                 }
+
+                for (FacetResult theResult : theFacetCounts.getAllDims(theDocs.scoreDocs.length)) {
+                    String theDimension = theResult.dim;
+                    if ("author".equals(theDimension)) {
+                        for (LabelAndValue theLabelAndValue : theResult.labelValues) {
+                            theAuthorFacets.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(), ""));
+                        }
+                    }
+                    if ("extension".equals(theDimension)) {
+                        for (LabelAndValue theLabelAndValue : theResult.labelValues) {
+                            theFileTypesFacets.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(), ""));
+                        }
+                    }
+                    if ("last-modified-year".equals(theDimension)) {
+                        for (LabelAndValue theLabelAndValue : theResult.labelValues) {
+                            theLastModifiedYearFacet.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(), ""));
+                        }
+                    }
+                }
+
+                if (!theAuthorFacets.isEmpty()) {
+                    theDimensions.add(new FacetDimension("Author", theAuthorFacets));
+                }
+                if (!theLastModifiedYearFacet.isEmpty()) {
+                    theDimensions.add(new FacetDimension("Last modified", theLastModifiedYearFacet));
+                }
+                if (!theFileTypesFacets.isEmpty()) {
+                    theDimensions.add(new FacetDimension("File types", theFileTypesFacets));
+                }
+
+                // Wair for all Tasks to complete for the search result highlighter
+                ForkJoinTask.helpQuiesce();
             }
 
-            return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theSearcher.getIndexReader().numDocs());
+            return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

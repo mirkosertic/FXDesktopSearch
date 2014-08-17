@@ -29,7 +29,7 @@ public class SearchPreferences {
     public static final String LOCATION_NUM = "locationNum";
     public static final String LOC_ID = "locID";
     public static final String LOC_FILE = "locFile";
-    private Preferences preferences;
+    private final Preferences preferences;
 
     public SearchPreferences() {
         preferences = Preferences.userRoot().node(this.getClass().getName());

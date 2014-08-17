@@ -27,11 +27,7 @@
  */
 package insidefx.undecorator;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.FadeTransitionBuilder;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
-import javafx.animation.TranslateTransitionBuilder;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
@@ -44,23 +40,13 @@ import javafx.geometry.Side;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
@@ -127,7 +113,7 @@ public class Undecorator extends StackPane {
     SimpleBooleanProperty minimizeProperty;
     SimpleBooleanProperty closeProperty;
     SimpleBooleanProperty fullscreenProperty;
-    String backgroundStyleClass = "undecorator-background";
+    final String backgroundStyleClass = "undecorator-background";
     TranslateTransition fullscreenButtonTransition;
 
     public SimpleBooleanProperty maximizeProperty() {
@@ -210,7 +196,7 @@ public class Undecorator extends StackPane {
             FXMLLoader fxmlLoader = new FXMLLoader(stageDecorationFxmlAsURL);
 //            fxmlLoader.setController(new StageDecorationController(this));
             fxmlLoader.setController(this);
-            stageDecoration = (Pane) fxmlLoader.load();
+            stageDecoration = fxmlLoader.load();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Decorations not found", ex);
         }
@@ -256,7 +242,7 @@ public class Undecorator extends StackPane {
          * Focused stage
          */
         stage.focusedProperty().addListener((ov, t, t1) -> {
-            setShadowFocused(t1.booleanValue());
+            setShadowFocused(t1);
         });
         /*
          * Fullscreen
@@ -275,12 +261,12 @@ public class Undecorator extends StackPane {
             });
 
             stage.fullScreenProperty().addListener((ov, t, fullscreenState) -> {
-                setShadow(!fullscreenState.booleanValue());
-                fullScreenMenuItem.setSelected(fullscreenState.booleanValue());
-                maximize.setVisible(!fullscreenState.booleanValue());
-                minimize.setVisible(!fullscreenState.booleanValue());
-                resize.setVisible(!fullscreenState.booleanValue());
-                if (fullscreenState.booleanValue()) {
+                setShadow(!fullscreenState);
+                fullScreenMenuItem.setSelected(fullscreenState);
+                maximize.setVisible(!fullscreenState);
+                minimize.setVisible(!fullscreenState);
+                resize.setVisible(!fullscreenState);
+                if (fullscreenState) {
                     // String and icon
                     fullscreen.getStyleClass().add("decoration-button-unfullscreen");
                     fullscreen.setTooltip(new Tooltip(LOC.getString("Restore")));
@@ -430,7 +416,7 @@ public class Undecorator extends StackPane {
     public void setFadeInTransition() {
         super.setOpacity(0);
         stage.showingProperty().addListener((ov, t, t1) -> {
-            if (t1.booleanValue()) {
+            if (t1) {
                 FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), Undecorator.this);
                 fadeTransition.setToValue(1);
                 fadeTransition.play();

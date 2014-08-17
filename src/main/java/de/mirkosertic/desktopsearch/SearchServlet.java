@@ -23,7 +23,7 @@ import java.io.IOException;
 
 public class SearchServlet extends HttpServlet {
 
-    private Backend backend;
+    private final Backend backend;
 
     public SearchServlet(Backend aBackend) {
         backend = aBackend;
