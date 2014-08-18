@@ -92,10 +92,10 @@ public class ContentExtractor {
             return "last-modified";
         }
         if ("creatortool".equals(aName)) {
-            return "producer";
+            return "application-name";
         }
-        if ("application-name".equals(aName)) {
-            return "producer";
+        if ("producer".equals(aName)) {
+            return "application-name";
         }
         if ("creator".equals(aName)) {
             return "author";
@@ -112,10 +112,16 @@ public class ContentExtractor {
         if ("revision".equals(aName)) {
             return "revision-number";
         }
+        if ("appversion".equals(aName)) {
+            return "application-version";
+        }
         if ("character count".equals(aName)) {
             return "character-count";
         }
         if ("xmptpg:npages".equals(aName)) {
+            return "page-count";
+        }
+        if ("slide-count".equals(aName)) {
             return "page-count";
         }
         return aName;

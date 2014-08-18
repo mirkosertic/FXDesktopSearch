@@ -24,7 +24,6 @@ public class FrontendEmbeddedWebServer {
 
     private static final int PORT_NUMMER = 4711;
 
-    private static final String SEARCH_URI = "/search";
     private static final String BRINGTOFRONT_URI = "/bringToFront";
 
     private final Server jetty;
@@ -41,7 +40,7 @@ public class FrontendEmbeddedWebServer {
         theWebApp.setBaseResource(Resource.newClassPathResource("/webapp"));
         theWebApp.setDescriptor("WEB-INF/web.xml");
         theWebApp.setClassLoader(getClass().getClassLoader());
-        theWebApp.addServlet(new ServletHolder(new SearchServlet(backend)), SEARCH_URI);
+        theWebApp.addServlet(new ServletHolder(new SearchServlet(backend, "http://127.0.0.1:" + PORT_NUMMER)), SearchServlet.URL + "/*");
         theWebApp.addServlet(new ServletHolder(new BringToFrontServlet(aStage)), BRINGTOFRONT_URI);
         theWebApp.addServlet(new ServletHolder(new DocFlareServlet(backend)), "/documentflare.json");
 
@@ -67,7 +66,7 @@ public class FrontendEmbeddedWebServer {
     }
 
     public static String getSearchUrl() {
-        return "http://127.0.0.1:" + PORT_NUMMER + SEARCH_URI;
+        return "http://127.0.0.1:" + PORT_NUMMER + SearchServlet.URL;
     }
 
     public static String getBringToFrontUrl() {

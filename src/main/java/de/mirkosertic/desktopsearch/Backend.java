@@ -133,8 +133,8 @@ public class Backend {
         luceneIndexHandler.shutdown();
     }
 
-    public QueryResult performQuery(String aQueryString) throws IOException {
-        return luceneIndexHandler.performQuery(aQueryString, includeSimilarDocuments, numberOfSearchResults);
+    public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Map<String, String> aDrilldownDimensions) throws IOException {
+        return luceneIndexHandler.performQuery(aQueryString, aBacklink, aBasePath, includeSimilarDocuments, numberOfSearchResults, aDrilldownDimensions);
     }
 
     public boolean isIncludeSimilarDocuments() {

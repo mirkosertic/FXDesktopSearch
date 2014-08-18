@@ -1,5 +1,11 @@
 <html>
     <head>
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <base href="${serverBase}"/>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="webapp.css"/>
     </head>
@@ -19,12 +25,15 @@
                 The search was processed in ${queryResult.elapsedTime}ms., searched in ${queryResult.totalDocuments} documents.<br/><br/>
 
                 <div class="afterSearchNavigationArea">
+                    <#if queryResult.backLink?has_content>
+                        <a class="dimensionGoBackLink" href="${queryResult.backLink}">&lt;&lt; Go back</a>
+                    </#if>
                     <#list queryResult.facetDimensions as dimension>
                     <div class="dimension">
                         <div class="dimensionTitle">${dimension.name}</div>
                         <div class="dimensionValues">
                             <#list dimension.facets as facet>
-                            <div class="dimensionValue"><a class="dimensionValueLink">${facet.name}</a> (${facet.number})</div>
+                            <div class="dimensionValue"><a href="${facet.link}" class="dimensionValueLink">${facet.name}</a> (${facet.number})</div>
                             </#list>
                         </div>
                     </div>

@@ -77,6 +77,11 @@ input:focus {
     float: clear;
 }
 
+.dimensionGoBackLink {
+    color: rgb(17,34,204);
+    text-decoration: none;
+}
+
 .dimensionTitle {
     font-weight: bold;
     padding-bottom: 5px;
