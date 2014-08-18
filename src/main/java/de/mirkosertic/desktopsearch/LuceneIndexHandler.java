@@ -12,10 +12,13 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
+import org.apache.lucene.facet.DrillDownQuery;
 import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.FacetsCollector;
 import org.apache.lucene.facet.FacetsConfig;
@@ -210,7 +213,16 @@ class LuceneIndexHandler {
         }
     }
 
-    public QueryResult performQuery(String aQueryString, boolean aIncludeSimilarDocuments, int aMaxDocs) throws IOException {
+    private String encode(String aValue) {
+        URLCodec theURLCodec = new URLCodec();
+        try {
+            return theURLCodec.encode(aValue);
+        } catch (EncoderException e) {
+            return null;
+        }
+    }
+
+    public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, boolean aIncludeSimilarDocuments, int aMaxDocs, Map<String, String> aDrilldownFields) throws IOException {
 
         searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
@@ -233,15 +245,14 @@ class LuceneIndexHandler {
 
                 Query theQuery = theParser.parse(aQueryString, IndexFields.CONTENT);
 
-                MoreLikeThis theMoreLikeThis = new MoreLikeThis(theSearcher.getIndexReader());
-                theMoreLikeThis.setAnalyzer(analyzer);
-                theMoreLikeThis.setMinTermFreq(1);
-                theMoreLikeThis.setMinDocFreq(1);
-                theMoreLikeThis.setFieldNames(new String[]{IndexFields.CONTENT});
+                DrillDownQuery theDrilldownQuery = new DrillDownQuery(facetsConfig, theQuery);
+                aDrilldownFields.entrySet().stream().forEach(aEntry -> {
+                    theDrilldownQuery.add(aEntry.getKey(), aEntry.getValue());
+                });
 
                 FacetsCollector theFacetCollector = new FacetsCollector();
 
-                TopDocs theDocs = FacetsCollector.search(theSearcher, theQuery, null, aMaxDocs, theFacetCollector);
+                TopDocs theDocs = FacetsCollector.search(theSearcher, theDrilldownQuery, null, aMaxDocs, theFacetCollector);
                 SortedSetDocValuesFacetCounts theFacetCounts = new SortedSetDocValuesFacetCounts(theSortedSetState, theFacetCollector);
 
                 List<Facet> theAuthorFacets = new ArrayList<>();
@@ -276,6 +287,12 @@ class LuceneIndexHandler {
 
                     if (aIncludeSimilarDocuments) {
 
+                        MoreLikeThis theMoreLikeThis = new MoreLikeThis(theSearcher.getIndexReader());
+                        theMoreLikeThis.setAnalyzer(analyzer);
+                        theMoreLikeThis.setMinTermFreq(1);
+                        theMoreLikeThis.setMinDocFreq(1);
+                        theMoreLikeThis.setFieldNames(new String[]{IndexFields.CONTENT});
+
                         Query theMoreLikeThisQuery = theMoreLikeThis.like(theDocs.scoreDocs[i].doc);
                         TopDocs theMoreLikeThisTopDocs = theSearcher.search(theMoreLikeThisQuery, 5);
                         for (ScoreDoc theMoreLikeThisScoreDoc : theMoreLikeThisTopDocs.scoreDocs) {
@@ -293,23 +310,29 @@ class LuceneIndexHandler {
                     theResultDocuments.add(new QueryResultDocument(theFoundFileName, theHighligherResult, Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()), theSimilarFiles));
                 }
 
-                for (FacetResult theResult : theFacetCounts.getAllDims(theDocs.scoreDocs.length)) {
+                System.out.println("Dimensions");
+                for (FacetResult theResult : theFacetCounts.getAllDims(20000)) {
                     String theDimension = theResult.dim;
                     if ("author".equals(theDimension)) {
                         for (LabelAndValue theLabelAndValue : theResult.labelValues) {
-                            theAuthorFacets.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(), ""));
+                            theAuthorFacets.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(), aBasePath+"/"+encode(
+                                    FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
                         }
                     }
                     if ("extension".equals(theDimension)) {
                         for (LabelAndValue theLabelAndValue : theResult.labelValues) {
-                            theFileTypesFacets.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(), ""));
+                            theFileTypesFacets.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(), aBasePath+"/"+encode(
+                                    FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
                         }
                     }
                     if ("last-modified-year".equals(theDimension)) {
                         for (LabelAndValue theLabelAndValue : theResult.labelValues) {
-                            theLastModifiedYearFacet.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(), ""));
+                            theLastModifiedYearFacet.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(), aBasePath+"/"+encode(
+                                    FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
                         }
                     }
+
+                    System.out.println(" "+theDimension);
                 }
 
                 if (!theAuthorFacets.isEmpty()) {
@@ -322,11 +345,11 @@ class LuceneIndexHandler {
                     theDimensions.add(new FacetDimension("File types", theFileTypesFacets));
                 }
 
-                // Wair for all Tasks to complete for the search result highlighter
+                // Wait for all Tasks to complete for the search result highlighter
                 ForkJoinTask.helpQuiesce();
             }
 
-            return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs());
+            return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs(), aBacklink);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

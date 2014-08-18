@@ -20,12 +20,14 @@ public class QueryResult {
     private final List<QueryResultDocument> documents;
     private final List<FacetDimension> facetDimensions;
     private final long totalDocuments;
+    private final String backLink;
 
-    public QueryResult(long elapsedTime, List<QueryResultDocument> documents, List<FacetDimension> aFacetDimensions, long totalDocuments) {
+    public QueryResult(long elapsedTime, List<QueryResultDocument> documents, List<FacetDimension> aFacetDimensions, long totalDocuments, String aBackLink) {
         this.elapsedTime = elapsedTime;
         this.documents = documents;
         this.totalDocuments = totalDocuments;
         facetDimensions = aFacetDimensions;
+        backLink = aBackLink;
     }
 
     public long getElapsedTime() {
@@ -54,5 +56,9 @@ public class QueryResult {
 
     public List<FacetDimension> getFacetDimensions() {
         return facetDimensions;
+    }
+
+    public String getBackLink() {
+        return backLink;
     }
 }

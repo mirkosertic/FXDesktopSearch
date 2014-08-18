@@ -88,7 +88,12 @@ public class SearchPreferences {
                 String theId = preferences.get(LOC_ID + i, "");
                 String theLocation = preferences.get(LOC_FILE + i, "");
 
-                aBackend.add(new FilesystemLocation(theId, new File(theLocation)));
+                File theFile = new File(theLocation);
+                if (theFile.exists() && theFile.isDirectory()) {
+                    aBackend.add(new FilesystemLocation(theId, new File(theLocation)));
+                } else {
+                    //TODO: Inform users about this
+                }
             }
         }
     }

@@ -12,7 +12,9 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletException;
@@ -20,35 +22,96 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SearchServlet extends HttpServlet {
 
-    private final Backend backend;
+    public static final String URL = "/search";
 
-    public SearchServlet(Backend aBackend) {
+    private final Backend backend;
+    private final String basePath;
+    private final String serverBase;
+
+    public SearchServlet(Backend aBackend, String aServerBase) {
+        serverBase = aServerBase;
         backend = aBackend;
+        basePath = serverBase + URL;
     }
 
     @Override
     protected void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
-        aRequest.setAttribute("querystring","");
-        aRequest.getRequestDispatcher("index.ftl").forward(aRequest, aResponse);
+        fillinSearchResult(aRequest, aResponse);
     }
 
     @Override
     protected void doPost(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
-        String theSearchString = aRequest.getParameter("querystring");
-        if (!StringUtils.isEmpty(theSearchString)) {
+        fillinSearchResult(aRequest, aResponse);
+    }
+
+    private void fillinSearchResult(HttpServletRequest aRequest, HttpServletResponse aResponse)
+            throws ServletException, IOException {
+
+        URLCodec theURLCodec = new URLCodec();
+
+        String theQueryString = aRequest.getParameter("querystring");
+        String theBasePath = basePath;
+        String theBackLink = basePath;
+        if (!StringUtils.isEmpty(theQueryString)) {
             try {
-                aRequest.setAttribute("queryResult", backend.performQuery(theSearchString));
+                theBasePath = theBasePath + "/" + theURLCodec.encode(theQueryString);
+                theBackLink = theBackLink + "/" + theURLCodec.encode(theQueryString);
+            } catch (EncoderException e) {
+                e.printStackTrace();
+            }
+        }
+        Map<String, String> theDrilldownDimensions = new HashMap<>();
+
+        String thePathInfo = aRequest.getPathInfo();
+        if (!StringUtils.isEmpty(thePathInfo)) {
+            String theWorkingPathInfo = thePathInfo;
+
+            // First component is the query string
+            if (theWorkingPathInfo.startsWith("/")) {
+                theWorkingPathInfo = theWorkingPathInfo.substring(1);
+            }
+            String[] thePaths = StringUtils.split(theWorkingPathInfo,"/");
+            for (int i=0;i<thePaths.length;i++) {
+                try {
+                    theBasePath = theBasePath + "/" + thePaths[i];
+                    if (i<thePaths.length - 1) {
+                        theBackLink = theBackLink + "/" + thePaths[i];
+                    }
+                    String theDecodedValue = theURLCodec.decode(thePaths[i]);
+                    if (i == 0) {
+                        theQueryString = theDecodedValue;
+                    } else {
+                        FacetSearchUtils.addToMap(theDecodedValue, theDrilldownDimensions);
+                    }
+                } catch (DecoderException e) {
+
+                }
+            }
+            if (basePath.equals(theBackLink)) {
+                theBackLink = null;
+            }
+        } else {
+            theBackLink = null;
+        }
+
+        if (!StringUtils.isEmpty(theQueryString)) {
+            aRequest.setAttribute("querystring", theQueryString);
+            try {
+                aRequest.setAttribute("queryResult", backend.performQuery(theQueryString, theBackLink, theBasePath, theDrilldownDimensions));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            aRequest.setAttribute("querystring", StringEscapeUtils.escapeHtml4(theSearchString));
         } else {
-            aRequest.setAttribute("querystring","");
+            aRequest.setAttribute("querystring", "");
         }
 
-        aRequest.getRequestDispatcher("index.ftl").forward(aRequest, aResponse);
+        aRequest.setAttribute("serverBase", serverBase);
+
+        aRequest.getRequestDispatcher("/index.ftl").forward(aRequest, aResponse);
     }
 }

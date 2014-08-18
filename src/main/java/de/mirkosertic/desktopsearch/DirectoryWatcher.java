@@ -1,3 +1,15 @@
+/**
+ * FreeDesktopSearch - A Search Engine for your Desktop
+ * Copyright (C) 2013 Mirko Sertic
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
+ */
 package de.mirkosertic.desktopsearch;
 
 import java.io.IOException;
@@ -47,16 +59,6 @@ public class DirectoryWatcher {
         Path thePath = aFileSystemLocation.getDirectory().toPath();
 
         watchService = thePath.getFileSystem().newWatchService();
-        Files.walk(thePath).forEach(path -> {
-            if (Files.isDirectory(path)) {
-                System.out.println("Registering watches for " + path);
-                try {
-                    registerWatcher(path);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
         watcherThread = new Thread("WatcherThread-"+thePath) {
             @Override
             public void run() {
@@ -141,6 +143,28 @@ public class DirectoryWatcher {
     }
 
     public DirectoryWatcher startWatching() {
+
+        Thread theRegisterWatchers = new Thread("Registering Watchers") {
+            @Override
+            public void run() {
+                try {
+                    Files.walk(filesystemLocation.getDirectory().toPath()).forEach(path -> {
+                        if (Files.isDirectory(path)) {
+                            System.out.println("Registering watches for " + path);
+                            try {
+                                registerWatcher(path);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        theRegisterWatchers.start();
+
         watcherThread.start();
         actionTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
