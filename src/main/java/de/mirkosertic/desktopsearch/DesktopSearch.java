@@ -98,40 +98,24 @@ public class DesktopSearch extends Application {
 
             PopupMenu theMenu = new PopupMenu();
             MenuItem theCloseItem = new MenuItem("Close");
-            theCloseItem.addActionListener(e -> {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        shutdown();
-                    }
-                });
-            });
+            theCloseItem.addActionListener(e -> Platform.runLater(this::shutdown));
             theMenu.add(theCloseItem);
 
             MenuItem theShowItem = new MenuItem("Show");
-            theShowItem.addActionListener(e -> {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        stage.show();
-                        stage.toFront();
-                    }
-                });
-            });
+            theShowItem.addActionListener(e -> Platform.runLater(() -> {
+                stage.show();
+                stage.toFront();
+            }));
             theMenu.add(theShowItem);
 
             java.awt.Image theSystrayIcon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/fds_small.png"));
             TrayIcon theTrayIcon = new TrayIcon(theSystrayIcon, "Free Desktop Search", theMenu);
             theTray.add(theTrayIcon);
 
-            aStage.setOnCloseRequest(aEvent -> {
-                stage.hide();
-            });
+            aStage.setOnCloseRequest(aEvent -> stage.hide());
         } else {
 
-            aStage.setOnCloseRequest(aEvent -> {
-                shutdown();
-            });
+            aStage.setOnCloseRequest(aEvent -> shutdown());
         }
 
         aStage.show();

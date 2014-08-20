@@ -27,7 +27,7 @@ import org.apache.lucene.search.WildcardQuery;
 
 import java.util.StringTokenizer;
 
-public class QueryParser {
+class QueryParser {
 
     private void addSubQuery(BooleanQuery aQuery, String aTerm, boolean aNegated, String aSearchField) {
         if (!StringUtils.isEmpty(aTerm)) {
@@ -120,12 +120,5 @@ public class QueryParser {
         }
 
         return theResult;
-    }
-
-    public static void main(String[] aArgs) {
-        QueryParser theParser = new QueryParser();
-        Query theQuery = theParser
-                .parse("mir* wutzpu lala-wtatevern \"okilidokili lala\"-\"mirko sertic\" ", "CONTENT");
-        System.out.println(theQuery);
     }
 }

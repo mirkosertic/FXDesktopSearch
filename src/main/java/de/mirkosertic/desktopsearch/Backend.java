@@ -19,7 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
-public class Backend {
+class Backend {
 
     private LuceneIndexHandler luceneIndexHandler;
     private final ContentExtractor contentExtractor;

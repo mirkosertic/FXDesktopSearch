@@ -73,21 +73,11 @@ public class ConfigurationController implements Initializable {
         assert buttonCancel != null;
         assert buttonOk != null;
 
-        buttonRemove.setOnAction(actionEvent -> {
-            removeSelectedLocation();
-        });
-        buttonAdd.setOnAction(actionEvent -> {
-            addNewLocation();
-        });
-        buttonOk.setOnAction(actionEvent -> {
-            ok();
-        });
-        buttonCancel.setOnAction(actionEvent -> {
-            cancel();
-        });
-        buttonSetIndexLocation.setOnAction(actionEvent -> {
-            setIndexLocation();
-        });
+        buttonRemove.setOnAction(actionEvent -> removeSelectedLocation());
+        buttonAdd.setOnAction(actionEvent -> addNewLocation());
+        buttonOk.setOnAction(actionEvent -> ok());
+        buttonCancel.setOnAction(actionEvent -> cancel());
+        buttonSetIndexLocation.setOnAction(actionEvent -> setIndexLocation());
     }
 
     private void ok() {
@@ -99,9 +89,7 @@ public class ConfigurationController implements Initializable {
                 e.printStackTrace();
             }
         }
-        for (FilesystemLocation theRemovedLocation: removedLocations) {
-            backend.remove(theRemovedLocation);
-        }
+        removedLocations.forEach(backend::remove);
 
         backend.setIncludeSimilarDocuments(showSimilarResults.isSelected());
         backend.setNumberOfSearchResults((int) numberDocuments.getValue());

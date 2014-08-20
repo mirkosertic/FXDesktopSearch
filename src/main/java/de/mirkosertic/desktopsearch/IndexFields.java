@@ -12,7 +12,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-public interface IndexFields {
+interface IndexFields {
 
     String FILENAME = "DesktopSearch.filename";
     String EXTENSION = "extension";

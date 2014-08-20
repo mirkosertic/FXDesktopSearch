@@ -15,6 +15,7 @@ package de.mirkosertic.desktopsearch;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
@@ -49,6 +50,8 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
 class LuceneIndexHandler {
+
+    private static final Logger LOGGER = Logger.getLogger(LuceneIndexHandler.class);
 
     private static final Version LUCENE_VERSION = Version.LUCENE_4_9;
     private static final int NUMBER_OF_FRAGMENTS = 5;
@@ -184,6 +187,7 @@ class LuceneIndexHandler {
         try {
             indexWriter.close();
         } catch (Exception e) {
+            LOGGER.error("Error while closing IndexWriter", e);
         }
     }
 
@@ -232,7 +236,18 @@ class LuceneIndexHandler {
 
         long theStartTime = System.currentTimeMillis();
 
+        LOGGER.info("Querying for "+aQueryString);
+
         DateFormat theDateFormat = new SimpleDateFormat("dd.MMMM.yyyy", Locale.ENGLISH);
+
+        MoreLikeThis theMoreLikeThis = null;
+        if (aIncludeSimilarDocuments) {
+            theMoreLikeThis = new MoreLikeThis(theSearcher.getIndexReader());
+            theMoreLikeThis.setAnalyzer(analyzer);
+            theMoreLikeThis.setMinTermFreq(1);
+            theMoreLikeThis.setMinDocFreq(1);
+            theMoreLikeThis.setFieldNames(new String[]{IndexFields.CONTENT});
+        }
 
         try {
 
@@ -247,6 +262,7 @@ class LuceneIndexHandler {
 
                 DrillDownQuery theDrilldownQuery = new DrillDownQuery(facetsConfig, theQuery);
                 aDrilldownFields.entrySet().stream().forEach(aEntry -> {
+                    LOGGER.info(" with Drilldown "+aEntry.getKey()+" for "+aEntry.getValue());
                     theDrilldownQuery.add(aEntry.getKey(), aEntry.getValue());
                 });
 
@@ -260,6 +276,8 @@ class LuceneIndexHandler {
                 List<Facet> theLastModifiedYearFacet = new ArrayList<>();
 
                 ForkJoinPool theCommonPool = ForkJoinPool.commonPool();
+
+                LOGGER.info("Found "+theDocs.scoreDocs.length+" documents");
 
                 for (int i = 0; i < theDocs.scoreDocs.length; i++) {
                     ScoreDoc theScoreDoc = theDocs.scoreDocs[i];
@@ -287,12 +305,6 @@ class LuceneIndexHandler {
 
                     if (aIncludeSimilarDocuments) {
 
-                        MoreLikeThis theMoreLikeThis = new MoreLikeThis(theSearcher.getIndexReader());
-                        theMoreLikeThis.setAnalyzer(analyzer);
-                        theMoreLikeThis.setMinTermFreq(1);
-                        theMoreLikeThis.setMinDocFreq(1);
-                        theMoreLikeThis.setFieldNames(new String[]{IndexFields.CONTENT});
-
                         Query theMoreLikeThisQuery = theMoreLikeThis.like(theDocs.scoreDocs[i].doc);
                         TopDocs theMoreLikeThisTopDocs = theSearcher.search(theMoreLikeThisQuery, 5);
                         for (ScoreDoc theMoreLikeThisScoreDoc : theMoreLikeThisTopDocs.scoreDocs) {
@@ -310,7 +322,7 @@ class LuceneIndexHandler {
                     theResultDocuments.add(new QueryResultDocument(theFoundFileName, theHighligherResult, Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()), theSimilarFiles));
                 }
 
-                System.out.println("Dimensions");
+                LOGGER.info("Got Dimensions");
                 for (FacetResult theResult : theFacetCounts.getAllDims(20000)) {
                     String theDimension = theResult.dim;
                     if ("author".equals(theDimension)) {
@@ -332,7 +344,7 @@ class LuceneIndexHandler {
                         }
                     }
 
-                    System.out.println(" "+theDimension);
+                    LOGGER.info(" "+theDimension);
                 }
 
                 if (!theAuthorFacets.isEmpty()) {
@@ -348,6 +360,10 @@ class LuceneIndexHandler {
                 // Wait for all Tasks to complete for the search result highlighter
                 ForkJoinTask.helpQuiesce();
             }
+
+            long theDuration = System.currentTimeMillis() - theStartTime;
+
+            LOGGER.info("Total amount if time : "+theDuration+"ms");
 
             return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs(), aBacklink);
         } catch (Exception e) {

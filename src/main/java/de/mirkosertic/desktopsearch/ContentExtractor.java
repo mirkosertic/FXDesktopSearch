@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ContentExtractor {
+class ContentExtractor {
 
     private final Set<String> supportedExtensions;
     private final Tika tika;

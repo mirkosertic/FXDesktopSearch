@@ -20,7 +20,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.net.BindException;
 
-public class FrontendEmbeddedWebServer {
+class FrontendEmbeddedWebServer {
 
     private static final int PORT_NUMMER = 4711;
 
@@ -28,11 +28,7 @@ public class FrontendEmbeddedWebServer {
 
     private final Server jetty;
 
-    private final Backend backend;
-
     public FrontendEmbeddedWebServer(Stage aStage, Backend aBackend) {
-        backend = aBackend;
-
         jetty = new Server(PORT_NUMMER);
 
         WebAppContext theWebApp = new WebAppContext();
@@ -40,9 +36,9 @@ public class FrontendEmbeddedWebServer {
         theWebApp.setBaseResource(Resource.newClassPathResource("/webapp"));
         theWebApp.setDescriptor("WEB-INF/web.xml");
         theWebApp.setClassLoader(getClass().getClassLoader());
-        theWebApp.addServlet(new ServletHolder(new SearchServlet(backend, "http://127.0.0.1:" + PORT_NUMMER)), SearchServlet.URL + "/*");
+        theWebApp.addServlet(new ServletHolder(new SearchServlet(aBackend, "http://127.0.0.1:" + PORT_NUMMER)), SearchServlet.URL + "/*");
         theWebApp.addServlet(new ServletHolder(new BringToFrontServlet(aStage)), BRINGTOFRONT_URI);
-        theWebApp.addServlet(new ServletHolder(new DocFlareServlet(backend)), "/documentflare.json");
+        theWebApp.addServlet(new ServletHolder(new DocFlareServlet(aBackend)), "/documentflare.json");
 
         jetty.setHandler(theWebApp);
     }
