@@ -103,6 +103,12 @@ class ContentExtractor {
         if ("last-author".equals(aName)) {
             return "author";
         }
+        if ("contentstatus".equals(aName)) {
+            return "content-status";
+        }
+        if ("presentationformat".equals(aName)) {
+            return "presentation-format";
+        }
         if ("print-date".equals(aName)) {
             return "last-printed";
         }
