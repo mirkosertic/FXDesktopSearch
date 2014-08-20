@@ -16,7 +16,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-class DesktopGateway {
+public class DesktopGateway {
 
     public void openFile(String aFile) {
         try {
