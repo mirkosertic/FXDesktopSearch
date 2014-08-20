@@ -43,10 +43,16 @@ public class QueryResult {
     }
 
     public String getEscapedFileName(String aFileName) {
+        if (aFileName == null) {
+            return null;
+        }
         return aFileName.replace("\\","\\\\");
     }
 
     public String getSimpleFileName(String aFileName) {
+        if (aFileName == null) {
+            return null;
+        }
         int p = aFileName.lastIndexOf("\\");
         if (p>0) {
             return aFileName.substring(p+1);

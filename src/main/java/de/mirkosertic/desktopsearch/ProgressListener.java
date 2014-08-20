@@ -12,7 +12,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-public interface ProgressListener {
+interface ProgressListener {
 
     void newFileFound(String aFilename, long aNumNewFiles, long aNumIndexedFiles);
 

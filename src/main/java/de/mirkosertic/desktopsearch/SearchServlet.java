@@ -16,6 +16,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SearchServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(SearchServlet.class);
 
     public static final String URL = "/search";
 
@@ -89,7 +92,7 @@ public class SearchServlet extends HttpServlet {
                         FacetSearchUtils.addToMap(theDecodedValue, theDrilldownDimensions);
                     }
                 } catch (DecoderException e) {
-
+                    LOGGER.error("Error while decoding drilldown params for " + aRequest.getPathInfo(), e);
                 }
             }
             if (basePath.equals(theBackLink)) {

@@ -12,11 +12,15 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
 
 public class DirectoryWatcher {
+
+    private static final Logger LOGGER = Logger.getLogger(DirectoryWatcher.class);
 
     public static final int DEFAULT_WAIT_FOR_ACTION = 5;
 
@@ -69,11 +73,11 @@ public class DirectoryWatcher {
                         Path theParent = (Path) theKey.watchable();
                         theKey.pollEvents().stream().forEach(theEvent -> {
                             if (theEvent.kind() == StandardWatchEventKinds.OVERFLOW) {
-                                System.out.println("Overflow for "+theEvent.context()+" count = "+theEvent.count());
+                                LOGGER.warn("Overflow for " + theEvent.context() + " count = " + theEvent.count());
                                 // Overflow events are not handled
                             } else {
                                 Path thePath = theParent.resolve((Path) theEvent.context());
-                                System.out.println(theEvent.kind() + " for " + theEvent.context() + " count = " + theEvent.count());
+                                LOGGER.debug(theEvent.kind() + " for " + theEvent.context() + " count = " + theEvent.count());
 
                                 publishActionFor(thePath, theEvent.kind());
                             }
@@ -82,8 +86,7 @@ public class DirectoryWatcher {
 
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        System.out.println("Has been interrupted");
-                        // This will stop the thread
+                        LOGGER.debug("Has been interrupted");
                     }
                 }
             }
@@ -132,9 +135,7 @@ public class DirectoryWatcher {
                     }
                 }
             });
-            for (Path thePath : theKeysToRemove) {
-                fileTimers.remove(thePath);
-            }
+            theKeysToRemove.forEach(fileTimers::remove);
         }
     }
 
@@ -150,7 +151,7 @@ public class DirectoryWatcher {
                 try {
                     Files.walk(filesystemLocation.getDirectory().toPath()).forEach(path -> {
                         if (Files.isDirectory(path)) {
-                            System.out.println("Registering watches for " + path);
+                            LOGGER.info("Registering watches for " + path);
                             try {
                                 registerWatcher(path);
                             } catch (IOException e) {
@@ -186,9 +187,7 @@ public class DirectoryWatcher {
 
         Files.walk(thePath).forEach(aPath -> {
             if (!Files.isDirectory(aPath)) {
-                executorPool.execute(() -> {
-                    directoryListener.fileCreatedOrModified(filesystemLocation, aPath);
-                });
+                executorPool.execute(() -> directoryListener.fileCreatedOrModified(filesystemLocation, aPath));
             }
         });
     }

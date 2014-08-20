@@ -16,9 +16,6 @@
 package de.mirkosertic.desktopsearch;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -154,9 +151,7 @@ public class DesktopSearchController implements Initializable {
         }
 
         public void crawlingFinished() {
-            Platform.runLater(() -> {
-                statusText.setText("");
-            });
+            Platform.runLater(() -> statusText.setText(""));
         }
     }
 
@@ -175,13 +170,10 @@ public class DesktopSearchController implements Initializable {
         backend.setProgressListener(new FXProgressListener());
         watcherThread = new ProgressWatcherThread();
         webView.getEngine().setJavaScriptEnabled(true);
-        webView.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
-
-            public void changed(ObservableValue<? extends State> ov, State t, State t1) {
-                if (t1 == Worker.State.SUCCEEDED) {
-                    JSObject window = (JSObject) webView.getEngine().executeScript("window");
-                    window.setMember("desktop", new DesktopGateway());
-                }
+        webView.getEngine().getLoadWorker().stateProperty().addListener((ov, t, t1) -> {
+            if (t1 == State.SUCCEEDED) {
+                JSObject window1 = (JSObject) webView.getEngine().executeScript("window");
+                window1.setMember("desktop", new DesktopGateway());
             }
         });
         webView.setContextMenuEnabled(false);
@@ -199,32 +191,22 @@ public class DesktopSearchController implements Initializable {
         assert searchDocumentItem != null;
         assert showSunburstItem != null;
 
-        menuItemConfigure.setOnAction(actionEvent -> {
-            configure();
-        });
-        menuItemRecrawl.setOnAction(actionEvent -> {
-            recrawl();
-        });
-        menuItemClose.setOnAction(actionEvent -> {
-            close();
-        });
+        menuItemConfigure.setOnAction(actionEvent -> configure());
+        menuItemRecrawl.setOnAction(actionEvent -> recrawl());
+        menuItemClose.setOnAction(actionEvent -> close());
 
-        searchDocumentItem.setOnAction(actionEvent -> {
-            webView.getEngine().load(searchURL);
-        });
-        showSunburstItem.setOnAction(actionEvent -> {
-            webView.getEngine().load(sunburstURL);
-        });
+        searchDocumentItem.setOnAction(actionEvent -> webView.getEngine().load(searchURL));
+        showSunburstItem.setOnAction(actionEvent -> webView.getEngine().load(sunburstURL));
 
         statusBar.setManaged(false);
         statusBar.setVisible(false);
     }
 
-    public void close() {
+    void close() {
         application.shutdown();
     }
 
-    public void recrawl() {
+    void recrawl() {
         statusBar.setVisible(true);
         statusBar.setManaged(true);
         progessIndicator.setProgress(0);
@@ -237,7 +219,7 @@ public class DesktopSearchController implements Initializable {
         }
     }
 
-    public void configure() {
+    void configure() {
         try {
             Stage stage = new Stage();
             stage.setResizable(false);

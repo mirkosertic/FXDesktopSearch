@@ -12,7 +12,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-public class ProgressMonitor {
+class ProgressMonitor {
 
     private long newFilesFound;
 

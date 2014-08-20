@@ -14,7 +14,7 @@ package de.mirkosertic.desktopsearch;
 
 import java.io.File;
 
-public class FilesystemLocation {
+class FilesystemLocation {
 
     private final String id;
     private final File directory;

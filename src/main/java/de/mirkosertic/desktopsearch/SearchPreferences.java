@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-public class SearchPreferences {
+class SearchPreferences {
 
-    public static final String EXISTS = "exists";
-    public static final String INCLUDE_SIMILAR = "includeSimilar";
-    public static final String NUMBER_SEARCH_RESULT = "numberSearchResult";
-    public static final String INDEX_LOCATION = "indexLocation";
-    public static final String LOCATION_NUM = "locationNum";
-    public static final String LOC_ID = "locID";
-    public static final String LOC_FILE = "locFile";
+    private static final String EXISTS = "exists";
+    private static final String INCLUDE_SIMILAR = "includeSimilar";
+    private static final String NUMBER_SEARCH_RESULT = "numberSearchResult";
+    private static final String INDEX_LOCATION = "indexLocation";
+    private static final String LOCATION_NUM = "locationNum";
+    private static final String LOC_ID = "locID";
+    private static final String LOC_FILE = "locFile";
     private final Preferences preferences;
 
     public SearchPreferences() {

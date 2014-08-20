@@ -14,7 +14,7 @@ package de.mirkosertic.desktopsearch;
 
 import java.util.concurrent.ForkJoinPool;
 
-public class ExecutorPool {
+class ExecutorPool {
 
     private final ForkJoinPool forkJoinPool;
 
