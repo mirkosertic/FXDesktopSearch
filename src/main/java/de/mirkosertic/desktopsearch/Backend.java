@@ -28,11 +28,13 @@ class Backend {
     private final Map<FilesystemLocation, DirectoryWatcher> locations;
     private final DirectoryListener directoryListener;
     private final ExecutorPool executorPool;
+    private final Notifier notifier;
 
     private boolean includeSimilarDocuments;
     private int numberOfSearchResults;
 
-    public Backend() {
+    public Backend(Notifier aNotifier) {
+        notifier = aNotifier;
         locations = new HashMap<>();
         executorPool = new ExecutorPool();
         contentExtractor = new ContentExtractor();
@@ -61,8 +63,9 @@ class Backend {
             public void fileDeleted(FilesystemLocation aFileSystemLocation, Path aFile) {
                 try {
                     luceneIndexHandler.removeFromIndex(aFile.toString());
+                    aNotifier.showInformation("File deleted from search index : "+aFile);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    aNotifier.showError("Error removing file from index : " + aFile, e);
                 }
             }
 
@@ -76,6 +79,9 @@ class Backend {
                         BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
                         UpdateCheckResult theUpdateCheckResult = luceneIndexHandler.checkIfModified(theFileName, theAttributes.size());
                         if (theUpdateCheckResult == UpdateCheckResult.UPDATED) {
+
+                            notifier.showInformation("File modified and re-indexed : "+aFile);
+
                             Content theContent = contentExtractor.extractContentFrom(aFile, theAttributes);
                             if (theContent != null) {
                                 luceneIndexHandler.addToIndex(aFileSystemLocation.getId(), theContent);
@@ -83,9 +89,14 @@ class Backend {
                             }
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        aNotifier.showError("Error updating file in index : " + aFile, e);
                     }
                 }
+            }
+
+            @Override
+            public void newWatchablePathDetected(Path aDirectory) {
+                aNotifier.showInformation("New directory detected : "+aDirectory);
             }
         };
     }

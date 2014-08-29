@@ -12,17 +12,36 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import javafx.application.Platform;
+import org.apache.log4j.Logger;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 public class DesktopGateway {
 
-    public void openFile(String aFile) {
+    private static final Logger LOGGER  = Logger.getLogger(DesktopGateway.class);
+
+    private void open(String aFile) {
         try {
             Desktop.getDesktop().open(new File(aFile));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error opening file " + aFile, e);
+        }
+    }
+
+    public void openFile(String aFile) {
+        if (Desktop.isDesktopSupported()) {
+            if (Platform.isFxApplicationThread()) {
+                new Thread(() -> {
+                    open(aFile);
+                }).start();
+            } else {
+                open(aFile);
+            }
+        } else {
+            LOGGER.error("No Desktop is supported on this machine");
         }
     }
 }

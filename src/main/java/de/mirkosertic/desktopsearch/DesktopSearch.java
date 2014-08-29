@@ -42,12 +42,14 @@ public class DesktopSearch extends Application {
     @Override
     public void start(Stage aStage) throws Exception {
 
+        Notifier theNotifier = new Notifier();
+
         stage = aStage;
 
         searchPreferences = new SearchPreferences();
 
         // Backend booten
-        backend = new Backend();
+        backend = new Backend(theNotifier);
 
         try {
             searchPreferences.initialize(backend);

@@ -14,7 +14,7 @@
             <div class="titlebar">
                 <input class="submitbutton" type="submit" value="">
                 <div class="querydiv">
-                    <input class="query" name="querystring" type="text" value="${querystring}"/>
+                    <input class="query" name="querystring" type="text" value="${querystring?html}"/>
                 </div>
             </div>
         </form>
