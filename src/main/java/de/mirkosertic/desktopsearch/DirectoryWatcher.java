@@ -84,7 +84,7 @@ public class DirectoryWatcher {
                         });
                         theKey.reset();
 
-                        Thread.sleep(1000);
+                        Thread.sleep(10000);
                     } catch (InterruptedException e) {
                         LOGGER.debug("Has been interrupted");
                     }
@@ -140,6 +140,7 @@ public class DirectoryWatcher {
     }
 
     private void registerWatcher(Path aDirectory) throws IOException {
+        directoryListener.newWatchablePathDetected(aDirectory);
         aDirectory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
     }
 

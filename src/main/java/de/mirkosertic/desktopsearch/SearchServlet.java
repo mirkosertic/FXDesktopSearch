@@ -14,6 +14,7 @@ package de.mirkosertic.desktopsearch;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -22,6 +23,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.beans.Encoder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,17 +83,18 @@ public class SearchServlet extends HttpServlet {
             String[] thePaths = StringUtils.split(theWorkingPathInfo,"/");
             for (int i=0;i<thePaths.length;i++) {
                 try {
-                    theBasePath = theBasePath + "/" + thePaths[i];
-                    if (i<thePaths.length - 1) {
-                        theBackLink = theBackLink + "/" + thePaths[i];
-                    }
                     String theDecodedValue = theURLCodec.decode(thePaths[i]);
+                    String theEncodedValue = theURLCodec.encode(theDecodedValue);
+                    theBasePath = theBasePath + "/" + theEncodedValue;
+                    if (i<thePaths.length - 1) {
+                        theBackLink = theBackLink + "/" + theEncodedValue;
+                    }
                     if (i == 0) {
                         theQueryString = theDecodedValue;
                     } else {
                         FacetSearchUtils.addToMap(theDecodedValue, theDrilldownDimensions);
                     }
-                } catch (DecoderException e) {
+                } catch (EncoderException|DecoderException e) {
                     LOGGER.error("Error while decoding drilldown params for " + aRequest.getPathInfo(), e);
                 }
             }
