@@ -13,17 +13,14 @@
 package de.mirkosertic.desktopsearch;
 
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
-import org.apache.lucene.facet.DrillDownQuery;
-import org.apache.lucene.facet.FacetResult;
-import org.apache.lucene.facet.FacetsCollector;
-import org.apache.lucene.facet.FacetsConfig;
-import org.apache.lucene.facet.LabelAndValue;
+import org.apache.lucene.facet.*;
 import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
@@ -120,6 +117,7 @@ class LuceneIndexHandler {
         theDocument.add(new StringField(IndexFields.FILENAME, aContent.getFileName(), Field.Store.YES));
 
         theDocument.add(new TextField(IndexFields.CONTENT, aContent.getFileContent(), Field.Store.YES));
+        theDocument.add(new TextField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LOCATIONID, aLocationId, Field.Store.YES));
         theDocument.add(new LongField(IndexFields.FILESIZE, aContent.getFileSize(), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LASTMODIFIED, "" + aContent.getLastModified(), Field.Store.YES));
@@ -240,15 +238,6 @@ class LuceneIndexHandler {
 
         DateFormat theDateFormat = new SimpleDateFormat("dd.MMMM.yyyy", Locale.ENGLISH);
 
-        MoreLikeThis theMoreLikeThis = null;
-        if (aIncludeSimilarDocuments) {
-            theMoreLikeThis = new MoreLikeThis(theSearcher.getIndexReader());
-            theMoreLikeThis.setAnalyzer(analyzer);
-            theMoreLikeThis.setMinTermFreq(1);
-            theMoreLikeThis.setMinDocFreq(1);
-            theMoreLikeThis.setFieldNames(new String[]{IndexFields.CONTENT});
-        }
-
         try {
 
             List<FacetDimension> theDimensions = new ArrayList<>();
@@ -274,52 +263,71 @@ class LuceneIndexHandler {
                 List<Facet> theAuthorFacets = new ArrayList<>();
                 List<Facet> theFileTypesFacets = new ArrayList<>();
                 List<Facet> theLastModifiedYearFacet = new ArrayList<>();
+                List<Facet> theLanguageFacet = new ArrayList<>();
 
                 ForkJoinPool theCommonPool = ForkJoinPool.commonPool();
 
                 LOGGER.info("Found "+theDocs.scoreDocs.length+" documents");
 
+                // We need this cache to detect duplicate documents while searching for similarities
+                Set<Integer> theUniqueDocumentsFound = new HashSet<>();
+
+                Map<String, QueryResultDocument> theDocumentsByHash = new HashMap<>();
+
                 for (int i = 0; i < theDocs.scoreDocs.length; i++) {
-                    ScoreDoc theScoreDoc = theDocs.scoreDocs[i];
-                    Document theDocument = theSearcher.doc(theScoreDoc.doc);
+                    int theDocumentID = theDocs.scoreDocs[i].doc;
+                    theUniqueDocumentsFound.add(theDocumentID);
+                    Document theDocument = theSearcher.doc(theDocumentID);
 
                     String theFoundFileName = theDocument.getField(IndexFields.FILENAME).stringValue();
-                    Date theLastModified = new Date(Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()));
+                    String theHash = theDocument.getField(IndexFields.CONTENTMD5).stringValue();
+                    QueryResultDocument theExistingDocument = theDocumentsByHash.get(theHash);
+                    if (theExistingDocument != null) {
+                        theExistingDocument.addFileName(theFoundFileName);
+                    } else {
+                        Date theLastModified = new Date(Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()));
+                        String theOriginalContent = theDocument.getField(IndexFields.CONTENT).stringValue();
 
-                    String theOriginalContent = theDocument.getField(IndexFields.CONTENT).stringValue();
-
-                    ForkJoinTask<String> theHighligherResult = theCommonPool.submit(() -> {
-                        StringBuilder theResult = new StringBuilder(theDateFormat.format(theLastModified));
-                        theResult.append("&nbsp;-&nbsp;");
-                        Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theQuery));
-                        for (String theFragment : theHighlighter.getBestFragments(analyzer, IndexFields.CONTENT, theOriginalContent, NUMBER_OF_FRAGMENTS)) {
-                            if (theResult.length() > 0) {
-                                theResult = theResult.append("...");
+                        ForkJoinTask<String> theHighligherResult = theCommonPool.submit(() -> {
+                            StringBuilder theResult = new StringBuilder(theDateFormat.format(theLastModified));
+                            theResult.append("&nbsp;-&nbsp;");
+                            Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theQuery));
+                            for (String theFragment : theHighlighter.getBestFragments(analyzer, IndexFields.CONTENT, theOriginalContent, NUMBER_OF_FRAGMENTS)) {
+                                if (theResult.length() > 0) {
+                                    theResult = theResult.append("...");
+                                }
+                                theResult = theResult.append(theFragment);
                             }
-                            theResult = theResult.append(theFragment);
-                        }
-                        return theResult.toString();
-                    });
+                            return theResult.toString();
+                        });
 
-                    List<String> theSimilarFiles = new ArrayList<>();
+                        // Cache the existing documents
+                        theExistingDocument = new QueryResultDocument(theDocumentID, theFoundFileName, theHighligherResult, Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()));
+                        theDocumentsByHash.put(theHash, theExistingDocument);
+                        theResultDocuments.add(theExistingDocument);
+                    }
+                }
 
-                    if (aIncludeSimilarDocuments) {
+                if (aIncludeSimilarDocuments) {
 
-                        Query theMoreLikeThisQuery = theMoreLikeThis.like(theDocs.scoreDocs[i].doc);
+                    MoreLikeThis theMoreLikeThis = new MoreLikeThis(theSearcher.getIndexReader());
+                    theMoreLikeThis.setAnalyzer(analyzer);
+                    theMoreLikeThis.setMinTermFreq(1);
+                    theMoreLikeThis.setMinDocFreq(1);
+                    theMoreLikeThis.setFieldNames(new String[]{IndexFields.CONTENT});
+
+                    for (QueryResultDocument theDocument : theResultDocuments) {
+                        Query theMoreLikeThisQuery = theMoreLikeThis.like(theDocument.getDocumentID());
                         TopDocs theMoreLikeThisTopDocs = theSearcher.search(theMoreLikeThisQuery, 5);
                         for (ScoreDoc theMoreLikeThisScoreDoc : theMoreLikeThisTopDocs.scoreDocs) {
-                            Document theMoreLikeThisDocument = theSearcher.doc(theMoreLikeThisScoreDoc.doc);
-
-                            String theFilename = theMoreLikeThisDocument.getField(IndexFields.FILENAME).stringValue();
-                            if (!theFoundFileName.equals(theFilename)) {
-                                if (!theSimilarFiles.contains(theFilename)) {
-                                    theSimilarFiles.add(theFilename);
-                                }
+                            int theSimilarDocument = theMoreLikeThisScoreDoc.doc;
+                            if (theUniqueDocumentsFound.add(theSimilarDocument)) {
+                                Document theMoreLikeThisDocument = theSearcher.doc(theSimilarDocument);
+                                String theFilename = theMoreLikeThisDocument.getField(IndexFields.FILENAME).stringValue();
+                                theDocument.addSimilarFile(theFilename);
                             }
                         }
                     }
-
-                    theResultDocuments.add(new QueryResultDocument(theFoundFileName, theHighligherResult, Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()), theSimilarFiles));
                 }
 
                 LOGGER.info("Got Dimensions");
@@ -343,6 +351,13 @@ class LuceneIndexHandler {
                                     FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
                         }
                     }
+                    if ("language".equals(theDimension)) {
+                        for (LabelAndValue theLabelAndValue : theResult.labelValues) {
+                            Locale theLocale = new Locale(theLabelAndValue.label);
+                            theLanguageFacet.add(new Facet(theLocale.getDisplayLanguage(Locale.ENGLISH), theLabelAndValue.value.intValue(), aBasePath+"/"+encode(
+                                    FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
+                        }
+                    }
 
                     LOGGER.info(" "+theDimension);
                 }
@@ -355,6 +370,9 @@ class LuceneIndexHandler {
                 }
                 if (!theFileTypesFacets.isEmpty()) {
                     theDimensions.add(new FacetDimension("File types", theFileTypesFacets));
+                }
+                if (!theLanguageFacet.isEmpty()) {
+                    theDimensions.add(new FacetDimension("Language", theLanguageFacet));
                 }
 
                 // Wait for all Tasks to complete for the search result highlighter

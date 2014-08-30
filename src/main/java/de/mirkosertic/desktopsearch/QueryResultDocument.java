@@ -12,13 +12,14 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 
 public class QueryResultDocument {
 
-    private final String fileName;
+    private final List<String> fileNames;
 
     private final Future<String> highlightedSearchResult;
 
@@ -26,15 +27,25 @@ public class QueryResultDocument {
 
     private final List<String> similarFiles;
 
-    public QueryResultDocument(String fileName, Future<String> aHighlighterResult, long lastModified, List<String> similarFiles) {
-        this.fileName = fileName;
+    private final int documentID;
+
+    public QueryResultDocument(int aDocumentID, String aFileName, Future<String> aHighlighterResult, long aLastModified) {
+        fileNames = new ArrayList<>();
+        fileNames.add(aFileName);
         highlightedSearchResult = aHighlighterResult;
-        this.lastModified = lastModified;
-        this.similarFiles = similarFiles;
+        lastModified = aLastModified;
+        documentID = aDocumentID;
+        similarFiles = new ArrayList<>();
     }
 
-    public String getFileName() {
-        return fileName;
+    public List<String> getFileNames() {
+        return fileNames;
+    }
+
+    public void addFileName(String aFileName) {
+        if (!fileNames.contains(aFileName)) {
+            fileNames.add(aFileName);
+        }
     }
 
     public String getHighlightedSearchResult() {
@@ -51,5 +62,15 @@ public class QueryResultDocument {
 
     public List<String> getSimilarFiles() {
         return Collections.unmodifiableList(similarFiles);
+    }
+
+    public int getDocumentID() {
+        return documentID;
+    }
+
+    public void addSimilarFile(String aFileName) {
+        if (!similarFiles.contains(aFileName)) {
+            similarFiles.add(aFileName);
+        }
     }
 }

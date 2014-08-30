@@ -12,7 +12,9 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
+import org.apache.tika.language.LanguageIdentifier;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.utils.DateUtils;
 
@@ -29,6 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class ContentExtractor {
+
+    private static final Logger LOGGER = Logger.getLogger(ContentExtractor.class);
 
     private final Set<String> supportedExtensions;
     private final Tika tika;
@@ -186,9 +190,12 @@ class ContentExtractor {
                 theContent.addMetaData(IndexFields.EXTENSION, theExtension.toLowerCase());
             }
 
+            LanguageIdentifier theLanguageIdentifier = new LanguageIdentifier(theStringData);
+            theContent.addMetaData(IndexFields.LANGUAGE, theLanguageIdentifier.getLanguage());
+
             return theContent;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error extracting content of " + aFile, e);
         }
 
         return null;

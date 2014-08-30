@@ -25,7 +25,9 @@ public class DesktopGateway {
 
     private void open(String aFile) {
         try {
+            LOGGER.info("Opening file " + aFile);
             Desktop.getDesktop().open(new File(aFile));
+            LOGGER.info("Finished");
         } catch (IOException e) {
             LOGGER.error("Error opening file " + aFile, e);
         }
@@ -34,10 +36,12 @@ public class DesktopGateway {
     public void openFile(String aFile) {
         if (Desktop.isDesktopSupported()) {
             if (Platform.isFxApplicationThread()) {
+                LOGGER.info("In FXApplicationThread");
                 new Thread(() -> {
                     open(aFile);
                 }).start();
             } else {
+                LOGGER.info("Not in FXApplicationThread");
                 open(aFile);
             }
         } else {

@@ -14,11 +14,13 @@ package de.mirkosertic.desktopsearch;
 
 interface IndexFields {
 
-    String FILENAME = "DesktopSearch.filename";
+    String FILENAME = "filename";
     String EXTENSION = "extension";
-    String CONTENT = "DesktopSearch.content";
-    String FILESIZE = "DesktopSearch.filesize";
-    String LASTMODIFIED = "DesktopSearch.lastmodified";
-    String LOCATIONID = "DesktopSearch.locationId";
+    String LANGUAGE = "language";
+    String CONTENT = "content";
+    String CONTENTMD5 = "contentmd5";
+    String FILESIZE = "filesize";
+    String LASTMODIFIED = "lastmodified";
+    String LOCATIONID = "locationId";
     String META_PREFIX = "meta.";
 }
