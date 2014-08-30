@@ -43,9 +43,14 @@
 
                 <#list queryResult.documents as document>
 
-                    <b><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(document.fileName)}')">${queryResult.getSimpleFileName(document.fileName)}</a></b><br/>
-
-                    <a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(document.fileName)}')">${document.fileName}</a>
+                    <#list document.fileNames as filename>
+                        <#if filename_index == 0>
+                            <b><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${queryResult.getSimpleFileName(filename)}</a></b><br/>
+                            <a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
+                        <#else>
+                            <br/><a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
+                        </#if>
+                    </#list>
 
                     <div class="searchResultAreaContentHighlighted">${document.highlightedSearchResult}</div>
 
