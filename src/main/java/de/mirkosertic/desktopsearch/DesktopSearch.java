@@ -79,7 +79,7 @@ public class DesktopSearch extends Application {
         AnchorPane theMainScene = theLoader.load();
 
         final DesktopSearchController theController = theLoader.getController();
-        theController.configure(this, backend, FrontendEmbeddedWebServer.getSearchUrl(), FrontendEmbeddedWebServer.getSunburstUrl(), stage.getOwner());
+        theController.configure(this, backend, FrontendEmbeddedWebServer.getSearchUrl(), stage.getOwner());
 
         Undecorator theUndecorator = new Undecorator(stage, theMainScene);
         theUndecorator.getStylesheets().add("/skin/undecorator.css");

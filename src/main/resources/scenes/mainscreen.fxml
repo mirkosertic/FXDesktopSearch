@@ -17,7 +17,6 @@
                 <MenuItem mnemonicParsing="false" text="Perform complete crawl" fx:id="menuItemRecrawl" />
                 <SeparatorMenuItem mnemonicParsing="false" />
                 <MenuItem mnemonicParsing="false" text="Search document" fx:id="searchDocumentItem" />
-                <MenuItem mnemonicParsing="false" text="Show document sunburst" fx:id="showSunburstItem" />
                 <SeparatorMenuItem mnemonicParsing="false" />
                 <MenuItem mnemonicParsing="false" text="Close" fx:id="menuItemClose" />
               </items>

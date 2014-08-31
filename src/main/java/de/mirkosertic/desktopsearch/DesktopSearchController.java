@@ -35,6 +35,7 @@ import netscape.javascript.JSObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -63,9 +64,6 @@ public class DesktopSearchController implements Initializable {
 
     @FXML
     MenuItem searchDocumentItem;
-
-    @FXML
-    MenuItem showSunburstItem;
 
     private DesktopSearch application;
 
@@ -159,14 +157,11 @@ public class DesktopSearchController implements Initializable {
 
     private String searchURL;
 
-    private String sunburstURL;
-
-    public void configure(DesktopSearch aApplication, Backend aBackend, String aSearchURL, String aSunburstURL, Window aWindow) {
+    public void configure(DesktopSearch aApplication, Backend aBackend, String aSearchURL, Window aWindow) {
         window = aWindow;
         application = aApplication;
         backend = aBackend;
         searchURL = aSearchURL;
-        sunburstURL = aSunburstURL;
         backend.setProgressListener(new FXProgressListener());
         watcherThread = new ProgressWatcherThread();
         webView.getEngine().setJavaScriptEnabled(true);
@@ -182,21 +177,19 @@ public class DesktopSearchController implements Initializable {
     }
 
     public void initialize(URL aUrl, ResourceBundle aResourceBundle) {
-        assert menuItemConfigure != null;
-        assert menuItemRecrawl != null;
-        assert menuItemClose != null;
-        assert webView != null;
-        assert statusBar != null;
-        assert statusText != null;
-        assert searchDocumentItem != null;
-        assert showSunburstItem != null;
+        Objects.requireNonNull(menuItemConfigure);
+        Objects.requireNonNull(menuItemRecrawl);
+        Objects.requireNonNull(menuItemClose);
+        Objects.requireNonNull(webView);
+        Objects.requireNonNull(statusBar);
+        Objects.requireNonNull(statusText);
+        Objects.requireNonNull(searchDocumentItem);
 
         menuItemConfigure.setOnAction(actionEvent -> configure());
         menuItemRecrawl.setOnAction(actionEvent -> recrawl());
         menuItemClose.setOnAction(actionEvent -> close());
 
         searchDocumentItem.setOnAction(actionEvent -> webView.getEngine().load(searchURL));
-        showSunburstItem.setOnAction(actionEvent -> webView.getEngine().load(sunburstURL));
 
         statusBar.setManaged(false);
         statusBar.setVisible(false);
