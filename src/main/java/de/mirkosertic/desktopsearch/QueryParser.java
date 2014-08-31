@@ -17,52 +17,73 @@ package de.mirkosertic.desktopsearch;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.FuzzyQuery;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.WildcardQuery;
+import org.apache.lucene.search.*;
+import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
+import org.apache.lucene.search.spans.SpanNearQuery;
+import org.apache.lucene.search.spans.SpanQuery;
+import org.apache.lucene.search.spans.SpanTermQuery;
 
-import java.util.StringTokenizer;
+import java.util.ArrayList;
+import java.util.List;
 
 class QueryParser {
 
+    private boolean isWildCard(String aTerm) {
+        return aTerm.contains("*") || aTerm.contains("?");
+    }
+
+    private boolean isFuzzy(String aTerm) {
+        return aTerm.startsWith("~") && aTerm.length() > 1;
+    }
+
+    private boolean isValid(String aTerm) {
+        return !StringUtils.isEmpty(aTerm) && !"*".equals(aTerm) && !"?".equals(aTerm);
+    }
+
     private void addSubQuery(BooleanQuery aQuery, String aTerm, boolean aNegated, String aSearchField) {
         if (!StringUtils.isEmpty(aTerm)) {
-            if (!aTerm.contains("*")) {
-                if (aTerm.contains(" ")) {
-                    PhraseQuery thePhraseQuery = new PhraseQuery();
-                    for (StringTokenizer theTokenizer = new StringTokenizer(aTerm, " "); theTokenizer.hasMoreTokens();) {
-                        String theToken = theTokenizer.nextToken();
-                        thePhraseQuery.add(new Term(aSearchField, theToken));
+            if (aTerm.contains(" ")) {
+                // Seems to be a phrase query
+                List<SpanQuery> theQueries = new ArrayList<>();
+                for (String thePhraseTerm : StringUtils.split(aTerm, " ")) {
+                    thePhraseTerm = StringUtils.strip(thePhraseTerm);
+                    if (isValid(thePhraseTerm)) {
+                        SpanQuery theQuery;
+                        if (isWildCard(thePhraseTerm)) {
+                            theQuery = new SpanMultiTermQueryWrapper<>(new WildcardQuery(new Term(aSearchField, thePhraseTerm)));
+                        } else if (isFuzzy(thePhraseTerm)) {
+                            theQuery = new SpanMultiTermQueryWrapper<>(new FuzzyQuery(new Term(aSearchField, thePhraseTerm.substring(1))));
+                        } else {
+                            theQuery = new SpanTermQuery(new Term(aSearchField, thePhraseTerm));
+                        }
+                        theQueries.add(theQuery);
                     }
-                    thePhraseQuery.setSlop(1);
+                }
+                if (!theQueries.isEmpty()) {
+                    SpanQuery theSpanQuery = new SpanNearQuery(theQueries.toArray(new SpanQuery[theQueries.size()]), 1, true);
                     if (aNegated) {
-                        aQuery.add(thePhraseQuery, BooleanClause.Occur.MUST_NOT);
+                        aQuery.add(theSpanQuery, BooleanClause.Occur.MUST_NOT);
                     } else {
-                        aQuery.add(thePhraseQuery, BooleanClause.Occur.MUST);
+                        aQuery.add(theSpanQuery, BooleanClause.Occur.MUST);
                     }
-                } else {
+                }
+            } else {
+                if (isValid(aTerm)) {
+                    // Single term
                     Query theQuery;
-                    if (!aTerm.endsWith("~")) {
-                        theQuery = new TermQuery(new Term(aSearchField, aTerm));
+                    if (isWildCard(aTerm)) {
+                        theQuery = new WildcardQuery(new Term(aSearchField, aTerm));
+                    } else if (isFuzzy(aTerm)) {
+                        theQuery = new FuzzyQuery(new Term(aSearchField, aTerm.substring(1)));
                     } else {
-                        theQuery = new FuzzyQuery(new Term(aSearchField, aTerm.substring(0, aTerm.length() - 1)));
+                        theQuery = new TermQuery(new Term(aSearchField, aTerm));
                     }
+
                     if (aNegated) {
                         aQuery.add(theQuery, BooleanClause.Occur.MUST_NOT);
                     } else {
                         aQuery.add(theQuery, BooleanClause.Occur.MUST);
                     }
-                }
-            } else {
-                WildcardQuery theWildcardQuery = new WildcardQuery(new Term(aSearchField, aTerm));
-                if (aNegated) {
-                    aQuery.add(theWildcardQuery, BooleanClause.Occur.MUST_NOT);
-                } else {
-                    aQuery.add(theWildcardQuery, BooleanClause.Occur.MUST);
                 }
             }
         }

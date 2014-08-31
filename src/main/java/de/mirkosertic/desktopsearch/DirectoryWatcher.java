@@ -188,7 +188,7 @@ public class DirectoryWatcher {
 
         Files.walk(thePath).forEach(aPath -> {
             if (!Files.isDirectory(aPath)) {
-                executorPool.execute(() -> directoryListener.fileCreatedOrModified(filesystemLocation, aPath));
+                executorPool.execute(() -> directoryListener.fileFoundByCrawler(filesystemLocation, aPath));
             }
         });
     }
