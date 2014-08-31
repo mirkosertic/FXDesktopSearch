@@ -70,7 +70,16 @@ class Backend {
             }
 
             @Override
+            public void fileFoundByCrawler(FilesystemLocation aFileSystemLocation, Path aFile) {
+                fileCreatedOrModified(aFileSystemLocation, aFile, false);
+            }
+
+            @Override
             public void fileCreatedOrModified(FilesystemLocation aFileSystemLocation, Path aFile) {
+                fileCreatedOrModified(aFileSystemLocation, aFile, true);
+            }
+
+            private void fileCreatedOrModified(FilesystemLocation aFileSystemLocation, Path aFile, boolean aShowInformation) {
                 String theFileName = aFile.toString();
                 if (contentExtractor.supportsFile(theFileName)) {
                     try {
@@ -80,7 +89,9 @@ class Backend {
                         UpdateCheckResult theUpdateCheckResult = luceneIndexHandler.checkIfModified(theFileName, theAttributes.size());
                         if (theUpdateCheckResult == UpdateCheckResult.UPDATED) {
 
-                            notifier.showInformation("File modified and re-indexed : "+aFile);
+                            if (aShowInformation) {
+                                notifier.showInformation("File modified and re-indexed : " + aFile);
+                            }
 
                             Content theContent = contentExtractor.extractContentFrom(aFile, theAttributes);
                             if (theContent != null) {

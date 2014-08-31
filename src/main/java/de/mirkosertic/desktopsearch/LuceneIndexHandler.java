@@ -250,6 +250,14 @@ class LuceneIndexHandler {
 
                 Query theQuery = theParser.parse(aQueryString, IndexFields.CONTENT);
 
+                LOGGER.info(" query is " + theQuery);
+
+                theQuery = theQuery.rewrite(theSearcher.getIndexReader());
+
+                LOGGER.info(" rewritten query is " + theQuery);
+
+                final Query theFinalQuery = theQuery;
+
                 DrillDownQuery theDrilldownQuery = new DrillDownQuery(facetsConfig, theQuery);
                 aDrilldownFields.entrySet().stream().forEach(aEntry -> {
                     LOGGER.info(" with Drilldown "+aEntry.getKey()+" for "+aEntry.getValue());
@@ -292,7 +300,7 @@ class LuceneIndexHandler {
                         ForkJoinTask<String> theHighligherResult = theCommonPool.submit(() -> {
                             StringBuilder theResult = new StringBuilder(theDateFormat.format(theLastModified));
                             theResult.append("&nbsp;-&nbsp;");
-                            Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theQuery));
+                            Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theFinalQuery));
                             for (String theFragment : theHighlighter.getBestFragments(analyzer, IndexFields.CONTENT, theOriginalContent, NUMBER_OF_FRAGMENTS)) {
                                 if (theResult.length() > 0) {
                                     theResult = theResult.append("...");
@@ -382,7 +390,7 @@ class LuceneIndexHandler {
 
             long theDuration = System.currentTimeMillis() - theStartTime;
 
-            LOGGER.info("Total amount if time : "+theDuration+"ms");
+            LOGGER.info("Total amount of time : "+theDuration+"ms");
 
             return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs(), aBacklink);
         } catch (Exception e) {
