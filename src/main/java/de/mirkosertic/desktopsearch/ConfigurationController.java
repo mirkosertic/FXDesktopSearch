@@ -21,10 +21,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ConfigurationController implements Initializable {
 
@@ -63,15 +60,15 @@ public class ConfigurationController implements Initializable {
     private final Set<FilesystemLocation> addedLocations = new HashSet<>();
 
     public void initialize(URL aUrl, ResourceBundle aResourceBundle) {
-        assert showSimilarResults != null;
-        assert numberDocuments != null;
-        assert indexedDirectories != null;
-        assert buttonAdd != null;
-        assert buttonRemove != null;
-        assert indexLocation != null;
-        assert buttonSetIndexLocation != null;
-        assert buttonCancel != null;
-        assert buttonOk != null;
+        Objects.requireNonNull(showSimilarResults);
+        Objects.requireNonNull(numberDocuments);
+        Objects.requireNonNull(indexedDirectories);
+        Objects.requireNonNull(buttonAdd);
+        Objects.requireNonNull(buttonRemove);
+        Objects.requireNonNull(indexLocation);
+        Objects.requireNonNull(buttonSetIndexLocation);
+        Objects.requireNonNull(buttonCancel);
+        Objects.requireNonNull(buttonOk);
 
         buttonRemove.setOnAction(actionEvent -> removeSelectedLocation());
         buttonAdd.setOnAction(actionEvent -> addNewLocation());

@@ -1,8 +1,5 @@
 package de.mirkosertic.desktopsearch;
 
-import javafx.application.Platform;
-import org.controlsfx.control.Notifications;
-
 public class Notifier {
     public void showInformation(String aMessage) {
         /*Platform.runLater(() ->

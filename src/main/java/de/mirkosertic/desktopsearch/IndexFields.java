@@ -22,5 +22,4 @@ interface IndexFields {
     String FILESIZE = "filesize";
     String LASTMODIFIED = "lastmodified";
     String LOCATIONID = "locationId";
-    String META_PREFIX = "meta.";
 }

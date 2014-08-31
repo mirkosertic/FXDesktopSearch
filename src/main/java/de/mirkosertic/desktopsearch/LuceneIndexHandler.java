@@ -25,7 +25,9 @@ import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
-import org.apache.lucene.index.*;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.highlight.Highlighter;
@@ -34,7 +36,6 @@ import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.NRTCachingDirectory;
-import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.apache.tika.utils.DateUtils;
 
@@ -393,84 +394,5 @@ class LuceneIndexHandler {
 
     public File getIndexLocation() {
         return indexLocation;
-    }
-
-    public DocFlareElement getDocFlare() throws IOException {
-        DocFlareElement theRoot = new DocFlareElement("Index");
-
-        searcherManager.maybeRefreshBlocking();
-        IndexSearcher theSearcher = searcherManager.acquire();
-        try {
-
-            DocFlareElement theAuthorsElement = new DocFlareElement("Authors");
-            Terms theAuthors = MultiFields.getTerms(theSearcher.getIndexReader(), IndexFields.META_PREFIX + "author");
-            if (theAuthors != null) {
-                BytesRef theTerm;
-                TermsEnum theTerms = theAuthors.iterator(null);
-                while ((theTerm = theTerms.next()) != null) {
-                    theAuthorsElement.getChildren().add(new DocFlareElement(theTerm.utf8ToString(), theTerms.docFreq()));
-                }
-            }
-            if (theAuthorsElement.getChildren().size() != 0) {
-                theRoot.getChildren().add(theAuthorsElement);
-            }
-
-            DocFlareElement theFiletypesElements = new DocFlareElement("File types");
-            Terms TheFileTypes = MultiFields.getTerms(theSearcher.getIndexReader(), IndexFields.META_PREFIX + IndexFields.EXTENSION);
-            if (TheFileTypes != null) {
-                BytesRef theTerm;
-                TermsEnum theTerms = TheFileTypes.iterator(null);
-                while ((theTerm = theTerms.next()) != null) {
-                    theFiletypesElements.getChildren().add(new DocFlareElement(theTerm.utf8ToString(), theTerms.docFreq()));
-                }
-            }
-            if (theFiletypesElements.getChildren().size() != 0) {
-                theRoot.getChildren().add(theFiletypesElements);
-            }
-
-            DocFlareElement theLastEditedElement = new DocFlareElement("Last Edited");
-            Terms theLastEdited = MultiFields.getTerms(theSearcher.getIndexReader(), IndexFields.LASTMODIFIED);
-            if (theLastEdited != null) {
-                BytesRef theTerm;
-                TermsEnum theTerms = theLastEdited.iterator(null);
-                Calendar theCalendar = Calendar.getInstance();
-
-                Map<Integer, DocFlareElement> theYearMappings = new HashMap<>();
-                Map<String, DocFlareElement> theYearMonthMappings = new HashMap<>();
-
-                while ((theTerm = theTerms.next()) != null) {
-                    long theTimestamp = Long.parseLong(theTerm.utf8ToString());
-                    theCalendar.setTimeInMillis(theTimestamp);
-
-                    int theYear = theCalendar.get(Calendar.YEAR);
-                    int theMonth = theCalendar.get(Calendar.MONTH) + 1;
-
-                    DocFlareElement theYearElement = theYearMappings.get(theYear);
-                    if (theYearElement == null) {
-                        theYearElement = new DocFlareElement("" + theYear);
-                        theYearMappings.put(theYear, theYearElement);
-
-                        theLastEditedElement.getChildren().add(theYearElement);
-                    }
-                    DocFlareElement theYearMonthElement = theYearMonthMappings.get(theYear + "_" + theMonth);
-                    if (theYearMonthElement == null) {
-                        theYearMonthElement = new DocFlareElement(theCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH), 1);
-                        theYearElement.getChildren().add(theYearMonthElement);
-                        theYearMonthMappings.put(theYear + "_" + theMonth, theYearMonthElement);
-                    } else {
-                        theYearMonthElement.incrementWeight();
-                    }
-                }
-            }
-
-            if (theLastEditedElement.getChildren().size() != 0) {
-                theRoot.getChildren().add(theLastEditedElement);
-            }
-
-        } finally {
-            searcherManager.release(theSearcher);
-        }
-
-        return theRoot;
     }
 }

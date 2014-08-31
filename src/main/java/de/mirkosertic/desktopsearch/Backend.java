@@ -179,8 +179,4 @@ class Backend {
             locations.remove(aLocation);
         }
     }
-
-    public DocFlareElement getDocFlare() throws IOException {
-        return luceneIndexHandler.getDocFlare();
-    }
 }

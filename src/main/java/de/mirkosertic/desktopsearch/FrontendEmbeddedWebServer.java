@@ -38,7 +38,6 @@ class FrontendEmbeddedWebServer {
         theWebApp.setClassLoader(getClass().getClassLoader());
         theWebApp.addServlet(new ServletHolder(new SearchServlet(aBackend, "http://127.0.0.1:" + PORT_NUMMER)), SearchServlet.URL + "/*");
         theWebApp.addServlet(new ServletHolder(new BringToFrontServlet(aStage)), BRINGTOFRONT_URI);
-        theWebApp.addServlet(new ServletHolder(new DocFlareServlet(aBackend)), "/documentflare.json");
 
         jetty.setHandler(theWebApp);
     }
@@ -67,9 +66,5 @@ class FrontendEmbeddedWebServer {
 
     public static String getBringToFrontUrl() {
         return "http://127.0.0.1:" + PORT_NUMMER + BRINGTOFRONT_URI;
-    }
-
-    public static String getSunburstUrl() {
-        return "http://127.0.0.1:" + PORT_NUMMER + "/flare.ftl";
     }
 }
