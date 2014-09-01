@@ -16,6 +16,9 @@
 package de.mirkosertic.desktopsearch;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
@@ -23,10 +26,28 @@ import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 class QueryParser {
+
+    private final Analyzer analyzer;
+
+    public QueryParser(Analyzer aAnalyzer) {
+        analyzer = aAnalyzer;
+    }
+
+    private String toToken(String aToken, String aSearchField) throws IOException {
+        try (TokenStream theStream = analyzer.tokenStream(aSearchField, aToken)) {
+            CharTermAttribute theAttribute = theStream.getAttribute(CharTermAttribute.class);
+            theStream.reset();
+            if (theStream.incrementToken()) {
+                return theAttribute.toString();
+            }
+        }
+        return "";
+    }
 
     private boolean isWildCard(String aTerm) {
         return aTerm.contains("*") || aTerm.contains("?");
@@ -40,13 +61,13 @@ class QueryParser {
         return !StringUtils.isEmpty(aTerm) && !"*".equals(aTerm) && !"?".equals(aTerm);
     }
 
-    private void addSubQuery(BooleanQuery aQuery, String aTerm, boolean aNegated, String aSearchField) {
+    private void addSubQuery(BooleanQuery aQuery, String aTerm, boolean aNegated, String aSearchField) throws IOException {
         if (!StringUtils.isEmpty(aTerm)) {
             if (aTerm.contains(" ")) {
                 // Seems to be a phrase query
                 List<SpanQuery> theQueries = new ArrayList<>();
                 for (String thePhraseTerm : StringUtils.split(aTerm, " ")) {
-                    thePhraseTerm = StringUtils.strip(thePhraseTerm);
+                    thePhraseTerm = toToken(StringUtils.strip(thePhraseTerm), aSearchField);
                     if (isValid(thePhraseTerm)) {
                         SpanQuery theQuery;
                         if (isWildCard(thePhraseTerm)) {
@@ -72,11 +93,11 @@ class QueryParser {
                     // Single term
                     Query theQuery;
                     if (isWildCard(aTerm)) {
-                        theQuery = new WildcardQuery(new Term(aSearchField, aTerm));
+                        theQuery = new WildcardQuery(new Term(aSearchField, toToken(aTerm, aSearchField)));
                     } else if (isFuzzy(aTerm)) {
-                        theQuery = new FuzzyQuery(new Term(aSearchField, aTerm.substring(1)));
+                        theQuery = new FuzzyQuery(new Term(aSearchField, toToken(aTerm.substring(1), aSearchField)));
                     } else {
-                        theQuery = new TermQuery(new Term(aSearchField, aTerm));
+                        theQuery = new TermQuery(new Term(aSearchField, toToken(aTerm, aSearchField)));
                     }
 
                     if (aNegated) {
@@ -89,7 +110,7 @@ class QueryParser {
         }
     }
 
-    public Query parse(String aQuery, String aSearchField) {
+    public Query parse(String aQuery, String aSearchField) throws IOException {
 
         BooleanQuery theResult = new BooleanQuery();
 
