@@ -22,9 +22,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.LockReleaseFailedException;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.BindException;
 import java.net.URL;
 
@@ -58,7 +61,7 @@ public class DesktopSearch extends Application {
             embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend);
 
             embeddedWebServer.start();
-        } catch (BindException|LockReleaseFailedException e) {
+        } catch (BindException|LockReleaseFailedException|LockObtainFailedException e) {
             // In this case, there is already an instance of DesktopSearch running
             // Inform the instance to bring it to front end terminate the current process.
             URL theURL = new URL(FrontendEmbeddedWebServer.getBringToFrontUrl());
@@ -110,8 +113,24 @@ public class DesktopSearch extends Application {
             }));
             theMenu.add(theShowItem);
 
-            java.awt.Image theSystrayIcon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/fds_small.png"));
-            TrayIcon theTrayIcon = new TrayIcon(theSystrayIcon, "Free Desktop Search", theMenu);
+            // We need to reformat the icon according to the current tray icon dimensions
+            // this depends on the underlying OS
+            java.awt.Image theTrayIconImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/fds_small.png"));
+            int trayIconWidth = new TrayIcon(theTrayIconImage).getSize().width;
+            TrayIcon theTrayIcon = new TrayIcon(theTrayIconImage.getScaledInstance(trayIconWidth, -1, java.awt.Image.SCALE_SMOOTH), "Free Desktop Search", theMenu);
+            theTrayIcon.setImageAutoSize(true);
+            theTrayIcon.setToolTip("FXDesktopSearch");
+            theTrayIcon.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 1) {
+                        Platform.runLater(() -> {
+                            stage.show();
+                            stage.toFront();
+                        });
+                    }
+                }
+            });
             theTray.add(theTrayIcon);
 
             aStage.setOnCloseRequest(aEvent -> stage.hide());
@@ -120,6 +139,7 @@ public class DesktopSearch extends Application {
             aStage.setOnCloseRequest(aEvent -> shutdown());
         }
 
+        aStage.setMaximized(true);
         aStage.show();
     }
 

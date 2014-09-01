@@ -140,7 +140,7 @@ public class DirectoryWatcher {
     }
 
     private void registerWatcher(Path aDirectory) throws IOException {
-        directoryListener.newWatchablePathDetected(aDirectory);
+        LOGGER.info("New watchable directory detected : " + aDirectory);
         aDirectory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
     }
 
@@ -161,7 +161,7 @@ public class DirectoryWatcher {
                         }
                     });
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error registering file watcher", e);
                 }
             }
         };

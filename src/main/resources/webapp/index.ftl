@@ -14,7 +14,7 @@
             <div class="titlebar">
                 <input class="submitbutton" type="submit" value="">
                 <div class="querydiv">
-                    <input class="query" name="querystring" type="text" value="${querystring?html}"/>
+                    <input placeholder="Please enter your search query here" class="query" name="querystring" type="text" value="${querystring?html}"/>
                 </div>
             </div>
         </form>
@@ -62,6 +62,15 @@
                 </div>
             <#else>
                 <div class="logoDiv"><img src="logo.png" class="logo"/>
+                <div class="introduction">
+                    <div>Search examples:</div>
+                    <div><span>scott adams</span> searchesfor all documents containing the words "scott" and "adams" in any order.</div>
+                    <div><span>"scott adams"</span> searches for all documents containing the text "scott adams".</div>
+                    <div><span>"scott adams" -dogbert</span> searches for all documents containing the text "scot adams", but not "dogbert".</div>
+                    <div><span>scott ad*</span> searches for all documents containing the word "scott" and any words matching the wildcard "ad*", where * stands for any number of characters.</div>
+                    <div><span>scott ad?ms</span> searches for all documents containing the word "scott" and any words matching the wildcard "ad?ms", where ? stands for one character.</div>
+                    <div><span>"scott adam?"</span> searches for all documents containing the text "scott adam?", where the ? is interpreted as a wildcard.</div>
+                </div>
             </#if>
         </div>
     </body>

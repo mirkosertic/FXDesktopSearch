@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.web.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.WebView?>
 <?import java.net.URL?>
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml" fx:controller="de.mirkosertic.desktopsearch.DesktopSearchController">
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="de.mirkosertic.desktopsearch.DesktopSearchController">
   <children>
     <VBox prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
@@ -13,12 +18,12 @@
           <menus>
             <Menu mnemonicParsing="false" text="File">
               <items>
-                <MenuItem mnemonicParsing="false" text="Configure" fx:id="menuItemConfigure" />
-                <MenuItem mnemonicParsing="false" text="Perform complete crawl" fx:id="menuItemRecrawl" />
+                <MenuItem fx:id="menuItemConfigure" mnemonicParsing="false" text="Configure" />
+                <MenuItem fx:id="menuItemRecrawl" mnemonicParsing="false" text="Perform complete crawl" />
                 <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem mnemonicParsing="false" text="Search document" fx:id="searchDocumentItem" />
+                <MenuItem fx:id="searchDocumentItem" mnemonicParsing="false" text="Search document" />
                 <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem mnemonicParsing="false" text="Close" fx:id="menuItemClose" />
+                <MenuItem fx:id="menuItemClose" mnemonicParsing="false" text="Close" />
               </items>
             </Menu>
           </menus>
@@ -26,20 +31,6 @@
         <WebView fx:id="webView" prefHeight="532.0" VBox.vgrow="ALWAYS" />
         <VBox fx:id="statusBar" styleClass="progressindicator" VBox.vgrow="NEVER">
           <children>
-            <HBox fx:id="bottomHBox" alignment="CENTER_LEFT" VBox.vgrow="NEVER">
-              <children>
-                <Label minWidth="100.0" styleClass="progresstext" text="Indexing Progress">
-                  <HBox.margin>
-                    <Insets left="5.0" right="20.0" />
-                  </HBox.margin>
-                </Label>
-                <ProgressBar fx:id="progessIndicator" prefWidth="670.0" progress="0.0" HBox.hgrow="ALWAYS">
-                  <HBox.margin>
-                    <Insets right="5.0" />
-                  </HBox.margin>
-                </ProgressBar>
-              </children>
-            </HBox>
             <TextField fx:id="statusText" disable="true" editable="false" minHeight="22.0" styleClass="statusbar" text="Beispieltext" VBox.vgrow="NEVER">
               <VBox.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

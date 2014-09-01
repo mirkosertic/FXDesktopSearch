@@ -22,7 +22,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -55,9 +54,6 @@ public class DesktopSearchController implements Initializable {
 
     @FXML
     VBox statusBar;
-
-    @FXML
-    ProgressIndicator progessIndicator;
 
     @FXML
     TextField statusText;
@@ -95,7 +91,6 @@ public class DesktopSearchController implements Initializable {
 
             Platform.runLater(() -> {
                 statusBar.setVisible(true);
-                statusBar.setManaged(true);
                 menuItemRecrawl.setDisable(true);
             });
 
@@ -129,22 +124,11 @@ public class DesktopSearchController implements Initializable {
             }
         }
 
-        public void newFileFound(final String aFilename, final long aNumNewFiles, final long aNumIndexedFiles) {
+        public void newFileFound(final String aFilename) {
             wakeupThread();
             watcherThread.notifyProgress();
             Platform.runLater(() -> {
-                double theProgress = (double) aNumIndexedFiles / aNumNewFiles;
-                progessIndicator.setProgress(theProgress);
                 statusText.setText(aFilename);
-            });
-        }
-
-        public void indexingProgress(final long aNumNewFiles, final long aNumIndexedFiles) {
-            wakeupThread();
-            watcherThread.notifyProgress();
-            Platform.runLater(() -> {
-                double theProgress = (double) aNumIndexedFiles / aNumNewFiles;
-                progessIndicator.setProgress(theProgress);
             });
         }
 
@@ -202,7 +186,6 @@ public class DesktopSearchController implements Initializable {
     void recrawl() {
         statusBar.setVisible(true);
         statusBar.setManaged(true);
-        progessIndicator.setProgress(0);
         menuItemRecrawl.setDisable(true);
         statusText.setText("");
         try {

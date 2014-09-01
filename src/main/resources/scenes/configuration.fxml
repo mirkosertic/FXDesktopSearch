@@ -7,13 +7,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.mirkosertic.desktopsearch.ConfigurationController">
+<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.mirkosertic.desktopsearch.ConfigurationController">
   <children>
     <VBox prefWidth="573.0">
       <children>
         <HBox VBox.vgrow="NEVER">
           <children>
-            <Label maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="Show similar search results" HBox.hgrow="NEVER">
+            <Label minWidth="-Infinity" text="Show similar search results" HBox.hgrow="NEVER">
               <HBox.margin>
                 <Insets left="10.0" fx:id="x2" />
               </HBox.margin>
@@ -30,7 +30,7 @@
         </HBox>
         <HBox padding="$x1" VBox.vgrow="NEVER">
           <children>
-            <Label maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="Number of search results" HBox.hgrow="NEVER">
+            <Label text="Number of search results" HBox.hgrow="NEVER">
               <HBox.margin>
                 <Insets left="10.0" fx:id="x2" />
               </HBox.margin>

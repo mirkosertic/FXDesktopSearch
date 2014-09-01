@@ -12,7 +12,6 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
@@ -81,7 +80,7 @@ public class SearchServlet extends HttpServlet {
             String[] thePaths = StringUtils.split(theWorkingPathInfo,"/");
             for (int i=0;i<thePaths.length;i++) {
                 try {
-                    String theDecodedValue = theURLCodec.decode(thePaths[i]);
+                    String theDecodedValue = thePaths[i].replace('+',' ');
                     String theEncodedValue = theURLCodec.encode(theDecodedValue);
                     theBasePath = theBasePath + "/" + theEncodedValue;
                     if (i<thePaths.length - 1) {
@@ -92,7 +91,7 @@ public class SearchServlet extends HttpServlet {
                     } else {
                         FacetSearchUtils.addToMap(theDecodedValue, theDrilldownDimensions);
                     }
-                } catch (EncoderException|DecoderException e) {
+                } catch (EncoderException e) {
                     LOGGER.error("Error while decoding drilldown params for " + aRequest.getPathInfo(), e);
                 }
             }
