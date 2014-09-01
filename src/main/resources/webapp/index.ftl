@@ -64,7 +64,7 @@
                 <div class="logoDiv"><img src="logo.png" class="logo"/>
                 <div class="introduction">
                     <div>Search examples:</div>
-                    <div><span>scott adams</span> searchesfor all documents containing the words "scott" and "adams" in any order.</div>
+                    <div><span>scott adams</span> searches for all documents containing the words "scott" and "adams" in any order.</div>
                     <div><span>"scott adams"</span> searches for all documents containing the text "scott adams".</div>
                     <div><span>"scott adams" -dogbert</span> searches for all documents containing the text "scot adams", but not "dogbert".</div>
                     <div><span>scott ad*</span> searches for all documents containing the word "scott" and any words matching the wildcard "ad*", where * stands for any number of characters.</div>

@@ -152,8 +152,10 @@ class ContentExtractor {
                 }
             }
 
+            LanguageIdentifier theLanguageIdentifier = new LanguageIdentifier(theStringData);
+
             FileTime theFileTime = aBasicFileAttributes.lastModifiedTime();
-            Content theContent = new Content(aFile.toString(), theStringData, aBasicFileAttributes.size(), theFileTime.toMillis());
+            Content theContent = new Content(aFile.toString(), theStringData, aBasicFileAttributes.size(), theFileTime.toMillis(), theLanguageIdentifier.getLanguage());
             for (String theName : theMetaData.names()) {
 
                 String theMetaDataValue = theMetaData.get(theName);
@@ -189,9 +191,6 @@ class ContentExtractor {
                 String theExtension = theFileName.substring(p + 1);
                 theContent.addMetaData(IndexFields.EXTENSION, theExtension.toLowerCase());
             }
-
-            LanguageIdentifier theLanguageIdentifier = new LanguageIdentifier(theStringData);
-            theContent.addMetaData(IndexFields.LANGUAGE, theLanguageIdentifier.getLanguage());
 
             return theContent;
         } catch (Exception e) {

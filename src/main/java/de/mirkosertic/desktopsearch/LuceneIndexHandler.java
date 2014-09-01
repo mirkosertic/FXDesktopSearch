@@ -18,7 +18,6 @@ import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.facet.*;
 import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
@@ -55,20 +54,23 @@ class LuceneIndexHandler {
     private static final int NUMBER_OF_FRAGMENTS = 5;
 
     private final File indexLocation;
-    private final Analyzer analyzer;
     private IndexWriter indexWriter;
     private SearcherManager searcherManager;
+    private final AnalyzerCache analyzerCache;
+    private final Analyzer analyzer;
     private final FacetsConfig facetsConfig;
 
     private Thread commitThread;
 
     public LuceneIndexHandler(File aIndexDir) throws IOException {
         indexLocation = aIndexDir;
+        analyzerCache = new AnalyzerCache(LUCENE_VERSION);
+
+        analyzer = analyzerCache.getAnalyzer();
 
         File theIndexDir = new File(aIndexDir, "index");
         theIndexDir.mkdirs();
 
-        analyzer = new StandardAnalyzer(LUCENE_VERSION);
         Directory theIndexFSDirectory = new NRTCachingDirectory(FSDirectory.open(theIndexDir), 100, 100);
         try {
             theIndexFSDirectory.clearLock(IndexWriter.WRITE_LOCK_NAME);
@@ -115,9 +117,20 @@ class LuceneIndexHandler {
     public void addToIndex(String aLocationId, Content aContent) throws IOException {
         Document theDocument = new Document();
 
-        theDocument.add(new StringField(IndexFields.FILENAME, aContent.getFileName(), Field.Store.YES));
+        String theLanguage = aContent.getLanguage();
 
-        theDocument.add(new TextField(IndexFields.CONTENT, aContent.getFileContent(), Field.Store.YES));
+        theDocument.add(new StringField(IndexFields.FILENAME, aContent.getFileName(), Field.Store.YES));
+        theDocument.add(new SortedSetDocValuesFacetField(IndexFields.LANGUAGEFACET, theLanguage));
+        theDocument.add(new TextField(IndexFields.LANGUAGESTORED, theLanguage, Field.Store.YES));
+        theDocument.add(new TextField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
+        if (analyzerCache.supportsLanguage(theLanguage)) {
+            LOGGER.info("Language and analyzer " + theLanguage+" detected for " + aContent.getFileName()+", using the corresponding language index field");
+            String theFieldName = analyzerCache.getFieldNameFor(theLanguage);
+            theDocument.add(new TextField(theFieldName, aContent.getFileContent(), Field.Store.YES));
+        } else {
+            LOGGER.info("No matching language and analyzer detected for " + theLanguage+" and " + aContent.getFileName()+", using the default index field and analyzer");
+            theDocument.add(new TextField(IndexFields.CONTENT, aContent.getFileContent(), Field.Store.YES));
+        }
         theDocument.add(new TextField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LOCATIONID, aLocationId, Field.Store.YES));
         theDocument.add(new LongField(IndexFields.FILESIZE, aContent.getFileSize(), Field.Store.YES));
@@ -240,6 +253,22 @@ class LuceneIndexHandler {
         }
     }
 
+    public BooleanQuery computeBooleanQueryFor(String aQueryString) throws IOException {
+        QueryParser theParser = new QueryParser(analyzer);
+
+        BooleanQuery theBooleanQuery = new BooleanQuery();
+        theBooleanQuery.setMinimumNumberShouldMatch(1);
+
+        Query theDefaultSingle = theParser.parse(aQueryString, IndexFields.CONTENT);
+        theBooleanQuery.add(theDefaultSingle, BooleanClause.Occur.SHOULD);
+
+        for (String theFieldName : analyzerCache.getAllFieldNames()) {
+            Query theSingle = theParser.parse(aQueryString, theFieldName);
+            theBooleanQuery.add(theSingle, BooleanClause.Occur.SHOULD);
+        }
+        return theBooleanQuery;
+    }
+
     public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, boolean aIncludeSimilarDocuments, int aMaxDocs, Map<String, String> aDrilldownFields) throws IOException {
 
         searcherManager.maybeRefreshBlocking();
@@ -261,9 +290,7 @@ class LuceneIndexHandler {
             // Search only if a search query is given
             if (!StringUtils.isEmpty(aQueryString)) {
 
-                QueryParser theParser = new QueryParser();
-
-                Query theQuery = theParser.parse(aQueryString, IndexFields.CONTENT);
+                Query theQuery = computeBooleanQueryFor(aQueryString);
 
                 LOGGER.info(" query is " + theQuery);
 
@@ -310,13 +337,22 @@ class LuceneIndexHandler {
                         theExistingDocument.addFileName(theFoundFileName);
                     } else {
                         Date theLastModified = new Date(Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()));
-                        String theOriginalContent = theDocument.getField(IndexFields.CONTENT).stringValue();
+                        String theLanguage = theDocument.getField(IndexFields.LANGUAGESTORED).stringValue();
+                        String theFieldName;
+                        String theOriginalContent;
+                        if (analyzerCache.supportsLanguage(theLanguage)) {
+                            theFieldName = analyzerCache.getFieldNameFor(theLanguage);
+                            theOriginalContent = theDocument.getField(theFieldName).stringValue();
+                        } else {
+                            theFieldName = IndexFields.CONTENT;
+                            theOriginalContent = theDocument.getField(IndexFields.CONTENT).stringValue();
+                        }
 
                         ForkJoinTask<String> theHighligherResult = theCommonPool.submit(() -> {
                             StringBuilder theResult = new StringBuilder(theDateFormat.format(theLastModified));
                             theResult.append("&nbsp;-&nbsp;");
                             Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theFinalQuery));
-                            for (String theFragment : theHighlighter.getBestFragments(analyzer, IndexFields.CONTENT, theOriginalContent, NUMBER_OF_FRAGMENTS)) {
+                            for (String theFragment : theHighlighter.getBestFragments(analyzer, theFieldName, theOriginalContent, NUMBER_OF_FRAGMENTS)) {
                                 if (theResult.length() > 0) {
                                     theResult = theResult.append("...");
                                 }
@@ -338,7 +374,7 @@ class LuceneIndexHandler {
                     theMoreLikeThis.setAnalyzer(analyzer);
                     theMoreLikeThis.setMinTermFreq(1);
                     theMoreLikeThis.setMinDocFreq(1);
-                    theMoreLikeThis.setFieldNames(new String[]{IndexFields.CONTENT});
+                    theMoreLikeThis.setFieldNames(analyzerCache.getAllFieldNames());
 
                     for (QueryResultDocument theDocument : theResultDocuments) {
                         Query theMoreLikeThisQuery = theMoreLikeThis.like(theDocument.getDocumentID());
@@ -375,7 +411,7 @@ class LuceneIndexHandler {
                                     FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
                         }
                     }
-                    if ("language".equals(theDimension)) {
+                    if (IndexFields.LANGUAGEFACET.equals(theDimension)) {
                         for (LabelAndValue theLabelAndValue : theResult.labelValues) {
                             Locale theLocale = new Locale(theLabelAndValue.label);
                             theLanguageFacet.add(new Facet(theLocale.getDisplayLanguage(Locale.ENGLISH), theLabelAndValue.value.intValue(), aBasePath+"/"+encode(

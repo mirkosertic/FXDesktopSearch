@@ -33,13 +33,15 @@ public class Content {
     private final long lastModified;
     private final List<KeyValuePair> metadata;
     private final String fileContent;
+    private final String language;
 
-    public Content(String fileName, String aFileContent, long fileSize, long lastModified) {
-        this.fileName = fileName;
-        this.fileSize = fileSize;
-        this.lastModified = lastModified;
+    public Content(String aFileName, String aFileContent, long aFileSize, long aLastModified, String aLanguage) {
+        fileName = aFileName;
+        fileSize = aFileSize;
+        lastModified = aLastModified;
         metadata = new ArrayList<>();
         fileContent = aFileContent;
+        language = aLanguage;
     }
 
     public String getFileName() {
@@ -56,6 +58,10 @@ public class Content {
 
     public long getLastModified() {
         return lastModified;
+    }
+
+    public String getLanguage() {
+        return language;
     }
 
     public Stream<KeyValuePair> getMetadata() {

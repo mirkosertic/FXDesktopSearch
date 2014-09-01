@@ -16,7 +16,8 @@ interface IndexFields {
 
     String FILENAME = "filename";
     String EXTENSION = "extension";
-    String LANGUAGE = "language";
+    String LANGUAGESTORED = "language_s";
+    String LANGUAGEFACET = "language_f";
     String CONTENT = "content";
     String CONTENTMD5 = "contentmd5";
     String FILESIZE = "filesize";
