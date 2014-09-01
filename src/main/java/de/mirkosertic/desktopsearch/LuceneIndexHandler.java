@@ -190,6 +190,21 @@ class LuceneIndexHandler {
         }
     }
 
+    public boolean checkIfExists(String aFilename) throws IOException {
+        IndexSearcher theSearcher = searcherManager.acquire();
+        try {
+            Query theQuery = new TermQuery(new Term(IndexFields.FILENAME, aFilename));
+            TopDocs theDocs = theSearcher.search(theQuery, null, 100);
+            if (theDocs.scoreDocs.length == 0) {
+                return false;
+            }
+            return true;
+        } finally {
+            searcherManager.release(theSearcher);
+        }
+
+    }
+
     public UpdateCheckResult checkIfModified(String aFilename, long aLastModified) throws IOException {
 
         IndexSearcher theSearcher = searcherManager.acquire();

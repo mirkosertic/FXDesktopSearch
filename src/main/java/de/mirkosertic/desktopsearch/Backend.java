@@ -12,6 +12,8 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,9 +23,10 @@ import java.util.*;
 
 class Backend {
 
+    private static final Logger LOGGER = Logger.getLogger(Backend.class);
+
     private LuceneIndexHandler luceneIndexHandler;
     private final ContentExtractor contentExtractor;
-    private final ProgressMonitor progressMonitor;
     private ProgressListener progressListener;
     private final Map<FilesystemLocation, DirectoryWatcher> locations;
     private final DirectoryListener directoryListener;
@@ -38,34 +41,17 @@ class Backend {
         locations = new HashMap<>();
         executorPool = new ExecutorPool();
         contentExtractor = new ContentExtractor();
-        progressMonitor = new ProgressMonitor(new ProgressListener() {
-
-            public void newFileFound(String aFilename, long aNumNewFiles, long aNumIndexedFiles) {
-                if (progressListener != null) {
-                    progressListener.newFileFound(aFilename, aNumNewFiles, aNumIndexedFiles);
-                }
-            }
-
-            public void indexingProgress(long aNumNewFiles, long aNumIndexedFiles) {
-                if (progressListener != null) {
-                    progressListener.indexingProgress(aNumNewFiles, aNumIndexedFiles);
-                }
-            }
-
-            public void crawlingFinished() {
-                if (progressListener != null) {
-                    progressListener.crawlingFinished();
-                }
-            }
-        });
         directoryListener = new DirectoryListener() {
             @Override
             public void fileDeleted(FilesystemLocation aFileSystemLocation, Path aFile) {
                 try {
-                    luceneIndexHandler.removeFromIndex(aFile.toString());
-                    aNotifier.showInformation("File deleted from search index : "+aFile);
+                    String theFilename = aFile.toString();
+                    if (luceneIndexHandler.checkIfExists(theFilename)) {
+                        luceneIndexHandler.removeFromIndex(theFilename);
+                        aNotifier.showInformation("Deleted " + aFile.getFileName());
+                    }
                 } catch (Exception e) {
-                    aNotifier.showError("Error removing file from index : " + aFile, e);
+                    aNotifier.showError("Error removing " + aFile.getFileName(), e);
                 }
             }
 
@@ -83,31 +69,27 @@ class Backend {
                 String theFileName = aFile.toString();
                 if (contentExtractor.supportsFile(theFileName)) {
                     try {
-                        progressMonitor.addNewFileFound(theFileName);
+                        progressListener.newFileFound(theFileName);
 
                         BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
                         UpdateCheckResult theUpdateCheckResult = luceneIndexHandler.checkIfModified(theFileName, theAttributes.size());
                         if (theUpdateCheckResult == UpdateCheckResult.UPDATED) {
 
                             if (aShowInformation) {
-                                notifier.showInformation("File modified and re-indexed : " + aFile);
+                                notifier.showInformation("Reindexed " + aFile.getFileName());
                             }
 
                             Content theContent = contentExtractor.extractContentFrom(aFile, theAttributes);
                             if (theContent != null) {
                                 luceneIndexHandler.addToIndex(aFileSystemLocation.getId(), theContent);
-                                progressMonitor.addFilesIndexed();
                             }
+                        } else {
+                            LOGGER.info("File " + aFile+" was modified, but Index Status is " + theUpdateCheckResult);
                         }
                     } catch (Exception e) {
-                        aNotifier.showError("Error updating file in index : " + aFile, e);
+                        aNotifier.showError("Error re-inxeding " + aFile.getFileName(), e);
                     }
                 }
-            }
-
-            @Override
-            public void newWatchablePathDetected(Path aDirectory) {
-                aNotifier.showInformation("New directory detected : "+aDirectory);
             }
         };
     }
@@ -131,8 +113,6 @@ class Backend {
 
         luceneIndexHandler.crawlingStarts();
 
-        progressMonitor.resetStats();
-
         Thread theRunner = new Thread() {
             @Override
             public void run() {
@@ -145,7 +125,7 @@ class Backend {
                     }
                 });
 
-                progressMonitor.crawlingFinished();
+                progressListener.crawlingFinished();
             }
         };
         theRunner.start();

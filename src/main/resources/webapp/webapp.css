@@ -132,3 +132,11 @@ input:focus {
     border: 0px;
 }
 
+.introduction div {
+    padding-bottom: 5px;
+}
+
+.introduction div span {
+    font-weight: bold;
+}
+

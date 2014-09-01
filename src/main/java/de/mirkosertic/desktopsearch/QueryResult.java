@@ -12,6 +12,8 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import java.util.List;
 
 public class QueryResult {
@@ -53,7 +55,7 @@ public class QueryResult {
         if (aFileName == null) {
             return null;
         }
-        int p = aFileName.lastIndexOf("\\");
+        int p = aFileName.lastIndexOf(SystemUtils.FILE_SEPARATOR);
         if (p>0) {
             return aFileName.substring(p+1);
         }

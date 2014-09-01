@@ -20,6 +20,4 @@ interface DirectoryListener {
     void fileCreatedOrModified(FilesystemLocation aFileSystemLocation, Path aFile);
 
     void fileFoundByCrawler(FilesystemLocation aFileSystemLocation, Path aFile);
-
-    void newWatchablePathDetected(Path aDirectory);
 }

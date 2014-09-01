@@ -14,9 +14,7 @@ package de.mirkosertic.desktopsearch;
 
 interface ProgressListener {
 
-    void newFileFound(String aFilename, long aNumNewFiles, long aNumIndexedFiles);
-
-    void indexingProgress(long aNumNewFiles, long aNumIndexedFiles);
+    void newFileFound(String aFilename);
 
     void crawlingFinished();
 }
