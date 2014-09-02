@@ -12,19 +12,18 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.lucene.util.Version;
+public enum SupportedDocumentType {
+    txt,
+    msg,
+    pdf,
+    doc,
+    docx,
+    ppt,
+    pptx,
+    rtf,
+    html,;
 
-interface IndexFields {
-
-    Version LUCENE_VERSION = Version.LUCENE_4_9;
-
-    String FILENAME = "filename";
-    String EXTENSION = "extension";
-    String LANGUAGESTORED = "language_s";
-    String LANGUAGEFACET = "language_f";
-    String CONTENT = "content";
-    String CONTENTMD5 = "contentmd5";
-    String FILESIZE = "filesize";
-    String LASTMODIFIED = "lastmodified";
-    String LOCATIONID = "locationId";
+    public boolean supports(String aFilename) {
+        return aFilename.toLowerCase().endsWith("." + name());
+    }
 }

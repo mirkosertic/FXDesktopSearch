@@ -13,9 +13,7 @@
 package de.mirkosertic.desktopsearch;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Configuration {
 
@@ -50,23 +48,52 @@ public class Configuration {
     private boolean showSimilarDocuments;
     private List<CrawlLocation> crawlLocations;
     private File indexDirectory;
+    private Set<SupportedLanguage> enabledLanguages;
+    private Set<SupportedDocumentType> enabledDocumentTypes;
+    private Map<String, String> metaDataNameReplacement;
 
     private Configuration() {
         // Needed by Jackson
+        numberOfSearchResults = 50;
+        showSimilarDocuments = false;
+        crawlLocations = new ArrayList<>();
+        enabledLanguages = new HashSet<>(Arrays.asList(SupportedLanguage.values()));
+        enabledDocumentTypes = new HashSet<>(Arrays.asList(SupportedDocumentType.values()));
+        metaDataNameReplacement = new HashMap<>();
+        metaDataNameReplacement.put("created", "creation-date");
+        metaDataNameReplacement.put("date", "creation-date");
+        metaDataNameReplacement.put("modified", "last-modified");
+        metaDataNameReplacement.put("last-save-date", "last-modified");
+        metaDataNameReplacement.put("sourcemodified", "last-modified");
+        metaDataNameReplacement.put("save-date", "last-modified");
+        metaDataNameReplacement.put("creatortool", "application-name");
+        metaDataNameReplacement.put("producer", "application-name");
+        metaDataNameReplacement.put("creator", "author");
+        metaDataNameReplacement.put("last-author", "author");
+        metaDataNameReplacement.put("contentstatus", "content-status");
+        metaDataNameReplacement.put("presentationformat", "presentation-format");
+        metaDataNameReplacement.put("print-date", "last-printed");
+        metaDataNameReplacement.put("keyword", "keywords");
+        metaDataNameReplacement.put("revision", "revision-number");
+        metaDataNameReplacement.put("appversion", "application-version");
+        metaDataNameReplacement.put("character count", "character-count");
+        metaDataNameReplacement.put("npages", "page-count");
+        metaDataNameReplacement.put("slide-count", "page-count");
     }
 
     private Configuration(Configuration aConfiguration) {
+        this();
         numberOfSearchResults = aConfiguration.numberOfSearchResults;
         showSimilarDocuments = aConfiguration.showSimilarDocuments;
         crawlLocations = new ArrayList<>(aConfiguration.crawlLocations);
+        enabledLanguages = new HashSet<>(aConfiguration.enabledLanguages);
+        enabledDocumentTypes = new HashSet<>(aConfiguration.enabledDocumentTypes);
+        metaDataNameReplacement = new HashMap<>(aConfiguration.metaDataNameReplacement);
         indexDirectory = aConfiguration.indexDirectory;
     }
 
     public Configuration(File aConfigDirectory) {
-        // Our defaults
-        numberOfSearchResults = 50;
-        showSimilarDocuments = false;
-        crawlLocations = new ArrayList<>();
+        this();
         indexDirectory = new File(aConfigDirectory, "index");
     }
 
@@ -84,6 +111,18 @@ public class Configuration {
 
     public File getIndexDirectory() {
         return indexDirectory;
+    }
+
+    public Set<SupportedLanguage> getEnabledLanguages() {
+        return Collections.unmodifiableSet(enabledLanguages);
+    }
+
+    public Set<SupportedDocumentType> getEnabledDocumentTypes() {
+        return Collections.unmodifiableSet(enabledDocumentTypes);
+    }
+
+    public Map<String, String> getMetaDataNameReplacement() {
+        return Collections.unmodifiableMap(metaDataNameReplacement);
     }
 
     public Configuration addLocation(CrawlLocation aCrawlLocation) {

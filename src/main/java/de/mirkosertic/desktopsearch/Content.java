@@ -33,9 +33,9 @@ public class Content {
     private final long lastModified;
     private final List<KeyValuePair> metadata;
     private final String fileContent;
-    private final String language;
+    private final SupportedLanguage language;
 
-    public Content(String aFileName, String aFileContent, long aFileSize, long aLastModified, String aLanguage) {
+    public Content(String aFileName, String aFileContent, long aFileSize, long aLastModified, SupportedLanguage aLanguage) {
         fileName = aFileName;
         fileSize = aFileSize;
         lastModified = aLastModified;
@@ -60,7 +60,7 @@ public class Content {
         return lastModified;
     }
 
-    public String getLanguage() {
+    public SupportedLanguage getLanguage() {
         return language;
     }
 

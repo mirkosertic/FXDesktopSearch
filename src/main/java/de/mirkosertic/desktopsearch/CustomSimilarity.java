@@ -12,19 +12,21 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.lucene.util.Version;
+import org.apache.lucene.index.FieldInvertState;
+import org.apache.lucene.search.similarities.DefaultSimilarity;
 
-interface IndexFields {
+class CustomSimilarity extends DefaultSimilarity {
 
-    Version LUCENE_VERSION = Version.LUCENE_4_9;
+    @Override
+    public float lengthNorm(FieldInvertState state) {
+        // simply return the field's configured boost value
+        // instead of also factoring in the field's length
+        return state.getBoost();
+    }
 
-    String FILENAME = "filename";
-    String EXTENSION = "extension";
-    String LANGUAGESTORED = "language_s";
-    String LANGUAGEFACET = "language_f";
-    String CONTENT = "content";
-    String CONTENTMD5 = "contentmd5";
-    String FILESIZE = "filesize";
-    String LASTMODIFIED = "lastmodified";
-    String LOCATIONID = "locationId";
+    @Override
+    public float idf(long docFreq, long numDocs) {
+        // more-heavily weight terms that appear infrequently
+        return (float) (Math.sqrt(numDocs/(double)(docFreq+1)) + 1.0);
+    }
 }

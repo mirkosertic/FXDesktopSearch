@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 class Backend implements ConfigurationChangeListener {
 
@@ -38,7 +39,7 @@ class Backend implements ConfigurationChangeListener {
         notifier = aNotifier;
         locations = new HashMap<>();
         executorPool = new ExecutorPool();
-        contentExtractor = new ContentExtractor();
+        contentExtractor = new ContentExtractor(aConfiguration);
         directoryListener = new DirectoryListener() {
             @Override
             public void fileDeleted(Configuration.CrawlLocation aFileSystemLocation, Path aFile) {
@@ -96,10 +97,9 @@ class Backend implements ConfigurationChangeListener {
     @Override
     public void configurationUpdated(Configuration aConfiguration) throws IOException {
 
-        setIndexLocation(aConfiguration.getIndexDirectory());
+        setIndexLocation(aConfiguration);
 
         configuration = aConfiguration;
-
         locations.values().stream().forEach(DirectoryWatcher::stopWatching);
         locations.clear();
 
@@ -123,11 +123,12 @@ class Backend implements ConfigurationChangeListener {
         locations.put(aLocation, new DirectoryWatcher(aLocation, DirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener, executorPool).startWatching());
     }
 
-    private void setIndexLocation(File aFile) throws IOException {
+    private void setIndexLocation(Configuration aConfiguration) throws IOException {
         if (luceneIndexHandler != null) {
             shutdown();
         }
-        luceneIndexHandler = new LuceneIndexHandler(aFile);
+        AnalyzerCache theCache = new AnalyzerCache(aConfiguration);
+        luceneIndexHandler = new LuceneIndexHandler(aConfiguration.getIndexDirectory(), theCache);
     }
 
     public void crawlLocations() throws IOException {

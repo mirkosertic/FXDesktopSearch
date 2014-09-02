@@ -34,11 +34,11 @@ import org.apache.lucene.search.postingshighlight.PostingsHighlighter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.NRTCachingDirectory;
-import org.apache.lucene.util.Version;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.BreakIterator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -49,10 +49,8 @@ class LuceneIndexHandler {
 
     private static final Logger LOGGER = Logger.getLogger(LuceneIndexHandler.class);
 
-    private static final Version LUCENE_VERSION = Version.LUCENE_4_9;
     private static final int NUMBER_OF_FRAGMENTS = 5;
 
-    private final File indexLocation;
     private IndexWriter indexWriter;
     private SearcherManager searcherManager;
     private final AnalyzerCache analyzerCache;
@@ -62,9 +60,8 @@ class LuceneIndexHandler {
     private Thread commitThread;
     private final FieldType contentFieldType;
 
-    public LuceneIndexHandler(File aIndexDir) throws IOException {
-        indexLocation = aIndexDir;
-        analyzerCache = new AnalyzerCache(LUCENE_VERSION);
+    public LuceneIndexHandler(File aIndexDir, AnalyzerCache aAnalyzerCache) throws IOException {
+        analyzerCache = aAnalyzerCache;
 
         contentFieldType = new FieldType();
         contentFieldType.setIndexed(true);
@@ -87,7 +84,8 @@ class LuceneIndexHandler {
             // No Lock there
         }
 
-        IndexWriterConfig theConfig = new IndexWriterConfig(LUCENE_VERSION, analyzer);
+        IndexWriterConfig theConfig = new IndexWriterConfig(IndexFields.LUCENE_VERSION, analyzer);
+        theConfig.setSimilarity(new CustomSimilarity());
         indexWriter = new IndexWriter(theIndexFSDirectory, theConfig);
 
         searcherManager = new SearcherManager(indexWriter, true, new SearcherFactory());
@@ -126,11 +124,11 @@ class LuceneIndexHandler {
     public void addToIndex(String aLocationId, Content aContent) throws IOException {
         Document theDocument = new Document();
 
-        String theLanguage = aContent.getLanguage();
+        SupportedLanguage theLanguage = aContent.getLanguage();
 
         theDocument.add(new StringField(IndexFields.FILENAME, aContent.getFileName(), Field.Store.YES));
-        theDocument.add(new SortedSetDocValuesFacetField(IndexFields.LANGUAGEFACET, theLanguage));
-        theDocument.add(new TextField(IndexFields.LANGUAGESTORED, theLanguage, Field.Store.YES));
+        theDocument.add(new SortedSetDocValuesFacetField(IndexFields.LANGUAGEFACET, theLanguage.name()));
+        theDocument.add(new TextField(IndexFields.LANGUAGESTORED, theLanguage.name(), Field.Store.YES));
         theDocument.add(new TextField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
 
         StringBuilder theContentAsString = new StringBuilder(aContent.getFileContent());
@@ -314,8 +312,6 @@ class LuceneIndexHandler {
 
                 LOGGER.info(" rewritten query is " + theQuery);
 
-                final Query theFinalQuery = theQuery;
-
                 DrillDownQuery theDrilldownQuery = new DrillDownQuery(facetsConfig, theQuery);
                 aDrilldownFields.entrySet().stream().forEach(aEntry -> {
                     LOGGER.info(" with Drilldown "+aEntry.getKey()+" for "+aEntry.getValue());
@@ -341,7 +337,16 @@ class LuceneIndexHandler {
 
                 Map<String, QueryResultDocument> theDocumentsByHash = new HashMap<>();
 
-                PostingsHighlighter thePostingHighlighter = new PostingsHighlighter();
+                PostingsHighlighter thePostingHighlighter = new PostingsHighlighter() {
+                    @Override
+                    protected BreakIterator getBreakIterator(String aField) {
+                        SupportedLanguage theLanguage = analyzerCache.getLanguageFromFieldName(aField);
+                        if (theLanguage != null) {
+                            return BreakIterator.getSentenceInstance(theLanguage.toLocale());
+                        }
+                        return super.getBreakIterator(aField);
+                    }
+                };
                 final Map<String, String[]> theHighlights = thePostingHighlighter.highlightFields(analyzerCache.getAllFieldNames(), theQuery, theSearcher, theDocs);
 
                 for (int i = 0; i < theDocs.scoreDocs.length; i++) {
@@ -356,7 +361,7 @@ class LuceneIndexHandler {
                         theExistingDocument.addFileName(theFoundFileName);
                     } else {
                         Date theLastModified = new Date(Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()));
-                        String theLanguage = theDocument.getField(IndexFields.LANGUAGESTORED).stringValue();
+                        SupportedLanguage theLanguage = SupportedLanguage.valueOf(theDocument.getField(IndexFields.LANGUAGESTORED).stringValue());
                         String theFieldName;
                         if (analyzerCache.supportsLanguage(theLanguage)) {
                             theFieldName = analyzerCache.getFieldNameFor(theLanguage);
@@ -474,9 +479,5 @@ class LuceneIndexHandler {
         } finally {
             searcherManager.release(theSearcher);
         }
-    }
-
-    public File getIndexLocation() {
-        return indexLocation;
     }
 }

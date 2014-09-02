@@ -26,7 +26,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,106 +36,31 @@ class ContentExtractor {
 
     private static final Logger LOGGER = Logger.getLogger(ContentExtractor.class);
 
-    private final Set<String> supportedExtensions;
     private final Tika tika;
     private final Pattern metaDataDatePattern;
+    private final Configuration configuration;
 
-    public ContentExtractor() {
+    public ContentExtractor(Configuration aConfiguration) {
 
         // TODO: auch korrekt dieses Muster verarbeitrn :  Mon Feb 18 15:55:10 CET 2013
 
         metaDataDatePattern = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})Z");
-        supportedExtensions = new HashSet<>();
-        supportedExtensions.add("txt");
-        supportedExtensions.add("msg");
-        supportedExtensions.add("pdf");
-        supportedExtensions.add("doc");
-        supportedExtensions.add("docx");
-        supportedExtensions.add("ppt");
-        supportedExtensions.add("pptx");
-        supportedExtensions.add("rtf");
-        supportedExtensions.add("html");
 
+        configuration = aConfiguration;
         tika = new Tika();
     }
 
     private String harmonizeMetaDataName(String aName) {
-        if (aName.startsWith("meta:")) {
-            aName = aName.substring("meta:".length());
-        }
-        if (aName.startsWith("dcterms:")) {
-            aName = aName.substring("dcterms:".length());
-        }
-        if (aName.startsWith("xmp:")) {
-            aName = aName.substring("xmp:".length());
-        }
-        if (aName.startsWith("dc:")) {
-            aName = aName.substring("dc:".length());
-        }
-        if (aName.startsWith("cp:")) {
-            aName = aName.substring("dc:".length());
-        }
-        if (aName.startsWith("custom:")) {
-            aName = aName.substring("custom:".length());
-        }
-        if (aName.startsWith("extended-properties:")) {
-            aName = aName.substring("extended-properties:".length());
+        int p = aName.indexOf(":");
+        if (p>0) {
+            aName = aName.substring(p+1);
         }
 
-        if ("created".equals(aName)) {
-            return "creation-date";
+        String theReplacement = configuration.getMetaDataNameReplacement().get(aName);
+        if (theReplacement != null) {
+            return theReplacement;
         }
-        if ("date".equals(aName)) {
-            return "creation-date";
-        }
-        if ("modified".equals(aName)) {
-            return "last-modified";
-        }
-        if ("last-save-date".equals(aName)) {
-            return "last-modified";
-        }
-        if ("save-date".equals(aName)) {
-            return "last-modified";
-        }
-        if ("creatortool".equals(aName)) {
-            return "application-name";
-        }
-        if ("producer".equals(aName)) {
-            return "application-name";
-        }
-        if ("creator".equals(aName)) {
-            return "author";
-        }
-        if ("last-author".equals(aName)) {
-            return "author";
-        }
-        if ("contentstatus".equals(aName)) {
-            return "content-status";
-        }
-        if ("presentationformat".equals(aName)) {
-            return "presentation-format";
-        }
-        if ("print-date".equals(aName)) {
-            return "last-printed";
-        }
-        if ("keyword".equals(aName)) {
-            return "keywords";
-        }
-        if ("revision".equals(aName)) {
-            return "revision-number";
-        }
-        if ("appversion".equals(aName)) {
-            return "application-version";
-        }
-        if ("character count".equals(aName)) {
-            return "character-count";
-        }
-        if ("xmptpg:npages".equals(aName)) {
-            return "page-count";
-        }
-        if ("slide-count".equals(aName)) {
-            return "page-count";
-        }
+
         return aName;
     }
 
@@ -155,7 +82,13 @@ class ContentExtractor {
             LanguageIdentifier theLanguageIdentifier = new LanguageIdentifier(theStringData);
 
             FileTime theFileTime = aBasicFileAttributes.lastModifiedTime();
-            Content theContent = new Content(aFile.toString(), theStringData, aBasicFileAttributes.size(), theFileTime.toMillis(), theLanguageIdentifier.getLanguage());
+            SupportedLanguage theLanguage = SupportedLanguage.en;
+            try {
+                theLanguage = SupportedLanguage.valueOf(theLanguageIdentifier.getLanguage());
+            } catch (Exception e) {
+                LOGGER.info("Language "+theLanguageIdentifier.getLanguage()+" was detected, but is not supported");
+            }
+            Content theContent = new Content(aFile.toString(), theStringData, aBasicFileAttributes.size(), theFileTime.toMillis(), theLanguage);
             for (String theName : theMetaData.names()) {
 
                 String theMetaDataValue = theMetaData.get(theName);
@@ -201,11 +134,11 @@ class ContentExtractor {
     }
 
     public boolean supportsFile(String aFilename) {
-        int p = aFilename.lastIndexOf(".");
-        if (p < 0) {
-            return false;
+        for (SupportedDocumentType theType : configuration.getEnabledDocumentTypes()) {
+            if (theType.supports(aFilename)) {
+                return true;
+            }
         }
-        String theExtension = aFilename.substring(p + 1);
-        return supportedExtensions.contains(theExtension.toLowerCase());
+        return false;
     }
 }
