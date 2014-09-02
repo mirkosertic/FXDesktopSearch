@@ -21,29 +21,27 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
-class Backend {
+class Backend implements ConfigurationChangeListener {
 
     private static final Logger LOGGER = Logger.getLogger(Backend.class);
 
     private LuceneIndexHandler luceneIndexHandler;
     private final ContentExtractor contentExtractor;
     private ProgressListener progressListener;
-    private final Map<FilesystemLocation, DirectoryWatcher> locations;
+    private final Map<Configuration.CrawlLocation, DirectoryWatcher> locations;
     private final DirectoryListener directoryListener;
     private final ExecutorPool executorPool;
     private final Notifier notifier;
+    private Configuration configuration;
 
-    private boolean includeSimilarDocuments;
-    private int numberOfSearchResults;
-
-    public Backend(Notifier aNotifier) {
+    public Backend(Notifier aNotifier, Configuration aConfiguration) throws IOException {
         notifier = aNotifier;
         locations = new HashMap<>();
         executorPool = new ExecutorPool();
         contentExtractor = new ContentExtractor();
         directoryListener = new DirectoryListener() {
             @Override
-            public void fileDeleted(FilesystemLocation aFileSystemLocation, Path aFile) {
+            public void fileDeleted(Configuration.CrawlLocation aFileSystemLocation, Path aFile) {
                 try {
                     String theFilename = aFile.toString();
                     if (luceneIndexHandler.checkIfExists(theFilename)) {
@@ -56,16 +54,16 @@ class Backend {
             }
 
             @Override
-            public void fileFoundByCrawler(FilesystemLocation aFileSystemLocation, Path aFile) {
-                fileCreatedOrModified(aFileSystemLocation, aFile, false);
+            public void fileFoundByCrawler(Configuration.CrawlLocation aLocation, Path aFile) {
+                fileCreatedOrModified(aLocation, aFile, false);
             }
 
             @Override
-            public void fileCreatedOrModified(FilesystemLocation aFileSystemLocation, Path aFile) {
-                fileCreatedOrModified(aFileSystemLocation, aFile, true);
+            public void fileCreatedOrModified(Configuration.CrawlLocation aLocation, Path aFile) {
+                fileCreatedOrModified(aLocation, aFile, true);
             }
 
-            private void fileCreatedOrModified(FilesystemLocation aFileSystemLocation, Path aFile, boolean aShowInformation) {
+            private void fileCreatedOrModified(Configuration.CrawlLocation aLocation, Path aFile, boolean aShowInformation) {
                 String theFileName = aFile.toString();
                 if (contentExtractor.supportsFile(theFileName)) {
                     try {
@@ -81,7 +79,7 @@ class Backend {
 
                             Content theContent = contentExtractor.extractContentFrom(aFile, theAttributes);
                             if (theContent != null) {
-                                luceneIndexHandler.addToIndex(aFileSystemLocation.getId(), theContent);
+                                luceneIndexHandler.addToIndex(aLocation.getId(), theContent);
                             }
                         } else {
                             LOGGER.info("File " + aFile+" was modified, but Index Status is " + theUpdateCheckResult);
@@ -92,17 +90,40 @@ class Backend {
                 }
             }
         };
+        configurationUpdated(aConfiguration);
+    }
+
+    @Override
+    public void configurationUpdated(Configuration aConfiguration) throws IOException {
+
+        setIndexLocation(aConfiguration.getIndexDirectory());
+
+        configuration = aConfiguration;
+
+        locations.values().stream().forEach(DirectoryWatcher::stopWatching);
+        locations.clear();
+
+        aConfiguration.getCrawlLocations().stream().forEach(e -> {
+            File theDirectory = e.getDirectory();
+            if (theDirectory.exists() && theDirectory.isDirectory()) {
+                try {
+                    add(e);
+                } catch (IOException e1) {
+                    LOGGER.error("Error setting filesystem location for " + theDirectory, e1);
+                }
+            }
+        });
     }
 
     public void setProgressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
     }
 
-    public void add(FilesystemLocation aLocation) throws IOException {
+    private void add(Configuration.CrawlLocation aLocation) throws IOException {
         locations.put(aLocation, new DirectoryWatcher(aLocation, DirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener, executorPool).startWatching());
     }
 
-    public void setIndexLocation(File aFile) throws IOException {
+    private void setIndexLocation(File aFile) throws IOException {
         if (luceneIndexHandler != null) {
             shutdown();
         }
@@ -121,7 +142,7 @@ class Backend {
                     try {
                         theWatcher.crawl();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.error("Error while crawling", e);
                     }
                 });
 
@@ -136,38 +157,6 @@ class Backend {
     }
 
     public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Map<String, String> aDrilldownDimensions) throws IOException {
-        return luceneIndexHandler.performQuery(aQueryString, aBacklink, aBasePath, includeSimilarDocuments, numberOfSearchResults, aDrilldownDimensions);
-    }
-
-    public boolean isIncludeSimilarDocuments() {
-        return includeSimilarDocuments;
-    }
-
-    public int getNumberOfSearchResults() {
-        return numberOfSearchResults;
-    }
-
-    public void setNumberOfSearchResults(int numberOfSearchResults) {
-        this.numberOfSearchResults = numberOfSearchResults;
-    }
-
-    public String getIndexLocation() {
-        return luceneIndexHandler.getIndexLocation().toString();
-    }
-
-    public List<FilesystemLocation> getFileSystemLocations() {
-        return Collections.unmodifiableList(new ArrayList<>(locations.keySet()));
-    }
-
-    public void setIncludeSimilarDocuments(boolean includeSimilarDocuments) {
-        this.includeSimilarDocuments = includeSimilarDocuments;
-    }
-
-    public void remove(FilesystemLocation aLocation) {
-        DirectoryWatcher theWatcher = locations.get(aLocation);
-        if (theWatcher != null) {
-            theWatcher.stopWatching();
-            locations.remove(aLocation);
-        }
+        return luceneIndexHandler.performQuery(aQueryString, aBacklink, aBasePath, configuration, aDrilldownDimensions);
     }
 }

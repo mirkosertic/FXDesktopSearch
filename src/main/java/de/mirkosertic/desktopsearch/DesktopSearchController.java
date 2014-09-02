@@ -127,9 +127,7 @@ public class DesktopSearchController implements Initializable {
         public void newFileFound(final String aFilename) {
             wakeupThread();
             watcherThread.notifyProgress();
-            Platform.runLater(() -> {
-                statusText.setText(aFilename);
-            });
+            Platform.runLater(() -> statusText.setText(aFilename));
         }
 
         public void crawlingFinished() {
@@ -208,7 +206,7 @@ public class DesktopSearchController implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
 
             ConfigurationController theConfigController = theLoader.getController();
-            theConfigController.initializeWithValues(backend, stage);
+            theConfigController.initialize(application.getConfigurationManager(), stage);
             stage.initOwner(window);
             stage.show();
         } catch (IOException e) {

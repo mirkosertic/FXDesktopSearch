@@ -66,7 +66,8 @@ class QueryParser {
             if (aTerm.contains(" ")) {
                 // Seems to be a phrase query
                 List<SpanQuery> theQueries = new ArrayList<>();
-                for (String thePhraseTerm : StringUtils.split(aTerm, " ")) {
+                String[] theQueryTerms = StringUtils.split(aTerm," ");
+                for (String thePhraseTerm : theQueryTerms) {
                     thePhraseTerm = toToken(StringUtils.strip(thePhraseTerm), aSearchField);
                     if (isValid(thePhraseTerm)) {
                         SpanQuery theQuery;
@@ -82,12 +83,35 @@ class QueryParser {
                 }
                 if (!theQueries.isEmpty()) {
                     SpanQuery theSpanQuery = new SpanNearQuery(theQueries.toArray(new SpanQuery[theQueries.size()]), 1, true);
+                    theSpanQuery.setBoost(theQueryTerms.length * 5);
                     if (aNegated) {
                         aQuery.add(theSpanQuery, BooleanClause.Occur.MUST_NOT);
                     } else {
                         aQuery.add(theSpanQuery, BooleanClause.Occur.MUST);
                     }
                 }
+
+                int theMaxRequired = Math.min(theQueries.size(), 7);
+                for (int i = 2;i <= theMaxRequired; i++) {
+                    BooleanQuery theQuery = new BooleanQuery();
+                    for (String theTerm : theQueryTerms) {
+                        theTerm = toToken(StringUtils.strip(theTerm), aSearchField);
+                        theQuery.add(new TermQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.SHOULD);
+                    }
+                    theQuery.setBoost(i * 3);
+                    theQuery.setMinimumNumberShouldMatch(i);
+                    if (aNegated) {
+                        aQuery.add(theQuery, BooleanClause.Occur.MUST_NOT);
+                    } else {
+                        aQuery.add(theQuery, BooleanClause.Occur.SHOULD);
+                    }
+                }
+
+                for (String theTerm : theQueryTerms) {
+                    theTerm = toToken(StringUtils.strip(theTerm), aSearchField);
+                    aQuery.add(new TermQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.SHOULD);
+                }
+
             } else {
                 if (isValid(aTerm)) {
                     // Single term
