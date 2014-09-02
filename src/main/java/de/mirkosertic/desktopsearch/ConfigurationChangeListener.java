@@ -12,28 +12,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import java.io.File;
+interface ConfigurationChangeListener {
 
-class FilesystemLocation {
-
-    private final String id;
-    private final File directory;
-
-    public FilesystemLocation(String id, File directory) {
-        this.id = id;
-        this.directory = directory;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public File getDirectory() {
-        return directory;
-    }
-
-    @Override
-    public String toString() {
-        return directory.toString();
-    }
+    void configurationUpdated(Configuration aConfiguration) throws Exception;
 }

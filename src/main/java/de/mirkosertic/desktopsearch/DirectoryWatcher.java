@@ -50,10 +50,10 @@ public class DirectoryWatcher {
     private final int waitForAction;
     private final Timer actionTimer;
     private final DirectoryListener directoryListener;
-    private final FilesystemLocation filesystemLocation;
+    private final Configuration.CrawlLocation filesystemLocation;
     private final ExecutorPool executorPool;
 
-    public DirectoryWatcher(FilesystemLocation aFileSystemLocation, int aWaitForAction, DirectoryListener aDirectoryListener, ExecutorPool aExecutorPool) throws IOException {
+    public DirectoryWatcher(Configuration.CrawlLocation aFileSystemLocation, int aWaitForAction, DirectoryListener aDirectoryListener, ExecutorPool aExecutorPool) throws IOException {
         executorPool = aExecutorPool;
         fileTimers = new HashMap<>();
         waitForAction = aWaitForAction;

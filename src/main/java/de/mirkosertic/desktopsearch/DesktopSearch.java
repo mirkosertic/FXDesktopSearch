@@ -22,12 +22,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.LockReleaseFailedException;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.net.BindException;
 import java.net.URL;
 
@@ -40,22 +42,25 @@ public class DesktopSearch extends Application {
     private FrontendEmbeddedWebServer embeddedWebServer;
     private Backend backend;
     private Stage stage;
-    private SearchPreferences searchPreferences;
+    private ConfigurationManager configurationManager;
 
     @Override
     public void start(Stage aStage) throws Exception {
+
+        // This is our base directory
+        File theBaseDirectory = new File(SystemUtils.getUserHome(), "FreeSearchIndexDir");
+        theBaseDirectory.mkdirs();
+
+        configurationManager = new ConfigurationManager(theBaseDirectory);
 
         Notifier theNotifier = new Notifier();
 
         stage = aStage;
 
-        searchPreferences = new SearchPreferences();
-
-        // Backend booten
-        backend = new Backend(theNotifier);
-
         try {
-            searchPreferences.initialize(backend);
+            // Boot the search backend and set it up for listening to configuration changes
+            backend = new Backend(theNotifier, configurationManager.getConfiguration());
+            configurationManager.addChangeListener(backend);
 
             // Boot embedded JSP container
             embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend);
@@ -144,17 +149,16 @@ public class DesktopSearch extends Application {
     }
 
     public void shutdown() {
+
         embeddedWebServer.stop();
         backend.shutdown();
         stage.hide();
 
-        try {
-            searchPreferences.save(backend);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         // Raw shutdown of all threads
         System.exit(0);
+    }
+
+    public ConfigurationManager getConfigurationManager() {
+        return configurationManager;
     }
 }

@@ -13,17 +13,14 @@
 package de.mirkosertic.desktopsearch;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
-public class ConfigurationController implements Initializable {
+public class ConfigurationController {
 
     @FXML
     CheckBox showSimilarResults;
@@ -52,14 +49,14 @@ public class ConfigurationController implements Initializable {
     @FXML
     Button buttonOk;
 
-    private Backend backend;
-
+    private ConfigurationManager configurationManager;
     private Stage stage;
 
-    private final Set<FilesystemLocation> removedLocations = new HashSet<>();
-    private final Set<FilesystemLocation> addedLocations = new HashSet<>();
 
-    public void initialize(URL aUrl, ResourceBundle aResourceBundle) {
+    private final Set<Configuration.CrawlLocation> removedLocations = new HashSet<>();
+    private final Set<Configuration.CrawlLocation> addedLocations = new HashSet<>();
+
+    public void initialize(ConfigurationManager aConfigurationManager, Stage aStage) {
         Objects.requireNonNull(showSimilarResults);
         Objects.requireNonNull(numberDocuments);
         Objects.requireNonNull(indexedDirectories);
@@ -75,26 +72,32 @@ public class ConfigurationController implements Initializable {
         buttonOk.setOnAction(actionEvent -> ok());
         buttonCancel.setOnAction(actionEvent -> cancel());
         buttonSetIndexLocation.setOnAction(actionEvent -> setIndexLocation());
+
+        stage = aStage;
+        configurationManager = aConfigurationManager;
+
+        Configuration theConfiguration = configurationManager.getConfiguration();
+
+        showSimilarResults.setSelected(theConfiguration.isShowSimilarDocuments());
+        numberDocuments.setValue(theConfiguration.getNumberOfSearchResults());
+        indexLocation.setText(theConfiguration.getIndexDirectory().toString());
+        indexedDirectories.getItems().addAll(theConfiguration.getCrawlLocations());
     }
 
     private void ok() {
 
-        for (FilesystemLocation theLocation : addedLocations) {
-            try {
-                backend.add(theLocation);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        removedLocations.forEach(backend::remove);
+        Configuration theConfiguration = configurationManager.getConfiguration();
 
-        backend.setIncludeSimilarDocuments(showSimilarResults.isSelected());
-        backend.setNumberOfSearchResults((int) numberDocuments.getValue());
-        try {
-            backend.setIndexLocation(new File(indexLocation.getText()));
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (Configuration.CrawlLocation theLocation : addedLocations) {
+            theConfiguration = theConfiguration.addLocation(theLocation);
         }
+        for (Configuration.CrawlLocation theRemovedLocation : removedLocations) {
+            theConfiguration = theConfiguration.removeLocation(theRemovedLocation);
+        }
+        theConfiguration = theConfiguration.updateIncludeSimilarDocuments(showSimilarResults.isSelected());
+        theConfiguration = theConfiguration.updateNumberOfSearchResults((int) numberDocuments.getValue());
+
+        configurationManager.updateConfiguration(theConfiguration);
 
         stage.hide();
     }
@@ -113,7 +116,7 @@ public class ConfigurationController implements Initializable {
         theChooser.setTitle("Add new crawl location");
         File theFile = theChooser.showDialog(stage.getOwner());
         if (theFile != null) {
-            FilesystemLocation theNewLocation = new FilesystemLocation(UUID.randomUUID().toString(), theFile);
+            Configuration.CrawlLocation theNewLocation = new Configuration.CrawlLocation(UUID.randomUUID().toString(), theFile);
             indexedDirectories.getItems().add(theNewLocation);
 
             addedLocations.add(theNewLocation);
@@ -128,15 +131,5 @@ public class ConfigurationController implements Initializable {
         if (theFile != null) {
             indexLocation.setText(theFile.toString());
         }
-    }
-
-    public void initializeWithValues(Backend aBackend, Stage aStage) {
-        backend = aBackend;
-        stage = aStage;
-
-        showSimilarResults.setSelected(backend.isIncludeSimilarDocuments());
-        numberDocuments.setValue(backend.getNumberOfSearchResults());
-        indexLocation.setText(backend.getIndexLocation());
-        indexedDirectories.getItems().addAll(backend.getFileSystemLocations());
     }
 }
