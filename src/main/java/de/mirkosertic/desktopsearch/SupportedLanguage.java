@@ -12,19 +12,42 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.lucene.util.Version;
+import java.util.Locale;
 
-interface IndexFields {
+public enum SupportedLanguage {
+    ar,
+    bg,
+    br,
+    ca,
+    ckb,
+    cz,
+    da,
+    de,
+    el,
+    en,
+    es,
+    eu,
+    fa,
+    fi,
+    fr,
+    ga,
+    gl,
+    hi,
+    hu,
+    hy,
+    id,
+    it,
+    lv,
+    nl,
+    no,
+    pt,
+    ro,
+    ru,
+    sv,
+    th,
+    tr,;
 
-    Version LUCENE_VERSION = Version.LUCENE_4_9;
-
-    String FILENAME = "filename";
-    String EXTENSION = "extension";
-    String LANGUAGESTORED = "language_s";
-    String LANGUAGEFACET = "language_f";
-    String CONTENT = "content";
-    String CONTENTMD5 = "contentmd5";
-    String FILESIZE = "filesize";
-    String LASTMODIFIED = "lastmodified";
-    String LOCATIONID = "locationId";
+    public Locale toLocale() {
+        return new Locale(name());
+    }
 }

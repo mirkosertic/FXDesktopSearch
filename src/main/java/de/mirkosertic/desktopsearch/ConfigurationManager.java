@@ -13,14 +13,9 @@
 package de.mirkosertic.desktopsearch;
 
 import org.apache.log4j.Logger;
-
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,8 +43,13 @@ public class ConfigurationManager {
 
     private void initializeWithDefault(File aConfigDirectory) {
         try (InputStream theDefaultConfiguration = getClass().getResourceAsStream("/default-configuration.json")) {
-            loadConfigurationFrom(theDefaultConfiguration);
-        } catch (IOException e) {
+            if (theDefaultConfiguration != null) {
+                loadConfigurationFrom(theDefaultConfiguration);
+            } else {
+                LOGGER.error("No default configuration found");
+                configuration = new Configuration(aConfigDirectory);
+            }
+        } catch (Exception e) {
             LOGGER.error("Error loading default configuration, initializing with empty one", e);
             configuration = new Configuration(aConfigDirectory);
         }

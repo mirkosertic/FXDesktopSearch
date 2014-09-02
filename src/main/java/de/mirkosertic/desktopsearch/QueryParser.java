@@ -68,7 +68,6 @@ class QueryParser {
                 List<SpanQuery> theQueries = new ArrayList<>();
                 String[] theQueryTerms = StringUtils.split(aTerm," ");
                 for (String thePhraseTerm : theQueryTerms) {
-                    thePhraseTerm = toToken(StringUtils.strip(thePhraseTerm), aSearchField);
                     if (isValid(thePhraseTerm)) {
                         SpanQuery theQuery;
                         if (isWildCard(thePhraseTerm)) {
@@ -76,7 +75,8 @@ class QueryParser {
                         } else if (isFuzzy(thePhraseTerm)) {
                             theQuery = new SpanMultiTermQueryWrapper<>(new FuzzyQuery(new Term(aSearchField, thePhraseTerm.substring(1))));
                         } else {
-                            theQuery = new SpanTermQuery(new Term(aSearchField, thePhraseTerm));
+                            String theTokenized = toToken(thePhraseTerm, aSearchField);
+                            theQuery = new SpanTermQuery(new Term(aSearchField, theTokenized));
                         }
                         theQueries.add(theQuery);
                     }
@@ -117,9 +117,9 @@ class QueryParser {
                     // Single term
                     Query theQuery;
                     if (isWildCard(aTerm)) {
-                        theQuery = new WildcardQuery(new Term(aSearchField, toToken(aTerm, aSearchField)));
+                        theQuery = new WildcardQuery(new Term(aSearchField, aTerm));
                     } else if (isFuzzy(aTerm)) {
-                        theQuery = new FuzzyQuery(new Term(aSearchField, toToken(aTerm.substring(1), aSearchField)));
+                        theQuery = new FuzzyQuery(new Term(aSearchField, aTerm.substring(1)));
                     } else {
                         theQuery = new TermQuery(new Term(aSearchField, toToken(aTerm, aSearchField)));
                     }
