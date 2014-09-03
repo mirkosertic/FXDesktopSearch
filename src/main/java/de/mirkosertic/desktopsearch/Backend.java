@@ -128,7 +128,7 @@ class Backend implements ConfigurationChangeListener {
             shutdown();
         }
         AnalyzerCache theCache = new AnalyzerCache(aConfiguration);
-        luceneIndexHandler = new LuceneIndexHandler(aConfiguration.getIndexDirectory(), theCache);
+        luceneIndexHandler = new LuceneIndexHandler(aConfiguration.getIndexDirectory(), theCache, aConfiguration.getNumberOfSuggestions());
     }
 
     public void crawlLocations() throws IOException {
@@ -159,5 +159,9 @@ class Backend implements ConfigurationChangeListener {
 
     public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Map<String, String> aDrilldownDimensions) throws IOException {
         return luceneIndexHandler.performQuery(aQueryString, aBacklink, aBasePath, configuration, aDrilldownDimensions);
+    }
+
+    public SuggestionTerm[] findSuggestionTermsFor(String aTerm) throws IOException {
+        return luceneIndexHandler.findSuggestionTermsFor(aTerm);
     }
 }

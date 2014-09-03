@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="cache-control" content="max-age=0" />
@@ -8,13 +9,20 @@
         <base href="${serverBase}"/>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="webapp.css"/>
+        <link rel="stylesheet" href="jquery-ui-1.11.1.custom/jquery-ui.min.css"/>
+        <link rel="stylesheet" href="jquery-ui-1.11.1.custom/jquery-ui.theme.min.css"/>
+        <style>
+            .ui-autocomplete-loading {
+                background: white url("ui-anim_basic_16x16.gif") right center no-repeat;
+            }
+        </style>
     </head>
     <body>
         <form method="post" action="/search">
             <div class="titlebar">
                 <input class="submitbutton" type="submit" value="">
                 <div class="querydiv">
-                    <input placeholder="Please enter your search query here" class="query" name="querystring" type="text" value="${querystring?html}"/>
+                    <input placeholder="Please enter your search query here" class="query" id="querystring" name="querystring" type="text" value="${querystring?html}"/>
                 </div>
             </div>
         </form>
@@ -73,5 +81,54 @@
                 </div>
             </#if>
         </div>
+
+        <script src="jquery-ui-1.11.1.custom/external/jquery/jquery.js"></script>
+        <script src="jquery-ui-1.11.1.custom/jquery-ui.min.js"></script>
+        <script>
+            $(function() {
+                function split( val ) {
+                    return val.split( / \s*/ );
+                }
+                function extractLast( term ) {
+                    return split( term ).pop();
+                }
+                $( "#querystring" )
+                        // don't navigate away from the field on tab when selecting an item
+                        .bind( "keydown", function( event ) {
+                            if ( event.keyCode === $.ui.keyCode.TAB &&
+                                    $( this ).autocomplete( "instance" ).menu.active ) {
+                                event.preventDefault();
+                            }
+                        })
+                        .autocomplete({
+                            source: function( request, response ) {
+                                $.getJSON( "suggestion", {
+                                    term: extractLast( request.term )
+                                }, response );
+                            },
+                            search: function() {
+                                // custom minLength
+                                var term = extractLast( this.value );
+                                if ( term.length < 2 ) {
+                                    return false;
+                                }
+                            },
+                            focus: function() {
+                                // prevent value inserted on focus
+                                return false;
+                            },
+                            select: function( event, ui ) {
+                                var terms = split( this.value );
+                                // remove the current input
+                                terms.pop();
+                                // add the selected item
+                                terms.push( ui.item.value );
+                                terms.push( "" );
+                                this.value = terms.join( " " );
+                                return false;
+                            }
+                        });
+            });
+        </script>
     </body>
 </html>

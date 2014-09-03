@@ -45,6 +45,7 @@ public class Configuration {
     }
 
     private int numberOfSearchResults;
+    private int numberOfSuggestions;
     private boolean showSimilarDocuments;
     private List<CrawlLocation> crawlLocations;
     private File indexDirectory;
@@ -55,6 +56,7 @@ public class Configuration {
     private Configuration() {
         // Needed by Jackson
         numberOfSearchResults = 50;
+        numberOfSuggestions = 10;
         showSimilarDocuments = false;
         crawlLocations = new ArrayList<>();
         enabledLanguages = new HashSet<>(Arrays.asList(SupportedLanguage.values()));
@@ -83,6 +85,7 @@ public class Configuration {
 
     private Configuration(Configuration aConfiguration) {
         this();
+        numberOfSuggestions = aConfiguration.numberOfSuggestions;
         numberOfSearchResults = aConfiguration.numberOfSearchResults;
         showSimilarDocuments = aConfiguration.showSimilarDocuments;
         crawlLocations = new ArrayList<>(aConfiguration.crawlLocations);
@@ -111,6 +114,10 @@ public class Configuration {
 
     public File getIndexDirectory() {
         return indexDirectory;
+    }
+
+    public int getNumberOfSuggestions() {
+        return numberOfSuggestions;
     }
 
     public Set<SupportedLanguage> getEnabledLanguages() {
@@ -146,6 +153,12 @@ public class Configuration {
     public Configuration updateNumberOfSearchResults(int aValue) {
         Configuration theConfiguration = new Configuration(this);
         theConfiguration.numberOfSearchResults = aValue;
+        return theConfiguration;
+    }
+
+    public Configuration updateNumberOfSuggestions(int aValue) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.numberOfSuggestions = aValue;
         return theConfiguration;
     }
 }

@@ -12,20 +12,31 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.lucene.util.Version;
+public class SuggestionTerm {
+    
+    private String id;
+    private String label;
+    private String value;
 
-interface IndexFields {
+    private SuggestionTerm() {
+        // Used by Jackson
+    }
 
-    Version LUCENE_VERSION = Version.LUCENE_4_9;
+    public SuggestionTerm(String aId, String aLabel, String aValue) {
+        id = aId;
+        label = aLabel;
+        value = aValue;
+    }
 
-    String FILENAME = "filename";
-    String EXTENSION = "extension";
-    String LANGUAGESTORED = "language_s";
-    String LANGUAGEFACET = "language_f";
-    String CONTENT = "content";
-    String CONTENT_NOT_STEMMED = "contentnotstemmed";
-    String CONTENTMD5 = "contentmd5";
-    String FILESIZE = "filesize";
-    String LASTMODIFIED = "lastmodified";
-    String LOCATIONID = "locationId";
+    public String getId() {
+        return id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

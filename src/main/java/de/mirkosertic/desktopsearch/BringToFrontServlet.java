@@ -23,6 +23,8 @@ import java.io.IOException;
 
 public class BringToFrontServlet extends HttpServlet {
 
+    public static final String URL = "/bringToFront";
+
     private final Stage stage;
 
     public BringToFrontServlet(Stage aStage) {

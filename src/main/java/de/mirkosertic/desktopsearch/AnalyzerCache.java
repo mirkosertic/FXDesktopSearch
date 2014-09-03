@@ -129,4 +129,15 @@ class AnalyzerCache {
         }
         return null;
     }
+
+    public Analyzer getAnalyzerFor(String aField) {
+        if (aField.startsWith(FIELD_PREFIX)) {
+            SupportedLanguage theLanguage = SupportedLanguage.valueOf(aField.substring(FIELD_PREFIX.length()));
+            Analyzer theAnalyzer = analyzerByLanguage.get(theLanguage);
+            if (theAnalyzer != null) {
+                return theAnalyzer;
+            }
+        }
+        return standardAnalyzer;
+    }
 }
