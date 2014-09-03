@@ -37,7 +37,7 @@ public class DesktopGateway {
         if (Desktop.isDesktopSupported()) {
             if (Platform.isFxApplicationThread()) {
                 LOGGER.info("In FXApplicationThread");
-                new Thread(() -> open(aFile)).start();
+                new Thread(() -> open(aFile), "OpenFileThread").start();
             } else {
                 LOGGER.info("Not in FXApplicationThread");
                 open(aFile);
