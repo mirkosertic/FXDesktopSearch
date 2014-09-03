@@ -6,12 +6,12 @@
 
     <groupId>de.mirkosertic</groupId>
     <artifactId>DesktopSearch</artifactId>
-    <version>1.7.1</version>
+    <version>1.8.0-SNAPSHOT</version>
 
     <name>FreeDesktopSearch</name>
     <organization>
         <name>Project FreeDesktopSearch</name>
-        <url>http://code.google.com/p/freedesktopsearch</url>
+        <url>https://github.com/mirkosertic/FXDesktopSearch</url>
     </organization>
 
     <build>

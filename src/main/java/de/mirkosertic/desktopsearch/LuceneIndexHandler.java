@@ -16,6 +16,7 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
@@ -25,15 +26,20 @@ import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.FieldInfo;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.Terms;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.postingshighlight.PostingsHighlighter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.NRTCachingDirectory;
+import org.apache.lucene.util.BytesRef;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
@@ -59,9 +65,13 @@ class LuceneIndexHandler {
 
     private Thread commitThread;
     private final FieldType contentFieldType;
+    private final int maxNumberOfSuggestions;
+    private final TermCache termCache;
 
-    public LuceneIndexHandler(File aIndexDir, AnalyzerCache aAnalyzerCache) throws IOException {
+    public LuceneIndexHandler(File aIndexDir, AnalyzerCache aAnalyzerCache, int aMaxNumberOfSuggestions) throws IOException {
+        termCache = new TermCache();
         analyzerCache = aAnalyzerCache;
+        maxNumberOfSuggestions = aMaxNumberOfSuggestions;
 
         contentFieldType = new FieldType();
         contentFieldType.setIndexed(true);
@@ -199,16 +209,21 @@ class LuceneIndexHandler {
             LOGGER.info("No matching language and analyzer detected for " + theLanguage+" and " + aContent.getFileName()+", using the default index field and analyzer");
             theDocument.add(new Field(IndexFields.CONTENT, theContentAsString.toString(), contentFieldType));
         }
+
+        theDocument.add(new Field(IndexFields.CONTENT_NOT_STEMMED, theContentAsString.toString(), contentFieldType));
+
         theDocument.add(new TextField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LOCATIONID, aLocationId, Field.Store.YES));
         theDocument.add(new LongField(IndexFields.FILESIZE, aContent.getFileSize(), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LASTMODIFIED, "" + aContent.getLastModified(), Field.Store.YES));
 
         indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), facetsConfig.build(theDocument));
+        termCache.invalidate();
     }
 
     public void removeFromIndex(String aFileName) throws IOException {
         indexWriter.deleteDocuments(new Term(IndexFields.FILENAME, aFileName));
+        termCache.invalidate();
     }
 
     public void shutdown() {
@@ -346,6 +361,11 @@ class LuceneIndexHandler {
                         }
                         return super.getBreakIterator(aField);
                     }
+
+                    @Override
+                    protected Analyzer getIndexAnalyzer(String aField) {
+                        return analyzerCache.getAnalyzerFor(aField);
+                    }
                 };
                 final Map<String, String[]> theHighlights = thePostingHighlighter.highlightFields(analyzerCache.getAllFieldNames(), theQuery, theSearcher, theDocs);
 
@@ -476,6 +496,44 @@ class LuceneIndexHandler {
             return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs(), aBacklink);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            searcherManager.release(theSearcher);
+        }
+    }
+
+    public SuggestionTerm[] findSuggestionTermsFor(String aTerm) throws IOException {
+
+        aTerm = aTerm.toLowerCase();
+
+        searcherManager.maybeRefreshBlocking();
+        IndexSearcher theSearcher = searcherManager.acquire();
+
+        try {
+
+            List<Map.Entry<String, Long>> theEntries = termCache.getFrequenciesFor(aTerm, theSearcher.getIndexReader());
+
+            Collections.sort(theEntries, (o1, o2) -> {
+                CompareToBuilder theCompareToBuilder = new CompareToBuilder();
+                //theCompareToBuilder.append(o1.getKey(), o2.getKey());
+                theCompareToBuilder.append(o2.getValue(), o1.getValue());
+                return theCompareToBuilder.toComparison();
+            });
+
+            List<String> theResult = new ArrayList<>();
+            theEntries.stream().limit(maxNumberOfSuggestions).forEach( e -> {
+                if (!theResult.contains(e.getKey())) {
+                    theResult.add(e.getKey());
+                }
+            });
+
+            SuggestionTerm[] theSuggestionResult = new SuggestionTerm[theResult.size()];
+            for (int i=0;i<theResult.size();i++) {
+                String theTerm = theResult.get(i);
+                theSuggestionResult[i] = new SuggestionTerm("" + i, theTerm, theTerm);
+            }
+
+            return theSuggestionResult;
+
         } finally {
             searcherManager.release(theSearcher);
         }

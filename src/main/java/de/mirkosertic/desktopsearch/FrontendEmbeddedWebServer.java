@@ -24,8 +24,6 @@ class FrontendEmbeddedWebServer {
 
     private static final int PORT_NUMMER = 4711;
 
-    private static final String BRINGTOFRONT_URI = "/bringToFront";
-
     private final Server jetty;
 
     public FrontendEmbeddedWebServer(Stage aStage, Backend aBackend) {
@@ -37,7 +35,8 @@ class FrontendEmbeddedWebServer {
         theWebApp.setDescriptor("WEB-INF/web.xml");
         theWebApp.setClassLoader(getClass().getClassLoader());
         theWebApp.addServlet(new ServletHolder(new SearchServlet(aBackend, "http://127.0.0.1:" + PORT_NUMMER)), SearchServlet.URL + "/*");
-        theWebApp.addServlet(new ServletHolder(new BringToFrontServlet(aStage)), BRINGTOFRONT_URI);
+        theWebApp.addServlet(new ServletHolder(new BringToFrontServlet(aStage)), BringToFrontServlet.URL);
+        theWebApp.addServlet(new ServletHolder(new SuggestionServlet(aBackend)), SuggestionServlet.URL);
 
         jetty.setHandler(theWebApp);
     }
@@ -65,6 +64,6 @@ class FrontendEmbeddedWebServer {
     }
 
     public static String getBringToFrontUrl() {
-        return "http://127.0.0.1:" + PORT_NUMMER + BRINGTOFRONT_URI;
+        return "http://127.0.0.1:" + PORT_NUMMER + BringToFrontServlet.URL;
     }
 }
