@@ -72,6 +72,7 @@ public class DesktopSearchController implements Initializable {
         private final AtomicLong lastActivity;
 
         public ProgressWatcherThread() {
+            super("Progress Watcher Thread");
             lastActivity = new AtomicLong();
             setName("UI Progress watcher thread");
         }

@@ -26,20 +26,15 @@ import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.FieldInfo;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.Terms;
-import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.postingshighlight.PostingsHighlighter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.NRTCachingDirectory;
-import org.apache.lucene.util.BytesRef;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
@@ -67,11 +62,13 @@ class LuceneIndexHandler {
     private final FieldType contentFieldType;
     private final int maxNumberOfSuggestions;
     private final TermCache termCache;
+    private ForkJoinPool forkJoinPool;
 
     public LuceneIndexHandler(File aIndexDir, AnalyzerCache aAnalyzerCache, int aMaxNumberOfSuggestions) throws IOException {
         termCache = new TermCache();
         analyzerCache = aAnalyzerCache;
         maxNumberOfSuggestions = aMaxNumberOfSuggestions;
+        forkJoinPool = ForkJoinPool.commonPool();
 
         contentFieldType = new FieldType();
         contentFieldType.setIndexed(true);
@@ -100,7 +97,7 @@ class LuceneIndexHandler {
 
         searcherManager = new SearcherManager(indexWriter, true, new SearcherFactory());
 
-        commitThread = new Thread() {
+        commitThread = new Thread("Lucene Commit Thread") {
             @Override
             public void run() {
                 while (!isInterrupted()) {
@@ -121,7 +118,6 @@ class LuceneIndexHandler {
                 }
             }
         };
-
         commitThread.start();
 
         facetsConfig = new FacetsConfig();
@@ -227,6 +223,7 @@ class LuceneIndexHandler {
     }
 
     public void shutdown() {
+        forkJoinPool.shutdown();
         commitThread.interrupt();
         try {
             indexWriter.close();
@@ -343,8 +340,6 @@ class LuceneIndexHandler {
                 List<Facet> theLastModifiedYearFacet = new ArrayList<>();
                 List<Facet> theLanguageFacet = new ArrayList<>();
 
-                ForkJoinPool theCommonPool = ForkJoinPool.commonPool();
-
                 LOGGER.info("Found "+theDocs.scoreDocs.length+" documents");
 
                 // We need this cache to detect duplicate documents while searching for similarities
@@ -392,7 +387,7 @@ class LuceneIndexHandler {
                         String[] theDocumentHighlightsForField = theHighlights.get(theFieldName);
                         final String theHighlightedText = theDocumentHighlightsForField[i];
 
-                        ForkJoinTask<String> theHighligherResult = theCommonPool.submit(() -> {
+                        ForkJoinTask<String> theHighligherResult = forkJoinPool.submit(() -> {
                             StringBuilder theResult = new StringBuilder(theDateFormat.format(theLastModified));
                             theResult.append("&nbsp;-&nbsp;");
                             theResult.append(theHighlightedText);
