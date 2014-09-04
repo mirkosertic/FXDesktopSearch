@@ -53,7 +53,7 @@ public class DirectoryWatcher {
     private final Configuration.CrawlLocation filesystemLocation;
     private final ExecutorPool executorPool;
 
-    public DirectoryWatcher(Configuration.CrawlLocation aFileSystemLocation, int aWaitForAction, DirectoryListener aDirectoryListener, ExecutorPool aExecutorPool) throws IOException {
+    public DirectoryWatcher(WatchServiceCache aWatchServiceCache, Configuration.CrawlLocation aFileSystemLocation, int aWaitForAction, DirectoryListener aDirectoryListener, ExecutorPool aExecutorPool) throws IOException {
         executorPool = aExecutorPool;
         fileTimers = new HashMap<>();
         waitForAction = aWaitForAction;
@@ -62,7 +62,7 @@ public class DirectoryWatcher {
 
         Path thePath = aFileSystemLocation.getDirectory().toPath();
 
-        watchService = thePath.getFileSystem().newWatchService();
+        watchService = aWatchServiceCache.getWatchServiceFor(thePath);
         watcherThread = new Thread("WatcherThread-"+thePath) {
             @Override
             public void run() {

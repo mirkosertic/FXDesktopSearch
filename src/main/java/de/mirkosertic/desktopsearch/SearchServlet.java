@@ -64,7 +64,7 @@ public class SearchServlet extends HttpServlet {
                 theBasePath = theBasePath + "/" + theURLCodec.encode(theQueryString);
                 theBackLink = theBackLink + "/" + theURLCodec.encode(theQueryString);
             } catch (EncoderException e) {
-                e.printStackTrace();
+                LOGGER.error("Error encoding query string " + theQueryString, e);
             }
         }
         Map<String, String> theDrilldownDimensions = new HashMap<>();
@@ -107,7 +107,7 @@ public class SearchServlet extends HttpServlet {
             try {
                 aRequest.setAttribute("queryResult", backend.performQuery(theQueryString, theBackLink, theBasePath, theDrilldownDimensions));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Error running query " + theQueryString, e);
             }
         } else {
             aRequest.setAttribute("querystring", "");

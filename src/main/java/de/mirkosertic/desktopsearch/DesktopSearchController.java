@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import netscape.javascript.JSObject;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -39,6 +40,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class DesktopSearchController implements Initializable {
+
+    private static final Logger LOGGER  = Logger.getLogger(DesktopSearchController.class);
 
     @FXML
     MenuItem menuItemConfigure;
@@ -190,7 +193,7 @@ public class DesktopSearchController implements Initializable {
         try {
             backend.crawlLocations();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error crawling locations", e);
         }
     }
 
@@ -211,7 +214,7 @@ public class DesktopSearchController implements Initializable {
             stage.initOwner(window);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error running configuration dialog", e);
         }
     }
 }
