@@ -33,12 +33,14 @@ class Backend implements ConfigurationChangeListener {
     private final DirectoryListener directoryListener;
     private final ExecutorPool executorPool;
     private final Notifier notifier;
+    private final WatchServiceCache watchServiceCache;
     private Configuration configuration;
 
     public Backend(Notifier aNotifier, Configuration aConfiguration) throws IOException {
         notifier = aNotifier;
         locations = new HashMap<>();
         executorPool = new ExecutorPool();
+        watchServiceCache = new WatchServiceCache();
         contentExtractor = new ContentExtractor(aConfiguration);
         directoryListener = new DirectoryListener() {
             @Override
@@ -120,7 +122,7 @@ class Backend implements ConfigurationChangeListener {
     }
 
     private void add(Configuration.CrawlLocation aLocation) throws IOException {
-        locations.put(aLocation, new DirectoryWatcher(aLocation, DirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener, executorPool).startWatching());
+        locations.put(aLocation, new DirectoryWatcher(watchServiceCache, aLocation, DirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener, executorPool).startWatching());
     }
 
     private void setIndexLocation(Configuration aConfiguration) throws IOException {
