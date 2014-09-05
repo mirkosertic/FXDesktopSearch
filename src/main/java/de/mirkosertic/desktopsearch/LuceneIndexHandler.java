@@ -31,6 +31,9 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.search.*;
+import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.apache.lucene.search.postingshighlight.PostingsHighlighter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -362,7 +365,6 @@ class LuceneIndexHandler {
                         return analyzerCache.getAnalyzerFor(aField);
                     }
                 };
-                final Map<String, String[]> theHighlights = thePostingHighlighter.highlightFields(analyzerCache.getAllFieldNames(), theQuery, theSearcher, theDocs);
 
                 for (int i = 0; i < theDocs.scoreDocs.length; i++) {
                     int theDocumentID = theDocs.scoreDocs[i].doc;
@@ -384,18 +386,27 @@ class LuceneIndexHandler {
                             theFieldName = IndexFields.CONTENT;
                         }
 
-                        String[] theDocumentHighlightsForField = theHighlights.get(theFieldName);
-                        final String theHighlightedText = theDocumentHighlightsForField[i];
+                        String theOriginalContent = theDocument.getField(theFieldName).stringValue();
+
+                        final Query theFinalQuery = theQuery;
 
                         ForkJoinTask<String> theHighligherResult = forkJoinPool.submit(() -> {
                             StringBuilder theResult = new StringBuilder(theDateFormat.format(theLastModified));
                             theResult.append("&nbsp;-&nbsp;");
-                            theResult.append(theHighlightedText);
+                            Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theFinalQuery));
+                            for (String theFragment : theHighlighter.getBestFragments(analyzer, theFieldName, theOriginalContent, NUMBER_OF_FRAGMENTS)) {
+                                if (theResult.length() > 0) {
+                                    theResult = theResult.append("...");
+                                }
+                                theResult = theResult.append(theFragment);
+                            }
                             return theResult.toString();
                         });
 
+                        int theNormalizedScore = (int)(theDocs.scoreDocs[i].score / theDocs.getMaxScore() * 5);
+
                         // Cache the existing documents
-                        theExistingDocument = new QueryResultDocument(theDocumentID, theFoundFileName, theHighligherResult, Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()));
+                        theExistingDocument = new QueryResultDocument(theDocumentID, theFoundFileName, theHighligherResult, Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()), theNormalizedScore);
                         theDocumentsByHash.put(theHash, theExistingDocument);
                         theResultDocuments.add(theExistingDocument);
                     }

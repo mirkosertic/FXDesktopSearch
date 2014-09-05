@@ -29,13 +29,16 @@ public class QueryResultDocument {
 
     private final int documentID;
 
-    public QueryResultDocument(int aDocumentID, String aFileName, Future<String> aHighlighterResult, long aLastModified) {
+    private final int normalizedScore;
+
+    public QueryResultDocument(int aDocumentID, String aFileName, Future<String> aHighlighterResult, long aLastModified, int aNormalizedScore) {
         fileNames = new ArrayList<>();
         fileNames.add(aFileName);
         highlightedSearchResult = aHighlighterResult;
         lastModified = aLastModified;
         documentID = aDocumentID;
         similarFiles = new ArrayList<>();
+        normalizedScore = aNormalizedScore;
     }
 
     public List<String> getFileNames() {
@@ -72,5 +75,9 @@ public class QueryResultDocument {
         if (!similarFiles.contains(aFileName)) {
             similarFiles.add(aFileName);
         }
+    }
+
+    public int getNormalizedScore() {
+        return normalizedScore;
     }
 }

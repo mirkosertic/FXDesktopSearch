@@ -61,128 +61,112 @@ class QueryParser {
         return !StringUtils.isEmpty(aTerm) && !"*".equals(aTerm) && !"?".equals(aTerm);
     }
 
-    private void addSubQuery(BooleanQuery aQuery, String aTerm, boolean aNegated, String aSearchField) throws IOException {
-        if (!StringUtils.isEmpty(aTerm)) {
-            if (aTerm.contains(" ")) {
-                // Seems to be a phrase query
-                List<SpanQuery> theQueries = new ArrayList<>();
-                String[] theQueryTerms = StringUtils.split(aTerm," ");
-                for (String thePhraseTerm : theQueryTerms) {
-                    if (isValid(thePhraseTerm)) {
-                        SpanQuery theQuery;
-                        if (isWildCard(thePhraseTerm)) {
-                            theQuery = new SpanMultiTermQueryWrapper<>(new WildcardQuery(new Term(aSearchField, thePhraseTerm)));
-                        } else if (isFuzzy(thePhraseTerm)) {
-                            theQuery = new SpanMultiTermQueryWrapper<>(new FuzzyQuery(new Term(aSearchField, thePhraseTerm.substring(1))));
-                        } else {
-                            String theTokenized = toToken(thePhraseTerm, aSearchField);
-                            theQuery = new SpanTermQuery(new Term(aSearchField, theTokenized));
-                        }
-                        theQueries.add(theQuery);
-                    }
-                }
-                if (!theQueries.isEmpty()) {
-                    SpanQuery theSpanQuery = new SpanNearQuery(theQueries.toArray(new SpanQuery[theQueries.size()]), 1, true);
-                    theSpanQuery.setBoost(theQueryTerms.length * 5);
-                    if (aNegated) {
-                        aQuery.add(theSpanQuery, BooleanClause.Occur.MUST_NOT);
-                    } else {
-                        aQuery.add(theSpanQuery, BooleanClause.Occur.MUST);
-                    }
-                }
-
-                int theMaxRequired = Math.min(theQueries.size(), 7);
-                for (int i = 2;i <= theMaxRequired; i++) {
-                    BooleanQuery theQuery = new BooleanQuery();
-                    for (String theTerm : theQueryTerms) {
-                        theTerm = toToken(StringUtils.strip(theTerm), aSearchField);
-                        theQuery.add(new TermQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.SHOULD);
-                    }
-                    theQuery.setBoost(i * 3);
-                    theQuery.setMinimumNumberShouldMatch(i);
-                    if (aNegated) {
-                        aQuery.add(theQuery, BooleanClause.Occur.MUST_NOT);
-                    } else {
-                        aQuery.add(theQuery, BooleanClause.Occur.SHOULD);
-                    }
-                }
-
-                for (String theTerm : theQueryTerms) {
-                    theTerm = toToken(StringUtils.strip(theTerm), aSearchField);
-                    aQuery.add(new TermQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.SHOULD);
-                }
-
-            } else {
-                if (isValid(aTerm)) {
-                    // Single term
-                    Query theQuery;
-                    if (isWildCard(aTerm)) {
-                        theQuery = new WildcardQuery(new Term(aSearchField, aTerm));
-                    } else if (isFuzzy(aTerm)) {
-                        theQuery = new FuzzyQuery(new Term(aSearchField, aTerm.substring(1)));
-                    } else {
-                        theQuery = new TermQuery(new Term(aSearchField, toToken(aTerm, aSearchField)));
-                    }
-
-                    if (aNegated) {
-                        aQuery.add(theQuery, BooleanClause.Occur.MUST_NOT);
-                    } else {
-                        aQuery.add(theQuery, BooleanClause.Occur.MUST);
-                    }
-                }
-            }
-        }
-    }
-
     public Query parse(String aQuery, String aSearchField) throws IOException {
 
-        BooleanQuery theResult = new BooleanQuery();
+        List<String> theRequiredTerms = new ArrayList<>();
+        List<String> theNotRequiredTerms = new ArrayList<>();
 
-        boolean isStringMode = false;
         boolean isNegated = false;
         StringBuilder theCurrentTerm = new StringBuilder();
 
         for (int i = 0; i < aQuery.length(); i++) {
             char theCurrentChar = Character.toLowerCase(aQuery.charAt(i));
-            if (theCurrentChar == '\"') {
-                isStringMode = !isStringMode;
-            } else {
-                if (!isStringMode) {
-                    switch (theCurrentChar) {
-                    case '-': {
-                        if (theCurrentTerm.length() == 0) {
-                            isNegated = true;
-                        } else {
-                            theCurrentTerm.append(theCurrentChar);
-                        }
-                        break;
-                    }
-                    case '+':
-                        if (theCurrentTerm.length() == 0) {
-                            isNegated = false;
-                        } else {
-                            theCurrentTerm.append(theCurrentChar);
-                        }
-                        break;
-                    case ' ': {
-                        addSubQuery(theResult, theCurrentTerm.toString(), isNegated, aSearchField);
-                        theCurrentTerm = new StringBuilder();
-                        isNegated = false;
-                        break;
-                    }
-                    default: {
+            switch (theCurrentChar) {
+                case '-': {
+                    if (theCurrentTerm.length() == 0) {
+                        isNegated = true;
+                    } else {
                         theCurrentTerm.append(theCurrentChar);
-                        break;
                     }
+                    break;
+                }
+                case '+':
+                    if (theCurrentTerm.length() == 0) {
+                        isNegated = false;
+                    } else {
+                        theCurrentTerm.append(theCurrentChar);
                     }
-                } else {
+                    break;
+                case ' ': {
+                    if (isValid(theCurrentTerm.toString())) {
+                        if (isNegated) {
+                            theNotRequiredTerms.add(theCurrentTerm.toString());
+                        } else {
+                            theRequiredTerms.add(theCurrentTerm.toString());
+                        }
+                    }
+                    theCurrentTerm = new StringBuilder();
+                    isNegated = false;
+                    break;
+                }
+                default: {
                     theCurrentTerm.append(theCurrentChar);
+                    break;
                 }
             }
         }
 
-        if (theCurrentTerm.length() > 0) {
-            addSubQuery(theResult, theCurrentTerm.toString(), isNegated, aSearchField);
+        if (isValid(theCurrentTerm.toString())) {
+            if (isNegated) {
+                theNotRequiredTerms.add(theCurrentTerm.toString());
+            } else {
+                theRequiredTerms.add(theCurrentTerm.toString());
+            }
+        }
+
+        // Now we have the terms, lets construct the query
+
+        BooleanQuery theResult = new BooleanQuery();
+
+        if (!theRequiredTerms.isEmpty()) {
+
+            SpanQuery[] theSpans = new SpanQuery[theRequiredTerms.size()];
+            for (int i = 0; i < theRequiredTerms.size(); i++) {
+                String theTerm = theRequiredTerms.get(i);
+                if (isWildCard(theTerm)) {
+                    theSpans[i] = new SpanMultiTermQueryWrapper<>(new WildcardQuery(new Term(aSearchField, theTerm)));
+                } else if (isFuzzy(theTerm)) {
+                    theSpans[i] = new SpanMultiTermQueryWrapper<>(new FuzzyQuery(new Term(aSearchField, theTerm)));
+                } else {
+                    theSpans[i] = new SpanTermQuery(new Term(aSearchField, toToken(theTerm, aSearchField)));
+                }
+            }
+
+            // This is the original span, so we boost it a lot
+            SpanQuery theExactMatchQuery = new SpanNearQuery(theSpans, 0, true);
+            theExactMatchQuery.setBoost(61);
+            theResult.add(theExactMatchQuery, BooleanClause.Occur.SHOULD);
+
+            // We expect a maximum edit distance of 20 between the searched terms in any order
+            // This seems to be the most useful value
+            int theMaxEditDistance = 10;
+            for (int theSlop=0;theSlop<theMaxEditDistance;theSlop++) {
+                SpanQuery theNearQuery = new SpanNearQuery(theSpans, theSlop, false);
+                theNearQuery.setBoost(50 + theMaxEditDistance - theSlop);
+                theResult.add(theNearQuery, BooleanClause.Occur.SHOULD);
+            }
+
+            // Finally, we just add simple term queries, but do not boost them
+            // This makes sure that at least the searched terms
+            // are found in the document
+            for (int i=0;i<theRequiredTerms.size();i++) {
+                String theTerm = theRequiredTerms.get(i);
+                if (isWildCard(theTerm)) {
+                    theResult.add(new WildcardQuery(new Term(aSearchField, toToken(theTerm, aSearchField))), BooleanClause.Occur.MUST);
+                } else if (isFuzzy(theTerm)) {
+                    theResult.add(new FuzzyQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.MUST);
+                } else {
+                    theResult.add(new TermQuery(new Term(aSearchField, toToken(theTerm, aSearchField))), BooleanClause.Occur.MUST);
+                }
+            }
+        }
+
+        for (String theTerm : theNotRequiredTerms) {
+            if (isWildCard(theTerm)) {
+                theResult.add(new WildcardQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.MUST_NOT);
+            } else {
+                theResult.add(new TermQuery(new Term(aSearchField, toToken(theTerm, aSearchField))), BooleanClause.Occur.MUST_NOT);
+            }
         }
 
         return theResult;
