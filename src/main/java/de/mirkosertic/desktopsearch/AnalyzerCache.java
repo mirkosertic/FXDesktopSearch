@@ -59,41 +59,46 @@ class AnalyzerCache {
     private final Map<SupportedLanguage, Analyzer> analyzerByLanguage;
     private final Analyzer standardAnalyzer;
 
+    private static Analyzer configure(Analyzer aAnalyzer) {
+        aAnalyzer.setVersion(IndexFields.LUCENE_VERSION);
+        return aAnalyzer;
+    }
+
     public AnalyzerCache(Configuration aConfiguration) {
-        standardAnalyzer = new StandardAnalyzer(IndexFields.LUCENE_VERSION);
+        standardAnalyzer = configure(new StandardAnalyzer());
         analyzerByLanguage = new HashMap<>();
 
-        registerIfEnabled(SupportedLanguage.ar, aConfiguration, new ArabicAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.bg, aConfiguration, new BulgarianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.br, aConfiguration, new BrazilianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.ca, aConfiguration, new CatalanAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.ckb, aConfiguration, new SoraniAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.cz, aConfiguration, new CzechAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.da, aConfiguration, new DanishAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.de, aConfiguration, new GermanAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.el, aConfiguration, new GreekAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.en, aConfiguration, new EnglishAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.es, aConfiguration, new SpanishAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.eu, aConfiguration, new BasqueAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.fa, aConfiguration, new PersianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.fi, aConfiguration, new FinnishAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.fr, aConfiguration, new FrenchAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.ga, aConfiguration, new IrishAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.gl, aConfiguration, new GalicianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.hi, aConfiguration, new HindiAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.hu, aConfiguration, new HungarianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.hy, aConfiguration, new ArmenianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.id, aConfiguration, new IndonesianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.it, aConfiguration, new ItalianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.lv, aConfiguration, new LatvianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.nl, aConfiguration, new DutchAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.no, aConfiguration, new NorwegianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.pt, aConfiguration, new PortugueseAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.ro, aConfiguration, new RomanianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.ru, aConfiguration, new RussianAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.sv, aConfiguration, new SwedishAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.th, aConfiguration, new ThaiAnalyzer(IndexFields.LUCENE_VERSION));
-        registerIfEnabled(SupportedLanguage.tr, aConfiguration, new TurkishAnalyzer(IndexFields.LUCENE_VERSION));
+        registerIfEnabled(SupportedLanguage.ar, aConfiguration, configure(new ArabicAnalyzer()));
+        registerIfEnabled(SupportedLanguage.bg, aConfiguration, configure(new BulgarianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.br, aConfiguration, configure(new BrazilianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.ca, aConfiguration, configure(new CatalanAnalyzer()));
+        registerIfEnabled(SupportedLanguage.ckb, aConfiguration, configure(new SoraniAnalyzer()));
+        registerIfEnabled(SupportedLanguage.cz, aConfiguration, configure(new CzechAnalyzer()));
+        registerIfEnabled(SupportedLanguage.da, aConfiguration, configure(new DanishAnalyzer()));
+        registerIfEnabled(SupportedLanguage.de, aConfiguration, configure(new GermanAnalyzer()));
+        registerIfEnabled(SupportedLanguage.el, aConfiguration, configure(new GreekAnalyzer()));
+        registerIfEnabled(SupportedLanguage.en, aConfiguration, configure(new EnglishAnalyzer()));
+        registerIfEnabled(SupportedLanguage.es, aConfiguration, configure(new SpanishAnalyzer()));
+        registerIfEnabled(SupportedLanguage.eu, aConfiguration, configure(new BasqueAnalyzer()));
+        registerIfEnabled(SupportedLanguage.fa, aConfiguration, configure(new PersianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.fi, aConfiguration, configure(new FinnishAnalyzer()));
+        registerIfEnabled(SupportedLanguage.fr, aConfiguration, configure(new FrenchAnalyzer()));
+        registerIfEnabled(SupportedLanguage.ga, aConfiguration, configure(new IrishAnalyzer()));
+        registerIfEnabled(SupportedLanguage.gl, aConfiguration, configure(new GalicianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.hi, aConfiguration, configure(new HindiAnalyzer()));
+        registerIfEnabled(SupportedLanguage.hu, aConfiguration, configure(new HungarianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.hy, aConfiguration, configure(new ArmenianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.id, aConfiguration, configure(new IndonesianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.it, aConfiguration, configure(new ItalianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.lv, aConfiguration, configure(new LatvianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.nl, aConfiguration, configure(new DutchAnalyzer()));
+        registerIfEnabled(SupportedLanguage.no, aConfiguration, configure(new NorwegianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.pt, aConfiguration, configure(new PortugueseAnalyzer()));
+        registerIfEnabled(SupportedLanguage.ro, aConfiguration, configure(new RomanianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.ru, aConfiguration, configure(new RussianAnalyzer()));
+        registerIfEnabled(SupportedLanguage.sv, aConfiguration, configure(new SwedishAnalyzer()));
+        registerIfEnabled(SupportedLanguage.th, aConfiguration, configure(new ThaiAnalyzer()));
+        registerIfEnabled(SupportedLanguage.tr, aConfiguration, configure(new TurkishAnalyzer()));
     }
 
     private void registerIfEnabled(SupportedLanguage aLanguage, Configuration aConfiguration, Analyzer aAnalyzer) {

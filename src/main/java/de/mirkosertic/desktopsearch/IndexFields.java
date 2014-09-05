@@ -16,7 +16,7 @@ import org.apache.lucene.util.Version;
 
 interface IndexFields {
 
-    Version LUCENE_VERSION = Version.LUCENE_4_9;
+    Version LUCENE_VERSION = Version.LUCENE_4_10_0;
 
     String FILENAME = "filename";
     String EXTENSION = "extension";

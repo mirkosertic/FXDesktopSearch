@@ -53,7 +53,15 @@
 
                     <#list document.fileNames as filename>
                         <#if filename_index == 0>
-                            <b><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${queryResult.getSimpleFileName(filename)}</a></b><br/>
+                            <b><span>
+                                <#list 0..5 as index>
+                                    <#if document.normalizedScore &gt;= index>
+                                        <img class="ratingStar" src="star_light.png"/>
+                                    <#else>
+                                        <img class="ratingStar" src="star_dark.png"/>
+                                    </#if>
+                                </#list>
+                            </span><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${queryResult.getSimpleFileName(filename)}</a></b><br/>
                             <a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
                         <#else>
                             <br/><a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
@@ -72,12 +80,11 @@
                 <div class="logoDiv"><img src="logo.png" class="logo"/>
                 <div class="introduction">
                     <div>Search examples:</div>
-                    <div><span>scott adams</span> searches for all documents containing the words "scott" and "adams" in any order.</div>
-                    <div><span>"scott adams"</span> searches for all documents containing the text "scott adams".</div>
-                    <div><span>"scott adams" -dogbert</span> searches for all documents containing the text "scot adams", but not "dogbert".</div>
+                    <div><span>scott adams</span> searches for all documents containing the phrase "scott adams" or at least the words "scott" and "adams" in any order.</div>
+                    <div><span>scott adams -dogbert</span> searches for all documents containing the text "scot adams", but not "dogbert".</div>
                     <div><span>scott ad*</span> searches for all documents containing the word "scott" and any words matching the wildcard "ad*", where * stands for any number of characters.</div>
                     <div><span>scott ad?ms</span> searches for all documents containing the word "scott" and any words matching the wildcard "ad?ms", where ? stands for one character.</div>
-                    <div><span>"scott adam?"</span> searches for all documents containing the text "scott adam?", where the ? is interpreted as a wildcard.</div>
+                    <div><span>scott ~adams</span> searches for all documents containing the word "scott" and any words matching the fuzzy term "adams".</div>
                 </div>
             </#if>
         </div>
