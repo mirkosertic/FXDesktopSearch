@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 
 class Backend implements ConfigurationChangeListener {
 
@@ -34,9 +35,11 @@ class Backend implements ConfigurationChangeListener {
     private final ExecutorPool executorPool;
     private final Notifier notifier;
     private final WatchServiceCache watchServiceCache;
+    private final ForkJoinPool forkJoinPool;
     private Configuration configuration;
 
     public Backend(Notifier aNotifier, Configuration aConfiguration) throws IOException {
+        forkJoinPool = ForkJoinPool.commonPool();
         notifier = aNotifier;
         locations = new HashMap<>();
         executorPool = new ExecutorPool();
@@ -130,7 +133,7 @@ class Backend implements ConfigurationChangeListener {
             shutdown();
         }
         AnalyzerCache theCache = new AnalyzerCache(aConfiguration);
-        luceneIndexHandler = new LuceneIndexHandler(aConfiguration.getIndexDirectory(), theCache, aConfiguration.getNumberOfSuggestions());
+        luceneIndexHandler = new LuceneIndexHandler(aConfiguration, theCache, aConfiguration.getNumberOfSuggestions(), forkJoinPool);
     }
 
     public void crawlLocations() throws IOException {

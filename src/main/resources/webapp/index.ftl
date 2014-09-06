@@ -54,7 +54,7 @@
                     <#list document.fileNames as filename>
                         <#if filename_index == 0>
                             <b><span>
-                                <#list 0..5 as index>
+                                <#list 1..5 as index>
                                     <#if document.normalizedScore &gt;= index>
                                         <img class="ratingStar" src="star_light.png"/>
                                     <#else>

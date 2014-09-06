@@ -48,10 +48,10 @@ public class Configuration {
     private int numberOfSuggestions;
     private boolean showSimilarDocuments;
     private List<CrawlLocation> crawlLocations;
-    private File indexDirectory;
     private Set<SupportedLanguage> enabledLanguages;
     private Set<SupportedDocumentType> enabledDocumentTypes;
     private Map<String, String> metaDataNameReplacement;
+    private File configDirectory;
 
     private Configuration() {
         // Needed by Jackson
@@ -92,12 +92,12 @@ public class Configuration {
         enabledLanguages = new HashSet<>(aConfiguration.enabledLanguages);
         enabledDocumentTypes = new HashSet<>(aConfiguration.enabledDocumentTypes);
         metaDataNameReplacement = new HashMap<>(aConfiguration.metaDataNameReplacement);
-        indexDirectory = aConfiguration.indexDirectory;
+        configDirectory = aConfiguration.configDirectory;
     }
 
     public Configuration(File aConfigDirectory) {
         this();
-        indexDirectory = new File(aConfigDirectory, "index");
+        configDirectory = aConfigDirectory;
     }
 
     public int getNumberOfSearchResults() {
@@ -112,8 +112,8 @@ public class Configuration {
         return Collections.unmodifiableList(crawlLocations);
     }
 
-    public File getIndexDirectory() {
-        return indexDirectory;
+    public File getConfigDirectory() {
+        return configDirectory;
     }
 
     public int getNumberOfSuggestions() {

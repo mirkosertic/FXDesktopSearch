@@ -55,23 +55,24 @@ class LuceneIndexHandler {
 
     private static final int NUMBER_OF_FRAGMENTS = 5;
 
-    private IndexWriter indexWriter;
-    private SearcherManager searcherManager;
+    private final IndexWriter indexWriter;
+    private final SearcherManager searcherManager;
     private final AnalyzerCache analyzerCache;
     private final Analyzer analyzer;
     private final FacetsConfig facetsConfig;
-
-    private Thread commitThread;
+    private final Thread commitThread;
     private final FieldType contentFieldType;
     private final int maxNumberOfSuggestions;
     private final TermCache termCache;
-    private ForkJoinPool forkJoinPool;
+    private final ForkJoinPool forkJoinPool;
+//    private final AnalyzingInfixSuggester suggester;
+    //private final FreeTextSuggester suggester;
 
-    public LuceneIndexHandler(File aIndexDir, AnalyzerCache aAnalyzerCache, int aMaxNumberOfSuggestions) throws IOException {
+    public LuceneIndexHandler(Configuration aConfiguration, AnalyzerCache aAnalyzerCache, int aMaxNumberOfSuggestions, ForkJoinPool aForkJoinPool) throws IOException {
         termCache = new TermCache();
         analyzerCache = aAnalyzerCache;
         maxNumberOfSuggestions = aMaxNumberOfSuggestions;
-        forkJoinPool = ForkJoinPool.commonPool();
+        forkJoinPool = aForkJoinPool;
 
         contentFieldType = new FieldType();
         contentFieldType.setIndexed(true);
@@ -85,14 +86,30 @@ class LuceneIndexHandler {
 
         analyzer = analyzerCache.getAnalyzer();
 
-        aIndexDir.mkdirs();
+        File theIndexDirectory = new File(aConfiguration.getConfigDirectory(), "index");
+        theIndexDirectory.mkdirs();
 
-        Directory theIndexFSDirectory = new NRTCachingDirectory(FSDirectory.open(aIndexDir), 100, 100);
+        Directory theIndexFSDirectory = new NRTCachingDirectory(FSDirectory.open(theIndexDirectory), 100, 100);
         try {
             theIndexFSDirectory.clearLock(IndexWriter.WRITE_LOCK_NAME);
         } catch (IOException e) {
             // No Lock there
         }
+
+        File theSuggestDirectory = new File(aConfiguration.getConfigDirectory(), "suggest");
+        theSuggestDirectory.mkdirs();
+
+        Directory theSuggestFSDirectory = FSDirectory.open(theSuggestDirectory);
+        try {
+            theSuggestFSDirectory.clearLock(IndexWriter.WRITE_LOCK_NAME);
+        } catch (IOException e) {
+            // No Lock there
+        }
+
+    //      suggester = new AnalyzingInfixSuggester(IndexFields.LUCENE_VERSION, theSuggestFSDirectory, analyzer);
+        // Initialize the writer and all the other stuff with an empty input iterator
+      //  suggester.build(InputIterator.EMPTY);
+        //suggester = new FreeTextSuggester(analyzer);
 
         IndexWriterConfig theConfig = new IndexWriterConfig(IndexFields.LUCENE_VERSION, analyzer);
         theConfig.setSimilarity(new CustomSimilarity());
@@ -111,6 +128,12 @@ class LuceneIndexHandler {
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
+
+                        /*try {
+                            suggester.refresh();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }*/
                     }
 
                     try {
@@ -216,7 +239,69 @@ class LuceneIndexHandler {
         theDocument.add(new LongField(IndexFields.FILESIZE, aContent.getFileSize(), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LASTMODIFIED, "" + aContent.getLastModified(), Field.Store.YES));
 
+        // Update the document in our search index
         indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), facetsConfig.build(theDocument));
+
+        // Feed the suggestor with possible word matches
+        /*Set<BytesRef> theContext = new HashSet<>();
+        if (theLanguage != null) {
+            theContext.add(new BytesRef(theLanguage.name()));
+        }
+
+        final List<String> theTerms = new ArrayList<>();
+        TokenStream theTokenStream = analyzerCache.getAnalyzer().tokenStream(IndexFields.CONTENT_NOT_STEMMED, theContentAsString.toString());
+        theTokenStream.reset();
+        CharTermAttribute theCharTerms = theTokenStream.getAttribute(CharTermAttribute.class);
+        while(theTokenStream.incrementToken()) {
+            String theToken = theCharTerms.toString();
+            theTerms.add(theToken);
+        }
+        theTokenStream.end();
+        theTokenStream.close();
+
+        suggester.build(new InputIterator() {
+
+            private Iterator<String> termsIterator = theTerms.iterator();
+
+            @Override
+            public long weight() {
+                return 1;
+            }
+
+            @Override
+            public BytesRef payload() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPayloads() {
+                return false;
+            }
+
+            @Override
+            public Set<BytesRef> contexts() {
+                return theContext;
+            }
+
+            @Override
+            public boolean hasContexts() {
+                return false;
+            }
+
+            @Override
+            public BytesRef next() throws IOException {
+                if (termsIterator.hasNext()) {
+                    return new BytesRef(termsIterator.next());
+                }
+                return null;
+            }
+
+            @Override
+            public Comparator<BytesRef> getComparator() {
+                return null;
+            }
+        });*/
+
         termCache.invalidate();
     }
 
@@ -233,6 +318,11 @@ class LuceneIndexHandler {
         } catch (Exception e) {
             LOGGER.error("Error while closing IndexWriter", e);
         }
+        /*try {
+            suggester.close();
+        } catch (Exception e) {
+            LOGGER.error("Error while closing suggester", e);
+        }*/
     }
 
     public boolean checkIfExists(String aFilename) throws IOException {
@@ -303,6 +393,10 @@ class LuceneIndexHandler {
         searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
         SortedSetDocValuesReaderState theSortedSetState = new DefaultSortedSetDocValuesReaderState(theSearcher.getIndexReader());
+
+        /*for (Lookup.LookupResult theResult : suggester.lookup(aQueryString, 10)) {
+            System.out.println("Lookup : " + theResult.toString());
+        }*/
 
         List<QueryResultDocument> theResultDocuments = new ArrayList<>();
 
