@@ -18,7 +18,10 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 public class ConfigurationController {
 
@@ -80,7 +83,7 @@ public class ConfigurationController {
 
         showSimilarResults.setSelected(theConfiguration.isShowSimilarDocuments());
         numberDocuments.setValue(theConfiguration.getNumberOfSearchResults());
-        indexLocation.setText(theConfiguration.getIndexDirectory().toString());
+        indexLocation.setText(theConfiguration.getConfigDirectory().toString());
         indexedDirectories.getItems().addAll(theConfiguration.getCrawlLocations());
     }
 
