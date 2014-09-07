@@ -17,6 +17,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 public class ConfigurationManager {
@@ -53,6 +54,23 @@ public class ConfigurationManager {
             LOGGER.error("Error loading default configuration, initializing with empty one", e);
             configuration = new Configuration(aConfigDirectory);
         }
+
+        // By default, we enable only the english parser
+        // and additionally the parser for the system locale
+        configuration = configuration.enableLanguage(SupportedLanguage.en);
+
+        try {
+            SupportedLanguage theAdditionalLanguage = SupportedLanguage.valueOf(Locale.getDefault().getLanguage());
+            configuration = configuration.enableLanguage(theAdditionalLanguage);
+        } catch (Exception e) {
+            // Platform language seems not to be supported
+        }
+
+        // By default, we also enable all document parsers
+        for (SupportedDocumentType theType : SupportedDocumentType.values()) {
+            configuration = configuration.enableDocumentType(theType);
+        }
+
         writeConfiguration();
     }
 

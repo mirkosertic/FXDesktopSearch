@@ -59,8 +59,8 @@ public class Configuration {
         numberOfSuggestions = 10;
         showSimilarDocuments = false;
         crawlLocations = new ArrayList<>();
-        enabledLanguages = new HashSet<>(Arrays.asList(SupportedLanguage.values()));
-        enabledDocumentTypes = new HashSet<>(Arrays.asList(SupportedDocumentType.values()));
+        enabledLanguages = new HashSet<>();
+        enabledDocumentTypes = new HashSet<>();
         metaDataNameReplacement = new HashMap<>();
         metaDataNameReplacement.put("created", "creation-date");
         metaDataNameReplacement.put("date", "creation-date");
@@ -159,6 +159,30 @@ public class Configuration {
     public Configuration updateNumberOfSuggestions(int aValue) {
         Configuration theConfiguration = new Configuration(this);
         theConfiguration.numberOfSuggestions = aValue;
+        return theConfiguration;
+    }
+
+    public Configuration enableDocumentType(SupportedDocumentType aType) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.enabledDocumentTypes.add(aType);
+        return theConfiguration;
+    }
+
+    public Configuration disableDocumentType(SupportedDocumentType aType) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.enabledDocumentTypes.remove(aType);
+        return theConfiguration;
+    }
+
+    public Configuration enableLanguage(SupportedLanguage aLanguage) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.enabledLanguages.add(aLanguage);
+        return theConfiguration;
+    }
+
+    public Configuration disableLanguage(SupportedLanguage aLanguage) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.enabledLanguages.remove(aLanguage);
         return theConfiguration;
     }
 }

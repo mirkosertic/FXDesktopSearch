@@ -46,7 +46,6 @@ import java.text.BreakIterator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
 class LuceneIndexHandler {
@@ -64,15 +63,15 @@ class LuceneIndexHandler {
     private final FieldType contentFieldType;
     private final int maxNumberOfSuggestions;
     private final TermCache termCache;
-    private final ForkJoinPool forkJoinPool;
+    private final ExecutorPool executorPool;
 //    private final AnalyzingInfixSuggester suggester;
     //private final FreeTextSuggester suggester;
 
-    public LuceneIndexHandler(Configuration aConfiguration, AnalyzerCache aAnalyzerCache, int aMaxNumberOfSuggestions, ForkJoinPool aForkJoinPool) throws IOException {
+    public LuceneIndexHandler(Configuration aConfiguration, AnalyzerCache aAnalyzerCache, int aMaxNumberOfSuggestions, ExecutorPool aExecutorPool) throws IOException {
         termCache = new TermCache();
         analyzerCache = aAnalyzerCache;
         maxNumberOfSuggestions = aMaxNumberOfSuggestions;
-        forkJoinPool = aForkJoinPool;
+        executorPool = aExecutorPool;
 
         contentFieldType = new FieldType();
         contentFieldType.setIndexed(true);
@@ -237,7 +236,7 @@ class LuceneIndexHandler {
         theDocument.add(new TextField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LOCATIONID, aLocationId, Field.Store.YES));
         theDocument.add(new LongField(IndexFields.FILESIZE, aContent.getFileSize(), Field.Store.YES));
-        theDocument.add(new StringField(IndexFields.LASTMODIFIED, "" + aContent.getLastModified(), Field.Store.YES));
+        theDocument.add(new LongField(IndexFields.LASTMODIFIED, aContent.getLastModified(), Field.Store.YES));
 
         // Update the document in our search index
         indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), facetsConfig.build(theDocument));
@@ -311,7 +310,6 @@ class LuceneIndexHandler {
     }
 
     public void shutdown() {
-        forkJoinPool.shutdown();
         commitThread.interrupt();
         try {
             indexWriter.close();
@@ -356,7 +354,7 @@ class LuceneIndexHandler {
             ScoreDoc theFirstScore = theDocs.scoreDocs[0];
             Document theDocument = theSearcher.doc(theFirstScore.doc);
 
-            long theStoredLastModified = Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue());
+            long theStoredLastModified = theDocument.getField(IndexFields.LASTMODIFIED).numericValue().longValue();
             if (theStoredLastModified != aLastModified) {
                 return UpdateCheckResult.UPDATED;
             }
@@ -471,7 +469,7 @@ class LuceneIndexHandler {
                     if (theExistingDocument != null) {
                         theExistingDocument.addFileName(theFoundFileName);
                     } else {
-                        Date theLastModified = new Date(Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()));
+                        Date theLastModified = new Date(theDocument.getField(IndexFields.LASTMODIFIED).numericValue().longValue());
                         SupportedLanguage theLanguage = SupportedLanguage.valueOf(theDocument.getField(IndexFields.LANGUAGESTORED).stringValue());
                         String theFieldName;
                         if (analyzerCache.supportsLanguage(theLanguage)) {
@@ -484,7 +482,7 @@ class LuceneIndexHandler {
 
                         final Query theFinalQuery = theQuery;
 
-                        ForkJoinTask<String> theHighligherResult = forkJoinPool.submit(() -> {
+                        ForkJoinTask<String> theHighligherResult = executorPool.submit(() -> {
                             StringBuilder theResult = new StringBuilder(theDateFormat.format(theLastModified));
                             theResult.append("&nbsp;-&nbsp;");
                             Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theFinalQuery));

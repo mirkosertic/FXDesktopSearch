@@ -13,15 +13,16 @@
 package de.mirkosertic.desktopsearch;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ConfigurationController {
 
@@ -41,16 +42,16 @@ public class ConfigurationController {
     Button buttonRemove;
 
     @FXML
-    TextField indexLocation;
-
-    @FXML
-    Button buttonSetIndexLocation;
-
-    @FXML
     Button buttonCancel;
 
     @FXML
     Button buttonOk;
+
+    @FXML
+    VBox enabledDocumentFormats;
+
+    @FXML
+    VBox enabledLanguages;
 
     private ConfigurationManager configurationManager;
     private Stage stage;
@@ -58,6 +59,8 @@ public class ConfigurationController {
 
     private final Set<Configuration.CrawlLocation> removedLocations = new HashSet<>();
     private final Set<Configuration.CrawlLocation> addedLocations = new HashSet<>();
+    private final Map<SupportedDocumentType, CheckBox> supportedDocuments = new HashMap<>();
+    private final Map<SupportedLanguage, CheckBox> supportedLanguages = new HashMap<>();
 
     public void initialize(ConfigurationManager aConfigurationManager, Stage aStage) {
         Objects.requireNonNull(showSimilarResults);
@@ -65,16 +68,15 @@ public class ConfigurationController {
         Objects.requireNonNull(indexedDirectories);
         Objects.requireNonNull(buttonAdd);
         Objects.requireNonNull(buttonRemove);
-        Objects.requireNonNull(indexLocation);
-        Objects.requireNonNull(buttonSetIndexLocation);
         Objects.requireNonNull(buttonCancel);
         Objects.requireNonNull(buttonOk);
+        Objects.requireNonNull(enabledDocumentFormats);
+        Objects.requireNonNull(enabledLanguages);
 
         buttonRemove.setOnAction(actionEvent -> removeSelectedLocation());
         buttonAdd.setOnAction(actionEvent -> addNewLocation());
         buttonOk.setOnAction(actionEvent -> ok());
         buttonCancel.setOnAction(actionEvent -> cancel());
-        buttonSetIndexLocation.setOnAction(actionEvent -> setIndexLocation());
 
         stage = aStage;
         configurationManager = aConfigurationManager;
@@ -83,8 +85,25 @@ public class ConfigurationController {
 
         showSimilarResults.setSelected(theConfiguration.isShowSimilarDocuments());
         numberDocuments.setValue(theConfiguration.getNumberOfSearchResults());
-        indexLocation.setText(theConfiguration.getConfigDirectory().toString());
         indexedDirectories.getItems().addAll(theConfiguration.getCrawlLocations());
+
+        // Ok, we build the document type selections
+        for (SupportedDocumentType theType : SupportedDocumentType.values()) {
+            CheckBox theCheckBox = new CheckBox(theType.getDisplayName(Locale.ENGLISH));
+            theCheckBox.setSelected(theConfiguration.getEnabledDocumentTypes().contains(theType));
+            enabledDocumentFormats.getChildren().add(theCheckBox);
+
+            supportedDocuments.put(theType, theCheckBox);
+        }
+
+        // And also the languages
+        for (SupportedLanguage theLanguage : SupportedLanguage.values()) {
+            CheckBox theCheckbox = new CheckBox(theLanguage.toLocale().getDisplayName(Locale.ENGLISH));
+            theCheckbox.setSelected(theConfiguration.getEnabledLanguages().contains(theLanguage));
+            enabledLanguages.getChildren().add(theCheckbox);
+
+            supportedLanguages.put(theLanguage, theCheckbox);
+        }
     }
 
     private void ok() {
@@ -100,8 +119,24 @@ public class ConfigurationController {
         theConfiguration = theConfiguration.updateIncludeSimilarDocuments(showSimilarResults.isSelected());
         theConfiguration = theConfiguration.updateNumberOfSearchResults((int) numberDocuments.getValue());
 
-        configurationManager.updateConfiguration(theConfiguration);
+        for (Map.Entry<SupportedDocumentType, CheckBox> theEntry : supportedDocuments.entrySet()) {
+            if (theEntry.getValue().isSelected()) {
+                theConfiguration = theConfiguration.enableDocumentType(theEntry.getKey());
+            } else {
+                theConfiguration = theConfiguration.disableDocumentType(theEntry.getKey());
+            }
+        }
 
+        for (Map.Entry<SupportedLanguage, CheckBox> theEntry : supportedLanguages.entrySet()) {
+            if (theEntry.getValue().isSelected()) {
+                theConfiguration = theConfiguration.enableLanguage(theEntry.getKey());
+            } else {
+                theConfiguration = theConfiguration.disableLanguage(theEntry.getKey());
+            }
+        }
+
+
+        configurationManager.updateConfiguration(theConfiguration);
         stage.hide();
     }
 
@@ -123,16 +158,6 @@ public class ConfigurationController {
             indexedDirectories.getItems().add(theNewLocation);
 
             addedLocations.add(theNewLocation);
-        }
-    }
-
-    private void setIndexLocation() {
-        DirectoryChooser theChooser = new DirectoryChooser();
-        theChooser.setTitle("Select index data location");
-        theChooser.setInitialDirectory(new File(indexLocation.getText()));
-        File theFile = theChooser.showDialog(stage.getOwner());
-        if (theFile != null) {
-            indexLocation.setText(theFile.toString());
         }
     }
 }

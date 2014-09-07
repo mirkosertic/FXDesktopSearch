@@ -106,23 +106,11 @@ public class DesktopSearch extends Application {
             Platform.setImplicitExit(false);
             SystemTray theTray = SystemTray.getSystemTray();
 
-            PopupMenu theMenu = new PopupMenu();
-            MenuItem theCloseItem = new MenuItem("Close");
-            theCloseItem.addActionListener(e -> Platform.runLater(this::shutdown));
-            theMenu.add(theCloseItem);
-
-            MenuItem theShowItem = new MenuItem("Show");
-            theShowItem.addActionListener(e -> Platform.runLater(() -> {
-                stage.show();
-                stage.toFront();
-            }));
-            theMenu.add(theShowItem);
-
             // We need to reformat the icon according to the current tray icon dimensions
             // this depends on the underlying OS
             java.awt.Image theTrayIconImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/fds_small.png"));
             int trayIconWidth = new TrayIcon(theTrayIconImage).getSize().width;
-            TrayIcon theTrayIcon = new TrayIcon(theTrayIconImage.getScaledInstance(trayIconWidth, -1, java.awt.Image.SCALE_SMOOTH), "Free Desktop Search", theMenu);
+            TrayIcon theTrayIcon = new TrayIcon(theTrayIconImage.getScaledInstance(trayIconWidth, -1, java.awt.Image.SCALE_SMOOTH), "Free Desktop Search");
             theTrayIcon.setImageAutoSize(true);
             theTrayIcon.setToolTip("FXDesktopSearch");
             theTrayIcon.addMouseListener(new MouseAdapter() {
@@ -130,6 +118,9 @@ public class DesktopSearch extends Application {
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 1) {
                         Platform.runLater(() -> {
+                            if (stage.isIconified()) {
+                                stage.setIconified(false);
+                            }
                             stage.show();
                             stage.toFront();
                         });
@@ -160,5 +151,9 @@ public class DesktopSearch extends Application {
 
     public ConfigurationManager getConfigurationManager() {
         return configurationManager;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }

@@ -16,9 +16,10 @@
                 background: white url("ui-anim_basic_16x16.gif") right center no-repeat;
             }
         </style>
+        <script src="webapp.js"></script>
     </head>
     <body>
-        <form method="post" action="/search">
+        <form method="post" action="/search" onsubmit="return prepareSubmit()">
             <div class="titlebar">
                 <input class="submitbutton" type="submit" value="">
                 <div class="querydiv">
@@ -34,14 +35,14 @@
 
                 <div class="afterSearchNavigationArea">
                     <#if queryResult.backLink?has_content>
-                        <a class="dimensionGoBackLink" href="${queryResult.backLink}">&lt;&lt; Go back</a>
+                        <a class="dimensionGoBackLink" href="${queryResult.backLink}" onclick="return prepareSubmit()">&lt;&lt; Go back</a>
                     </#if>
                     <#list queryResult.facetDimensions as dimension>
                     <div class="dimension">
                         <div class="dimensionTitle">${dimension.name}</div>
                         <div class="dimensionValues">
                             <#list dimension.facets as facet>
-                            <div class="dimensionValue"><a href="${facet.link}" class="dimensionValueLink">${facet.name}</a> (${facet.number})</div>
+                            <div class="dimensionValue"><a href="${facet.link}" class="dimensionValueLink" onclick="return prepareSubmit()">${facet.name}</a> (${facet.number})</div>
                             </#list>
                         </div>
                     </div>

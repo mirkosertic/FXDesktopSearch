@@ -143,3 +143,7 @@ input:focus {
 .ratingStar {
     width: 20px;
 }
+
+body.wait, body.wait *{
+    cursor: wait !important;
+}

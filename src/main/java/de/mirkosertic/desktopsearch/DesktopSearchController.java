@@ -154,7 +154,7 @@ public class DesktopSearchController implements Initializable {
         webView.getEngine().getLoadWorker().stateProperty().addListener((ov, t, t1) -> {
             if (t1 == State.SUCCEEDED) {
                 JSObject window1 = (JSObject) webView.getEngine().executeScript("window");
-                window1.setMember("desktop", new DesktopGateway());
+                window1.setMember("desktop", new DesktopGateway(aApplication.getStage()));
             }
         });
         webView.setContextMenuEnabled(false);
