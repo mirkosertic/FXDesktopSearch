@@ -12,6 +12,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import de.mirkosertic.desktopsearch.predict.DocumentTermNGram;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
@@ -66,9 +67,11 @@ class LuceneIndexHandler {
     private final ExecutorPool executorPool;
 //    private final AnalyzingInfixSuggester suggester;
     //private final FreeTextSuggester suggester;
+    private final DocumentTermNGram termNGram;
 
     public LuceneIndexHandler(Configuration aConfiguration, AnalyzerCache aAnalyzerCache, int aMaxNumberOfSuggestions, ExecutorPool aExecutorPool) throws IOException {
         termCache = new TermCache();
+        termNGram = new DocumentTermNGram();
         analyzerCache = aAnalyzerCache;
         maxNumberOfSuggestions = aMaxNumberOfSuggestions;
         executorPool = aExecutorPool;
@@ -240,6 +243,8 @@ class LuceneIndexHandler {
 
         // Update the document in our search index
         indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), facetsConfig.build(theDocument));
+
+        termNGram.build(theContentAsString.toString(), IndexFields.CONTENT_NOT_STEMMED, analyzer);
 
         // Feed the suggestor with possible word matches
         /*Set<BytesRef> theContext = new HashSet<>();
@@ -590,6 +595,8 @@ class LuceneIndexHandler {
             long theDuration = System.currentTimeMillis() - theStartTime;
 
             LOGGER.info("Total amount of time : "+theDuration+"ms");
+
+            //List<Prediction> thePredictions = termNGram.getTerm("architektur").predict(4, 10);
 
             return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs(), aBacklink);
         } catch (Exception e) {

@@ -10,22 +10,21 @@
  *
  * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
-package de.mirkosertic.desktopsearch;
+package de.mirkosertic.desktopsearch.predict;
 
-import org.apache.lucene.util.Version;
+class TermAssociation {
 
-public interface IndexFields {
+    private long usages;
 
-    Version LUCENE_VERSION = Version.LUCENE_4_10_0;
+    public TermAssociation(long aUsageCount) {
+        usages = aUsageCount;
+    }
 
-    String FILENAME = "filename";
-    String EXTENSION = "extension";
-    String LANGUAGESTORED = "language_s";
-    String LANGUAGEFACET = "language_f";
-    String CONTENT = "content";
-    String CONTENT_NOT_STEMMED = "contentnotstemmed";
-    String CONTENTMD5 = "contentmd5";
-    String FILESIZE = "filesize";
-    String LASTMODIFIED = "lastmodified";
-    String LOCATIONID = "locationId";
+    public void incrementUsageByOne() {
+        usages++;
+    }
+
+    public long usages() {
+        return usages;
+    }
 }
