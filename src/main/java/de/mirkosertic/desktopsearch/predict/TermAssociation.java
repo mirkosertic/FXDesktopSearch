@@ -12,19 +12,30 @@
  */
 package de.mirkosertic.desktopsearch.predict;
 
+import java.util.HashSet;
+import java.util.Set;
+
 class TermAssociation {
 
     private long usages;
+    private final Set<Long> runs;
 
-    public TermAssociation(long aUsageCount) {
+    public TermAssociation(long aUsageCount, long aRun) {
         usages = aUsageCount;
+        runs = new HashSet<>();
+        runs.add(aRun);
     }
 
-    public void incrementUsageByOne() {
+    public void incrementUsageByOne(long aRun) {
         usages++;
+        runs.add(aRun);
     }
 
     public long usages() {
         return usages;
+    }
+
+    Set<Long> getRuns() {
+        return runs;
     }
 }

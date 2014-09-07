@@ -47,6 +47,14 @@ public enum SupportedLanguage {
     th,
     tr,;
 
+    public static SupportedLanguage getDefault() {
+        try {
+            return SupportedLanguage.valueOf(Locale.getDefault().getLanguage());
+        } catch (Exception e) {
+            return SupportedLanguage.en;
+        }
+    }
+
     public Locale toLocale() {
         return new Locale(name());
     }

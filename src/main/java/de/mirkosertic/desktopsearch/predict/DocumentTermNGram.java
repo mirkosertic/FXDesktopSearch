@@ -25,9 +25,11 @@ import java.util.Map;
 public class DocumentTermNGram {
 
     private final Map<String, Term> knownTerms;
+    private long runCounter;
 
     public DocumentTermNGram() {
         knownTerms = new HashMap<>();
+        runCounter = 0;
     }
 
     private Term getOrCreateTerm(String aTerm) {
@@ -51,13 +53,14 @@ public class DocumentTermNGram {
                 thePreviousTerm = getOrCreateTerm(theToken);
             } else {
                 Term theNextTerm = getOrCreateTerm(theToken);
-                thePreviousTerm.buildUsage(theNextTerm);
+                thePreviousTerm.buildUsage(theNextTerm, runCounter);
                 thePreviousTerm = theNextTerm;
             }
         }
         theTokenStream.end();
         theTokenStream.close();
 
+        runCounter++;
     }
 
     public Term getTerm(String aTerm) {
