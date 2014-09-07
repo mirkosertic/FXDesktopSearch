@@ -1,54 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.net.URL?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.mirkosertic.desktopsearch.ConfigurationController">
+<?import java.net.URL?>
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.mirkosertic.desktopsearch.ConfigurationController">
   <children>
-    <VBox prefWidth="573.0">
+    <VBox>
       <children>
-        <HBox VBox.vgrow="NEVER">
-          <children>
-            <Label minWidth="-Infinity" text="Show similar search results" HBox.hgrow="NEVER">
-              <HBox.margin>
-                <Insets left="10.0" fx:id="x2" />
-              </HBox.margin>
-            </Label>
-            <CheckBox fx:id="showSimilarResults" mnemonicParsing="false" HBox.hgrow="NEVER">
-              <HBox.margin>
-                <Insets />
-              </HBox.margin>
-            </CheckBox>
-          </children>
-          <padding>
-            <Insets right="10.0" fx:id="x1" />
-          </padding>
-        </HBox>
-        <HBox padding="$x1" VBox.vgrow="NEVER">
-          <children>
-            <Label text="Number of search results" HBox.hgrow="NEVER">
-              <HBox.margin>
-                <Insets left="10.0" fx:id="x2" />
-              </HBox.margin>
-            </Label>
-            <Slider fx:id="numberDocuments" max="200.0" min="1.0" showTickLabels="true" value="100.0" HBox.hgrow="ALWAYS" />
-          </children>
-          <VBox.margin>
-            <Insets top="10.0" />
-          </VBox.margin>
-        </HBox>
-        <VBox VBox.vgrow="ALWAYS">
-          <children>
-            <Label text="Indexed directories:" VBox.margin="$x2" />
-            <HBox prefHeight="100.0" prefWidth="300.0">
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                  <RowConstraints valignment="TOP" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" vgrow="ALWAYS" />
+              </rowConstraints>
+               <children>
+            <Label minWidth="-Infinity" text="Show similar search results" />
+            <CheckBox fx:id="showSimilarResults" mnemonicParsing="false" GridPane.columnIndex="1" />
+            <Label text="Number of search results" GridPane.rowIndex="1" />
+            <Slider fx:id="numberDocuments" max="200.0" min="1.0" showTickLabels="true" value="100.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+            <Label text="Indexed directories:" GridPane.rowIndex="2" />
+            <HBox GridPane.columnSpan="4" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
               <children>
-                <ListView fx:id="indexedDirectories" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                <ListView fx:id="indexedDirectories" prefHeight="100.0" HBox.hgrow="ALWAYS">
                   <HBox.margin>
-                    <Insets left="10.0" right="5.0" />
+                    <Insets right="5.0" />
                   </HBox.margin>
                 </ListView>
                 <VBox HBox.hgrow="NEVER">
@@ -63,32 +48,20 @@
                 </VBox>
               </children>
             </HBox>
-          </children>
-          <padding>
-            <Insets right="10.0" top="20.0" />
-          </padding>
-        </VBox>
-        <HBox VBox.vgrow="NEVER">
-          <children>
-            <Label maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="Index location:" textAlignment="CENTER" HBox.hgrow="NEVER">
-              <HBox.margin>
-                <Insets left="10.0" fx:id="x2" />
-              </HBox.margin>
-            </Label>
-            <TextField fx:id="indexLocation" disable="true" HBox.hgrow="ALWAYS" />
-            <Button id="buttonRemove" fx:id="buttonSetIndexLocation" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" styleClass="buttonIndex" text="-">
-              <HBox.margin>
-                <Insets left="5.0" />
-              </HBox.margin>
-            </Button>
-          </children>
-          <padding>
-            <Insets right="10.0" fx:id="x1" />
-          </padding>
-          <VBox.margin>
-            <Insets top="5.0" />
-          </VBox.margin>
-        </HBox>
+                  <Label text="Scanned documents" GridPane.rowIndex="4" />
+                  <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefViewportHeight="17.0" prefViewportWidth="132.0" prefWidth="300.0" GridPane.rowIndex="5">
+                     <content>
+                        <VBox fx:id="enabledDocumentFormats" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS" />
+                     </content>
+                  </ScrollPane>
+                  <Label text="Language analyzers" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                  <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefViewportHeight="36.0" prefViewportWidth="132.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                     <content>
+                        <VBox fx:id="enabledLanguages" GridPane.columnIndex="3" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </GridPane>
         <HBox alignment="TOP_RIGHT" styleClass="dialogButtonArea" VBox.vgrow="NEVER">
           <children>
             <Button fx:id="buttonCancel" alignment="CENTER" contentDisplay="RIGHT" maxWidth="120.0" minWidth="120.0" mnemonicParsing="false" prefWidth="120.0" text="Cancel">

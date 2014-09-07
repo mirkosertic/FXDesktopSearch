@@ -12,7 +12,9 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 class ExecutorPool {
 
@@ -24,5 +26,9 @@ class ExecutorPool {
 
     public void execute(Runnable aRunnable) {
         forkJoinPool.execute(aRunnable);
+    }
+
+    public <T> ForkJoinTask<T> submit(Callable<T> aCallable) {
+        return forkJoinPool.submit(aCallable);
     }
 }
