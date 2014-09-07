@@ -596,7 +596,10 @@ class LuceneIndexHandler {
 
             LOGGER.info("Total amount of time : "+theDuration+"ms");
 
-            //List<Prediction> thePredictions = termNGram.getTerm("architektur").predict(4, 10);
+/*            RunRestriction theRestriction = new RunRestriction(termNGram.getTerm("wenn"));
+            theRestriction.addTransitionTo(termNGram.getTerm("es"));
+            theRestriction.addTransitionTo(termNGram.getTerm("um"));
+            List<Prediction> thePredictions = theRestriction.predict(4, 10);*/
 
             return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs(), aBacklink);
         } catch (Exception e) {

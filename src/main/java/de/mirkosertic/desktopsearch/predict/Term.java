@@ -41,13 +41,13 @@ public class Term {
         return term.toLowerCase().hashCode();
     }
 
-    public void buildUsage(Term aTerm) {
+    public void buildUsage(Term aTerm, long aRun) {
         TermAssociation theAssociation = associations.get(aTerm);
         if (theAssociation == null) {
-            theAssociation = new TermAssociation(1);
+            theAssociation = new TermAssociation(1, aRun);
             associations.put(aTerm, theAssociation);
         } else {
-            theAssociation.incrementUsageByOne();
+            theAssociation.incrementUsageByOne(aRun);
         }
     }
 
@@ -55,55 +55,29 @@ public class Term {
         return Collections.unmodifiableSet(associations.keySet());
     }
 
-    private List<Map.Entry<Term, TermAssociation>> getTopNAssociations(int aN) {
-        List<Map.Entry<Term, TermAssociation>> theResult = new ArrayList<>(associations.entrySet());
-        Collections.sort(theResult, (Map.Entry<Term, TermAssociation> aO1, Map.Entry<Term, TermAssociation> aO2) -> {
-            if (aO1.getValue().usages() < aO2.getValue().usages()) {
-                return -1;
-            }
-            if (aO1.getValue().usages() > aO2.getValue().usages()) {
-                return 1;
-            }
-            return 0;
-        });
-        while (theResult.size() > aN) {
-            theResult.remove(theResult.size() - 1);
-        }
-        return theResult;
-    }
-
-    private void computePredictions(List<Prediction> aPredictions, Prediction aPrediction, long aNumberOfTerms, int aTopN) {
-        if (aNumberOfTerms<1) {
+    void computePredictions(RunRestriction aRestriction, List<Prediction> aPredictions, Prediction aPrediction, long aNumberOfTerms) {
+        if (aNumberOfTerms<0) {
             return;
         }
 
         aPredictions.add(aPrediction);
 
-        for (Map.Entry<Term, TermAssociation> theEntry : getTopNAssociations(aTopN)) {
+        for (Map.Entry<Term, TermAssociation> theEntry : associations.entrySet()) {
             Term theTerm = theEntry.getKey();
-
-            Prediction theClonePrediction = new Prediction(aPrediction);
-            theClonePrediction.addTerm(theTerm, theEntry.getValue());
-            theTerm.computePredictions(aPredictions, theClonePrediction, aNumberOfTerms - 1, aTopN);
-
-            aPredictions.add(theClonePrediction);
+            if (aRestriction.matches(theEntry.getValue().getRuns())) {
+                Prediction theClonePrediction = new Prediction(aPrediction);
+                theClonePrediction.addTerm(theTerm, theEntry.getValue());
+                theTerm.computePredictions(aRestriction, aPredictions, theClonePrediction, aNumberOfTerms - 1);
+            }
         }
     }
 
-    public List<Prediction> predict(int aNumberOfTerms, int aNumberOfPredictions) {
-        int theTopN = 10;
-        List<Prediction> thePredictions = new ArrayList<>();
-        for (Map.Entry<Term, TermAssociation> theEntry : getTopNAssociations(theTopN)) {
-            Term theTerm = theEntry.getKey();
-            Prediction thePrediction = new Prediction(theTerm, theEntry.getValue().usages());
-            theTerm.computePredictions(thePredictions, thePrediction, aNumberOfTerms - 1, theTopN);
-        }
+    @Override
+    public String toString() {
+        return term;
+    }
 
-        Collections.sort(thePredictions);
-        while(thePredictions.size() > aNumberOfPredictions) {
-            thePredictions.remove(thePredictions.size() - 1);
-        }
-
-        return Collections.unmodifiableList(thePredictions);
+    Map<Term, TermAssociation> getAssociations() {
+        return associations;
     }
 }

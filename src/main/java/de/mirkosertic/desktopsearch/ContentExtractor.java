@@ -82,9 +82,12 @@ class ContentExtractor {
             LanguageIdentifier theLanguageIdentifier = new LanguageIdentifier(theStringData);
 
             FileTime theFileTime = aBasicFileAttributes.lastModifiedTime();
-            SupportedLanguage theLanguage = SupportedLanguage.en;
+            SupportedLanguage theLanguage = SupportedLanguage.getDefault();
             try {
                 theLanguage = SupportedLanguage.valueOf(theLanguageIdentifier.getLanguage());
+                if (!configuration.getEnabledLanguages().contains(theLanguage)) {
+                    theLanguage = SupportedLanguage.getDefault();
+                }
             } catch (Exception e) {
                 LOGGER.info("Language "+theLanguageIdentifier.getLanguage()+" was detected, but is not supported");
             }

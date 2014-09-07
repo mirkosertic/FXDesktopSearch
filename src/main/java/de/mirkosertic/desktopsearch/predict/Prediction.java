@@ -15,7 +15,7 @@ package de.mirkosertic.desktopsearch.predict;
 import java.util.ArrayList;
 import java.util.List;
 
-class Prediction implements Comparable<Prediction> {
+public class Prediction implements Comparable<Prediction> {
 
     private final List<Term> terms;
     private long score;
@@ -44,6 +44,22 @@ class Prediction implements Comparable<Prediction> {
 
     public void addTerm(Term aTerm, TermAssociation aAssociation) {
         terms.add(aTerm);
-        score = score + aAssociation.usages();
+        score = score + aAssociation.usages() * aAssociation.getRuns().size();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder theResult = new StringBuilder();
+        terms.stream().forEach(t -> {
+            if (theResult.length() > 0) {
+                theResult.append(" ");
+            }
+            theResult.append(t.toString());
+        });
+        return theResult.toString();
+    }
+
+    List<Term> getTerms() {
+        return terms;
     }
 }
