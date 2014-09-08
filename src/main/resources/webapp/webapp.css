@@ -21,9 +21,9 @@ em {
 
 
 .titlebar {
-    background-color: rgb(241,241,241);
+    background-color: #ecf0f1;
     padding: 5px;
-    border: 1px solid rgb(229,229,229);
+    border: 1px solid #ecf0f1;
     color: white;
     font-weight: bold;
     vertical-align: middle;
@@ -78,7 +78,7 @@ input:focus {
 }
 
 .dimensionGoBackLink {
-    color: rgb(17,34,204);
+    color: #2980b9;
     text-decoration: none;
 }
 
@@ -96,7 +96,7 @@ input:focus {
 }
 
 .dimensionValueLink {
-    color: rgb(17,34,204);
+    color: #2980b9;
     text-decoration: none;
 }
 
@@ -106,12 +106,12 @@ input:focus {
 }
 
 .searchResultAreaFileName {
-    color: rgb(17,34,204);
+    color: #2980b9;
     text-decoration: none;
 }
 
 .searchResultAreaFileNameComplete {
-    color: rgb(0, 153, 51);
+    color: #27ae60;
 }
 
 .searchResultAreaContentHighlighted {
@@ -119,7 +119,7 @@ input:focus {
 }
 
 .searchResultAreaResultSimilar {
-    color: rgb(0, 153, 51);
+    color: #27ae60;
     padding-left: 20px;
 }
 

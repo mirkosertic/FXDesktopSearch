@@ -102,7 +102,7 @@ public enum SupportedDocumentType {
 
     public boolean supports(String aFilename) {
         // Filter by extension and also make sure no temp files are indexed...
-        return aFilename.toLowerCase().endsWith("." + name()) && !aFilename.startsWith("~");
+        return aFilename.toLowerCase().endsWith("." + name()) && !aFilename.contains("~");
     }
 
     public abstract String getDisplayName(Locale aLocale);
