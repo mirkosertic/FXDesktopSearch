@@ -21,7 +21,7 @@ class SuggestionServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
         String theTerm = aRequest.getParameter("term");
-        SuggestionTerm[] theTerms = backend.findSuggestionTermsFor(theTerm);
+        Suggestion[] theTerms = backend.findSuggestionTermsFor(theTerm);
 
         aResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         aResponse.setHeader("Pragma", "no-cache");

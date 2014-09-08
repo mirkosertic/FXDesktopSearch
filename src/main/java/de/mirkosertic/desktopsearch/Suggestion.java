@@ -10,32 +10,27 @@
  *
  * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
-package de.mirkosertic.desktopsearch.predict;
+package de.mirkosertic.desktopsearch;
 
-import java.util.HashSet;
-import java.util.Set;
+public class Suggestion {
+    
+    private String label;
+    private String value;
 
-class TermAssociation {
-
-    private long usages;
-    private final Set<Long> runs;
-
-    public TermAssociation(long aUsageCount, long aRun) {
-        usages = aUsageCount;
-        runs = new HashSet<>();
-        runs.add(aRun);
+    private Suggestion() {
+        // Used by Jackson
     }
 
-    public void incrementUsageByOne(long aRun) {
-        usages++;
-        runs.add(aRun);
+    public Suggestion(String aLabel, String aValue) {
+        label = aLabel;
+        value = aValue;
     }
 
-    public long usages() {
-        return usages;
+    public String getLabel() {
+        return label;
     }
 
-    Set<Long> getRuns() {
-        return runs;
+    public String getValue() {
+        return value;
     }
 }

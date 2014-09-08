@@ -46,6 +46,10 @@ public class Configuration {
 
     private int numberOfSearchResults;
     private int numberOfSuggestions;
+    private int suggestionSlop;
+    private int suggestionWindowBefore;
+    private int suggestionWindowAfter;
+    private boolean suggestionInOrder;
     private boolean showSimilarDocuments;
     private List<CrawlLocation> crawlLocations;
     private Set<SupportedLanguage> enabledLanguages;
@@ -57,6 +61,10 @@ public class Configuration {
         // Needed by Jackson
         numberOfSearchResults = 50;
         numberOfSuggestions = 10;
+        suggestionSlop = 3;
+        suggestionWindowBefore = 0;
+        suggestionWindowAfter = 6;
+        suggestionInOrder = true;
         showSimilarDocuments = false;
         crawlLocations = new ArrayList<>();
         enabledLanguages = new HashSet<>();
@@ -87,6 +95,10 @@ public class Configuration {
         this();
         numberOfSuggestions = aConfiguration.numberOfSuggestions;
         numberOfSearchResults = aConfiguration.numberOfSearchResults;
+        suggestionSlop = aConfiguration.suggestionSlop;
+        suggestionWindowBefore = aConfiguration.suggestionWindowBefore;
+        suggestionWindowAfter = aConfiguration.suggestionWindowAfter;
+        suggestionInOrder = aConfiguration.suggestionInOrder;
         showSimilarDocuments = aConfiguration.showSimilarDocuments;
         crawlLocations = new ArrayList<>(aConfiguration.crawlLocations);
         enabledLanguages = new HashSet<>(aConfiguration.enabledLanguages);
@@ -130,6 +142,22 @@ public class Configuration {
 
     public Map<String, String> getMetaDataNameReplacement() {
         return Collections.unmodifiableMap(metaDataNameReplacement);
+    }
+
+    public int getSuggestionSlop() {
+        return suggestionSlop;
+    }
+
+    public int getSuggestionWindowBefore() {
+        return suggestionWindowBefore;
+    }
+
+    public int getSuggestionWindowAfter() {
+        return suggestionWindowAfter;
+    }
+
+    public boolean isSuggestionInOrder() {
+        return suggestionInOrder;
     }
 
     public Configuration addLocation(CrawlLocation aCrawlLocation) {

@@ -12,12 +12,10 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import de.mirkosertic.desktopsearch.predict.DocumentTermNGram;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
@@ -35,7 +33,6 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
-import org.apache.lucene.search.postingshighlight.PostingsHighlighter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.NRTCachingDirectory;
@@ -43,7 +40,6 @@ import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.BreakIterator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -62,18 +58,12 @@ class LuceneIndexHandler {
     private final FacetsConfig facetsConfig;
     private final Thread commitThread;
     private final FieldType contentFieldType;
-    private final int maxNumberOfSuggestions;
-    private final TermCache termCache;
     private final ExecutorPool executorPool;
-//    private final AnalyzingInfixSuggester suggester;
-    //private final FreeTextSuggester suggester;
-    private final DocumentTermNGram termNGram;
+    private final Configuration configuration;
 
-    public LuceneIndexHandler(Configuration aConfiguration, AnalyzerCache aAnalyzerCache, int aMaxNumberOfSuggestions, ExecutorPool aExecutorPool) throws IOException {
-        termCache = new TermCache();
-        termNGram = new DocumentTermNGram();
+    public LuceneIndexHandler(Configuration aConfiguration, AnalyzerCache aAnalyzerCache, ExecutorPool aExecutorPool) throws IOException {
+        configuration = aConfiguration;
         analyzerCache = aAnalyzerCache;
-        maxNumberOfSuggestions = aMaxNumberOfSuggestions;
         executorPool = aExecutorPool;
 
         contentFieldType = new FieldType();
@@ -243,75 +233,10 @@ class LuceneIndexHandler {
 
         // Update the document in our search index
         indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), facetsConfig.build(theDocument));
-
-        termNGram.build(theContentAsString.toString(), IndexFields.CONTENT_NOT_STEMMED, analyzer);
-
-        // Feed the suggestor with possible word matches
-        /*Set<BytesRef> theContext = new HashSet<>();
-        if (theLanguage != null) {
-            theContext.add(new BytesRef(theLanguage.name()));
-        }
-
-        final List<String> theTerms = new ArrayList<>();
-        TokenStream theTokenStream = analyzerCache.getAnalyzer().tokenStream(IndexFields.CONTENT_NOT_STEMMED, theContentAsString.toString());
-        theTokenStream.reset();
-        CharTermAttribute theCharTerms = theTokenStream.getAttribute(CharTermAttribute.class);
-        while(theTokenStream.incrementToken()) {
-            String theToken = theCharTerms.toString();
-            theTerms.add(theToken);
-        }
-        theTokenStream.end();
-        theTokenStream.close();
-
-        suggester.build(new InputIterator() {
-
-            private Iterator<String> termsIterator = theTerms.iterator();
-
-            @Override
-            public long weight() {
-                return 1;
-            }
-
-            @Override
-            public BytesRef payload() {
-                return null;
-            }
-
-            @Override
-            public boolean hasPayloads() {
-                return false;
-            }
-
-            @Override
-            public Set<BytesRef> contexts() {
-                return theContext;
-            }
-
-            @Override
-            public boolean hasContexts() {
-                return false;
-            }
-
-            @Override
-            public BytesRef next() throws IOException {
-                if (termsIterator.hasNext()) {
-                    return new BytesRef(termsIterator.next());
-                }
-                return null;
-            }
-
-            @Override
-            public Comparator<BytesRef> getComparator() {
-                return null;
-            }
-        });*/
-
-        termCache.invalidate();
     }
 
     public void removeFromIndex(String aFileName) throws IOException {
         indexWriter.deleteDocuments(new Term(IndexFields.FILENAME, aFileName));
-        termCache.invalidate();
     }
 
     public void shutdown() {
@@ -321,11 +246,6 @@ class LuceneIndexHandler {
         } catch (Exception e) {
             LOGGER.error("Error while closing IndexWriter", e);
         }
-        /*try {
-            suggester.close();
-        } catch (Exception e) {
-            LOGGER.error("Error while closing suggester", e);
-        }*/
     }
 
     public boolean checkIfExists(String aFilename) throws IOException {
@@ -333,10 +253,7 @@ class LuceneIndexHandler {
         try {
             Query theQuery = new TermQuery(new Term(IndexFields.FILENAME, aFilename));
             TopDocs theDocs = theSearcher.search(theQuery, null, 100);
-            if (theDocs.scoreDocs.length == 0) {
-                return false;
-            }
-            return true;
+            return theDocs.scoreDocs.length != 0;
         } finally {
             searcherManager.release(theSearcher);
         }
@@ -397,10 +314,6 @@ class LuceneIndexHandler {
         IndexSearcher theSearcher = searcherManager.acquire();
         SortedSetDocValuesReaderState theSortedSetState = new DefaultSortedSetDocValuesReaderState(theSearcher.getIndexReader());
 
-        /*for (Lookup.LookupResult theResult : suggester.lookup(aQueryString, 10)) {
-            System.out.println("Lookup : " + theResult.toString());
-        }*/
-
         List<QueryResultDocument> theResultDocuments = new ArrayList<>();
 
         long theStartTime = System.currentTimeMillis();
@@ -446,22 +359,6 @@ class LuceneIndexHandler {
                 Set<Integer> theUniqueDocumentsFound = new HashSet<>();
 
                 Map<String, QueryResultDocument> theDocumentsByHash = new HashMap<>();
-
-                PostingsHighlighter thePostingHighlighter = new PostingsHighlighter() {
-                    @Override
-                    protected BreakIterator getBreakIterator(String aField) {
-                        SupportedLanguage theLanguage = analyzerCache.getLanguageFromFieldName(aField);
-                        if (theLanguage != null) {
-                            return BreakIterator.getSentenceInstance(theLanguage.toLocale());
-                        }
-                        return super.getBreakIterator(aField);
-                    }
-
-                    @Override
-                    protected Analyzer getIndexAnalyzer(String aField) {
-                        return analyzerCache.getAnalyzerFor(aField);
-                    }
-                };
 
                 for (int i = 0; i < theDocs.scoreDocs.length; i++) {
                     int theDocumentID = theDocs.scoreDocs[i].doc;
@@ -596,11 +493,6 @@ class LuceneIndexHandler {
 
             LOGGER.info("Total amount of time : "+theDuration+"ms");
 
-/*            RunRestriction theRestriction = new RunRestriction(termNGram.getTerm("wenn"));
-            theRestriction.addTransitionTo(termNGram.getTerm("es"));
-            theRestriction.addTransitionTo(termNGram.getTerm("um"));
-            List<Prediction> thePredictions = theRestriction.predict(4, 10);*/
-
             return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs(), aBacklink);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -609,38 +501,17 @@ class LuceneIndexHandler {
         }
     }
 
-    public SuggestionTerm[] findSuggestionTermsFor(String aTerm) throws IOException {
-
-        aTerm = aTerm.toLowerCase();
+    public Suggestion[] findSuggestionTermsFor(String aTerm) throws IOException {
 
         searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
 
         try {
 
-            List<Map.Entry<String, Long>> theEntries = termCache.getFrequenciesFor(aTerm, theSearcher.getIndexReader());
+            SearchPhraseSuggester theSuggester = new SearchPhraseSuggester(theSearcher.getIndexReader(), analyzer, configuration);
+            List<Suggestion> theResult = theSuggester.suggestSearchPhrase(IndexFields.CONTENT_NOT_STEMMED, aTerm);
 
-            Collections.sort(theEntries, (o1, o2) -> {
-                CompareToBuilder theCompareToBuilder = new CompareToBuilder();
-                //theCompareToBuilder.append(o1.getKey(), o2.getKey());
-                theCompareToBuilder.append(o2.getValue(), o1.getValue());
-                return theCompareToBuilder.toComparison();
-            });
-
-            List<String> theResult = new ArrayList<>();
-            theEntries.stream().limit(maxNumberOfSuggestions).forEach( e -> {
-                if (!theResult.contains(e.getKey())) {
-                    theResult.add(e.getKey());
-                }
-            });
-
-            SuggestionTerm[] theSuggestionResult = new SuggestionTerm[theResult.size()];
-            for (int i=0;i<theResult.size();i++) {
-                String theTerm = theResult.get(i);
-                theSuggestionResult[i] = new SuggestionTerm("" + i, theTerm, theTerm);
-            }
-
-            return theSuggestionResult;
+            return theResult.toArray(new Suggestion[theResult.size()]);
 
         } finally {
             searcherManager.release(theSearcher);

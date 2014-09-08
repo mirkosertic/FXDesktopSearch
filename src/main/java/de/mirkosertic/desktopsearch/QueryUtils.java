@@ -12,31 +12,16 @@
  */
 package de.mirkosertic.desktopsearch;
 
-public class SuggestionTerm {
-    
-    private String id;
-    private String label;
-    private String value;
+public final class QueryUtils {
 
-    private SuggestionTerm() {
-        // Used by Jackson
+    private QueryUtils() {
     }
 
-    public SuggestionTerm(String aId, String aLabel, String aValue) {
-        id = aId;
-        label = aLabel;
-        value = aValue;
+    public static boolean isWildCard(String aTerm) {
+        return aTerm.contains("*") || aTerm.contains("?");
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public String getValue() {
-        return value;
+    public static boolean isFuzzy(String aTerm) {
+        return aTerm.startsWith("~") && aTerm.length() > 1;
     }
 }
