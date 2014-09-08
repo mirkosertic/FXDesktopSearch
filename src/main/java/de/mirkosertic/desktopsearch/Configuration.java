@@ -213,4 +213,23 @@ public class Configuration {
         theConfiguration.enabledLanguages.remove(aLanguage);
         return theConfiguration;
     }
+
+    public Configuration updateSuggestionWindowBefore(int aValue) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.suggestionWindowBefore = aValue;
+        return theConfiguration;
+    }
+
+    public Configuration updateSuggestionWindowAfter(int aValue) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.suggestionWindowAfter = aValue;
+        return theConfiguration;
+    }
+
+    public Configuration updateSuggestionSlop(int aValue) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.suggestionSlop = aValue;
+        return theConfiguration;
+    }
+
 }
