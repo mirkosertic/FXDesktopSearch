@@ -53,6 +53,18 @@ public class ConfigurationController {
     @FXML
     VBox enabledLanguages;
 
+    @FXML
+    Slider numberSuggestions;
+
+    @FXML
+    Slider windowBeforeSpan;
+
+    @FXML
+    Slider windowAfterSpan;
+
+    @FXML
+    Slider slopForSuggestionSpan;
+
     private ConfigurationManager configurationManager;
     private Stage stage;
 
@@ -72,6 +84,10 @@ public class ConfigurationController {
         Objects.requireNonNull(buttonOk);
         Objects.requireNonNull(enabledDocumentFormats);
         Objects.requireNonNull(enabledLanguages);
+        Objects.requireNonNull(numberSuggestions);
+        Objects.requireNonNull(windowBeforeSpan);
+        Objects.requireNonNull(windowAfterSpan);
+        Objects.requireNonNull(slopForSuggestionSpan);
 
         buttonRemove.setOnAction(actionEvent -> removeSelectedLocation());
         buttonAdd.setOnAction(actionEvent -> addNewLocation());
@@ -85,6 +101,10 @@ public class ConfigurationController {
 
         showSimilarResults.setSelected(theConfiguration.isShowSimilarDocuments());
         numberDocuments.setValue(theConfiguration.getNumberOfSearchResults());
+        numberSuggestions.setValue(theConfiguration.getNumberOfSuggestions());
+        windowBeforeSpan.setValue(theConfiguration.getSuggestionWindowBefore());
+        windowAfterSpan.setValue(theConfiguration.getSuggestionWindowAfter());
+        slopForSuggestionSpan.setValue(theConfiguration.getSuggestionSlop());
         indexedDirectories.getItems().addAll(theConfiguration.getCrawlLocations());
 
         // Ok, we build the document type selections
@@ -118,6 +138,10 @@ public class ConfigurationController {
         }
         theConfiguration = theConfiguration.updateIncludeSimilarDocuments(showSimilarResults.isSelected());
         theConfiguration = theConfiguration.updateNumberOfSearchResults((int) numberDocuments.getValue());
+        theConfiguration = theConfiguration.updateNumberOfSuggestions((int) numberSuggestions.getValue());
+        theConfiguration = theConfiguration.updateSuggestionWindowBefore((int) windowBeforeSpan.getValue());
+        theConfiguration = theConfiguration.updateSuggestionWindowAfter((int) windowAfterSpan.getValue());
+        theConfiguration = theConfiguration.updateSuggestionSlop((int) slopForSuggestionSpan.getValue());
 
         for (Map.Entry<SupportedDocumentType, CheckBox> theEntry : supportedDocuments.entrySet()) {
             if (theEntry.getValue().isSelected()) {
