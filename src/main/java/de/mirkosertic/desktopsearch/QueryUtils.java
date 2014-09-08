@@ -14,11 +14,13 @@ package de.mirkosertic.desktopsearch;
 
 public final class QueryUtils {
 
+    public static final String ASTERISK = "*";
+
     private QueryUtils() {
     }
 
     public static boolean isWildCard(String aTerm) {
-        return aTerm.contains("*") || aTerm.contains("?");
+        return aTerm.contains(ASTERISK) || aTerm.contains("?");
     }
 
     public static boolean isFuzzy(String aTerm) {

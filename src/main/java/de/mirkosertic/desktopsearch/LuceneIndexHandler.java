@@ -88,21 +88,6 @@ class LuceneIndexHandler {
             // No Lock there
         }
 
-        File theSuggestDirectory = new File(aConfiguration.getConfigDirectory(), "suggest");
-        theSuggestDirectory.mkdirs();
-
-        Directory theSuggestFSDirectory = FSDirectory.open(theSuggestDirectory);
-        try {
-            theSuggestFSDirectory.clearLock(IndexWriter.WRITE_LOCK_NAME);
-        } catch (IOException e) {
-            // No Lock there
-        }
-
-    //      suggester = new AnalyzingInfixSuggester(IndexFields.LUCENE_VERSION, theSuggestFSDirectory, analyzer);
-        // Initialize the writer and all the other stuff with an empty input iterator
-      //  suggester.build(InputIterator.EMPTY);
-        //suggester = new FreeTextSuggester(analyzer);
-
         IndexWriterConfig theConfig = new IndexWriterConfig(IndexFields.LUCENE_VERSION, analyzer);
         theConfig.setSimilarity(new CustomSimilarity());
         indexWriter = new IndexWriter(theIndexFSDirectory, theConfig);

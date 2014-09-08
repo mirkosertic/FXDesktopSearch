@@ -61,9 +61,9 @@ public class Configuration {
         // Needed by Jackson
         numberOfSearchResults = 50;
         numberOfSuggestions = 10;
-        suggestionSlop = 3;
+        suggestionSlop = 6;
         suggestionWindowBefore = 0;
-        suggestionWindowAfter = 6;
+        suggestionWindowAfter = 3;
         suggestionInOrder = true;
         showSimilarDocuments = false;
         crawlLocations = new ArrayList<>();
