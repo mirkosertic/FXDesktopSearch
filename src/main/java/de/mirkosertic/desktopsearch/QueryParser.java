@@ -49,14 +49,6 @@ class QueryParser {
         return "";
     }
 
-    private boolean isWildCard(String aTerm) {
-        return aTerm.contains("*") || aTerm.contains("?");
-    }
-
-    private boolean isFuzzy(String aTerm) {
-        return aTerm.startsWith("~") && aTerm.length() > 1;
-    }
-
     private boolean isValid(String aTerm) {
         return !StringUtils.isEmpty(aTerm) && !"*".equals(aTerm) && !"?".equals(aTerm);
     }
@@ -123,9 +115,9 @@ class QueryParser {
             SpanQuery[] theSpans = new SpanQuery[theRequiredTerms.size()];
             for (int i = 0; i < theRequiredTerms.size(); i++) {
                 String theTerm = theRequiredTerms.get(i);
-                if (isWildCard(theTerm)) {
+                if (QueryUtils.isWildCard(theTerm)) {
                     theSpans[i] = new SpanMultiTermQueryWrapper<>(new WildcardQuery(new Term(aSearchField, theTerm)));
-                } else if (isFuzzy(theTerm)) {
+                } else if (QueryUtils.isFuzzy(theTerm)) {
                     theSpans[i] = new SpanMultiTermQueryWrapper<>(new FuzzyQuery(new Term(aSearchField, theTerm)));
                 } else {
                     theSpans[i] = new SpanTermQuery(new Term(aSearchField, toToken(theTerm, aSearchField)));
@@ -149,20 +141,21 @@ class QueryParser {
             // Finally, we just add simple term queries, but do not boost them
             // This makes sure that at least the searched terms
             // are found in the document
-            for (int i=0;i<theRequiredTerms.size();i++) {
-                String theTerm = theRequiredTerms.get(i);
-                if (isWildCard(theTerm)) {
-                    theResult.add(new WildcardQuery(new Term(aSearchField, toToken(theTerm, aSearchField))), BooleanClause.Occur.MUST);
-                } else if (isFuzzy(theTerm)) {
+            for (String theTerm : theRequiredTerms) {
+                if (QueryUtils.isWildCard(theTerm)) {
+                    theResult.add(new WildcardQuery(new Term(aSearchField, toToken(theTerm, aSearchField))),
+                            BooleanClause.Occur.MUST);
+                } else if (QueryUtils.isFuzzy(theTerm)) {
                     theResult.add(new FuzzyQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.MUST);
                 } else {
-                    theResult.add(new TermQuery(new Term(aSearchField, toToken(theTerm, aSearchField))), BooleanClause.Occur.MUST);
+                    theResult
+                            .add(new TermQuery(new Term(aSearchField, toToken(theTerm, aSearchField))), BooleanClause.Occur.MUST);
                 }
             }
         }
 
         for (String theTerm : theNotRequiredTerms) {
-            if (isWildCard(theTerm)) {
+            if (QueryUtils.isWildCard(theTerm)) {
                 theResult.add(new WildcardQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.MUST_NOT);
             } else {
                 theResult.add(new TermQuery(new Term(aSearchField, toToken(theTerm, aSearchField))), BooleanClause.Occur.MUST_NOT);
