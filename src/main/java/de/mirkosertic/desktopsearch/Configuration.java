@@ -232,4 +232,9 @@ public class Configuration {
         return theConfiguration;
     }
 
+    public Configuration updateSuggestionsInOrder(boolean aValue) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.suggestionInOrder = aValue;
+        return theConfiguration;
+    }
 }

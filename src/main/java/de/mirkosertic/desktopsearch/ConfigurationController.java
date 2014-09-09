@@ -65,6 +65,9 @@ public class ConfigurationController {
     @FXML
     Slider slopForSuggestionSpan;
 
+    @FXML
+    CheckBox suggestionsInOrder;
+
     private ConfigurationManager configurationManager;
     private Stage stage;
 
@@ -88,6 +91,7 @@ public class ConfigurationController {
         Objects.requireNonNull(windowBeforeSpan);
         Objects.requireNonNull(windowAfterSpan);
         Objects.requireNonNull(slopForSuggestionSpan);
+        Objects.requireNonNull(suggestionsInOrder);
 
         buttonRemove.setOnAction(actionEvent -> removeSelectedLocation());
         buttonAdd.setOnAction(actionEvent -> addNewLocation());
@@ -106,6 +110,7 @@ public class ConfigurationController {
         windowAfterSpan.setValue(theConfiguration.getSuggestionWindowAfter());
         slopForSuggestionSpan.setValue(theConfiguration.getSuggestionSlop());
         indexedDirectories.getItems().addAll(theConfiguration.getCrawlLocations());
+        suggestionsInOrder.setSelected(theConfiguration.isSuggestionInOrder());
 
         // Ok, we build the document type selections
         for (SupportedDocumentType theType : SupportedDocumentType.values()) {
@@ -142,6 +147,7 @@ public class ConfigurationController {
         theConfiguration = theConfiguration.updateSuggestionWindowBefore((int) windowBeforeSpan.getValue());
         theConfiguration = theConfiguration.updateSuggestionWindowAfter((int) windowAfterSpan.getValue());
         theConfiguration = theConfiguration.updateSuggestionSlop((int) slopForSuggestionSpan.getValue());
+        theConfiguration = theConfiguration.updateSuggestionsInOrder(suggestionsInOrder.isSelected());
 
         for (Map.Entry<SupportedDocumentType, CheckBox> theEntry : supportedDocuments.entrySet()) {
             if (theEntry.getValue().isSelected()) {
