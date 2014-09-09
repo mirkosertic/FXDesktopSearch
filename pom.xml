@@ -20,7 +20,7 @@
     </properties>
 
     <build>
-        <finalName>FreeDesktopSearch</finalName>
+        <finalName>FXDesktopSearch</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
