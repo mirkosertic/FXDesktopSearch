@@ -63,6 +63,7 @@ Number of suggestions                          | This is the number of search ph
 Number of words before suggestion span         | Include this number of words in the search phrase suggestion before a matching word
 Number of words after suggestion span          | Include this number of words in the search phrase suggestion after the last match
 Slop for suggestion spans                      | Allow this number of words between entered words for matching search phrase suggestions
+Require suggestions to be in order             | If enabled, suggestions are only shown for the exact order by query terms.
 Indexed directories                            | This is the list of directories to crawl and index
 Scanned documents                              | Check every document type you want to index
 Language analyzers                             | Advanced: enable or disable language specific analyzers.
