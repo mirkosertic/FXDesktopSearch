@@ -35,7 +35,7 @@ Operating system                 | How to install using the shell
 ---------------------------------|-----------------------------------------------------
 RedHat Package Manager           | sudo rpm -i downloadedrpmfile.rpm
 Yum                              | sudo yum install downloadedrpmfile.rpm
-Debian                           | use "apt-get install alien" to install the alien package converter. Then use "alien --to-deb --keep-version <downloadedrpmfile>" to convert the rpm to a deb file. Finally use "sudo dpkg --install createddebfilefromalien.deb" to install the file.
+Debian                           | either use the provided .deb file or use "apt-get install alien" to install the alien package converter. Then use "alien --to-deb --keep-version <downloadedrpmfile>" to convert the rpm to a deb file. Finally use "sudo dpkg --install createddebfilefromalien.deb" to install the file.
 
 Usage
 -----
