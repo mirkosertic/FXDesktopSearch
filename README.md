@@ -31,7 +31,7 @@ Linux
 
 Installation on Unix systems is also easy. Just download the .rpm file and execute it using one of the the following commands according to your Linux distribution type:
 
-Operating system                 | How to install using the shell                                       
+Packaging method                 | How to install using the shell                                       
 ---------------------------------|-----------------------------------------------------
 RedHat Package Manager           | sudo rpm -i downloadedrpmfile.rpm
 Yum                              | sudo yum install downloadedrpmfile.rpm
