@@ -14,8 +14,8 @@ The latest FXDesktopSearch packages can be downloaded here:
 
 Operating system                  | Link                                                
 ----------------------------------|-----------------------------------------------------
-Microsoft Windows 64bit           | [Google Drive Windows Releases](https://drive.google.com/folderview?id=0BxZHTEICpbwAVExxR2UxWDd4ZzQ&usp=sharing)
-Linux RPM 64 bit                  | [Google Drive Unix Releases](https://drive.google.com/folderview?id=0BxZHTEICpbwASE1Zc1VMZGxUelU&usp=sharing)                                                     
+Microsoft Windows 64bit           | [Google Drive Windows Releases](https://drive.google.com/folderview?id=0BxZHTEICpbwAVExxR2UxWDd4ZzQ&usp=sharing#list)
+Linux RPM 64 bit                  | [Google Drive Unix Releases](https://drive.google.com/folderview?id=0BxZHTEICpbwASE1Zc1VMZGxUelU&usp=sharing#list)                                                     
 
 
 Installation
