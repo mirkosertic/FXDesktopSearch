@@ -49,6 +49,23 @@ class QueryParser {
         return "";
     }
 
+    private void addToBooleanQuery(List<String> aTermList, String aFieldName, BooleanQuery aQuery, BooleanClause.Occur aOccour)
+            throws IOException {
+        for (String theTerm : aTermList) {
+            if (QueryUtils.isWildCard(theTerm)) {
+                aQuery.add(new WildcardQuery(new Term(aFieldName, theTerm)), aOccour);
+            } else if (QueryUtils.isFuzzy(theTerm)) {
+                aQuery.add(new FuzzyQuery(new Term(aFieldName, theTerm)), aOccour);
+            } else {
+                String theTokenizedTerm = toToken(theTerm, aFieldName);
+                if (!StringUtils.isEmpty(theTokenizedTerm)) {
+                    aQuery.add(new TermQuery(new Term(aFieldName, theTokenizedTerm)), aOccour);
+                }
+            }
+        }
+
+    }
+
     public Query parse(String aQuery, String aSearchField) throws IOException {
 
         QueryTokenizer theTokenizer = new QueryTokenizer(aQuery);
@@ -57,7 +74,7 @@ class QueryParser {
 
         BooleanQuery theResult = new BooleanQuery();
 
-        if (!theTokenizer.getNotRequiredTerms().isEmpty()) {
+        if (!theTokenizer.getRequiredTerms().isEmpty()) {
 
             List<SpanQuery> theSpans = new ArrayList<>();
             for (String theTerm : theTokenizer.getRequiredTerms()) {
@@ -91,33 +108,12 @@ class QueryParser {
             // Finally, we just add simple term queries, but do not boost them
             // This makes sure that at least the searched terms
             // are found in the document
-            for (String theTerm : theTokenizer.getRequiredTerms()) {
-                if (QueryUtils.isWildCard(theTerm)) {
-                    theResult.add(new WildcardQuery(new Term(aSearchField, toToken(theTerm, aSearchField))),
-                            BooleanClause.Occur.MUST);
-                } else if (QueryUtils.isFuzzy(theTerm)) {
-                    theResult.add(new FuzzyQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.MUST);
-                } else {
-                    String theTokenizedTerm = toToken(theTerm, aSearchField);
-                    if (!StringUtils.isEmpty(theTokenizedTerm)) {
-                        theResult.add(new TermQuery(new Term(aSearchField, theTokenizedTerm)), BooleanClause.Occur.MUST);
-                    }
-                }
-            }
+            addToBooleanQuery(theTokenizer.getRequiredTerms(), aSearchField, theResult, BooleanClause.Occur.MUST);
         }
 
-        for (String theTerm : theTokenizer.getNotRequiredTerms()) {
-            if (QueryUtils.isWildCard(theTerm)) {
-                theResult.add(new WildcardQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.MUST_NOT);
-            } else if (QueryUtils.isFuzzy(theTerm)) {
-                theResult.add(new FuzzyQuery(new Term(aSearchField, theTerm)), BooleanClause.Occur.MUST_NOT);
-            } else {
-                String theTokenizedTerm = toToken(theTerm, aSearchField);
-                if (!StringUtils.isEmpty(theTokenizedTerm)) {
-                    theResult.add(new TermQuery(new Term(aSearchField, theTokenizedTerm)), BooleanClause.Occur.MUST_NOT);
-                }
-            }
-        }
+
+        // Finally, add the terms that must not occur in the search result
+        addToBooleanQuery(theTokenizer.getNotRequiredTerms(), aSearchField, theResult, BooleanClause.Occur.MUST_NOT);
 
         return theResult;
     }
