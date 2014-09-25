@@ -166,4 +166,8 @@ class Backend implements ConfigurationChangeListener {
     public Suggestion[] findSuggestionTermsFor(String aTerm) throws IOException {
         return luceneIndexHandler.findSuggestionTermsFor(aTerm);
     }
+
+    public File getFileOnDiskForDocument(int aDocumentID) throws IOException {
+        return luceneIndexHandler.getFileOnDiskForDocument(aDocumentID);
+    }
 }

@@ -502,4 +502,19 @@ class LuceneIndexHandler {
             searcherManager.release(theSearcher);
         }
     }
+
+    public File getFileOnDiskForDocument(int aDocumentID) throws IOException {
+        searcherManager.maybeRefreshBlocking();
+        IndexSearcher theSearcher = searcherManager.acquire();
+
+        try {
+            Document theDocument = theSearcher.doc(aDocumentID);
+            if (theDocument != null) {
+                return new File(theDocument.get(IndexFields.FILENAME));
+            }
+            return null;
+        } finally {
+            searcherManager.release(theSearcher);
+        }
+    }
 }
