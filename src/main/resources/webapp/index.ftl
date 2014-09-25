@@ -62,6 +62,7 @@
                                         <img class="ratingStar" src="star_dark.png"/>
                                     </#if>
                                 </#list>
+                                <img src="/thumbnail/${document.documentID}.png"/>
                             </span><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${queryResult.getSimpleFileName(filename)}</a></b><br/>
                             <a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
                         <#else>
