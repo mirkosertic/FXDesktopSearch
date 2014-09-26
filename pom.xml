@@ -149,5 +149,10 @@
             <artifactId>controlsfx</artifactId>
             <version>8.0.6</version>
         </dependency>
+        <dependency>
+            <groupId>com.artofsolving</groupId>
+            <artifactId>jodconverter</artifactId>
+            <version>2.2.1</version>
+        </dependency>
     </dependencies>
 </project>
