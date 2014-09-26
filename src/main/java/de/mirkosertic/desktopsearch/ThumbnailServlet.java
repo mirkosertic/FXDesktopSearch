@@ -47,7 +47,7 @@ public class ThumbnailServlet extends HttpServlet {
 
         aResponse.setHeader("Cache-Control", "no-cache"); //HTTP 1.1
         aResponse.setHeader("Pragma", "no-cache"); //HTTP 1.0
-        aResponse.setDateHeader("Expires", 0); //prevents
+        aResponse.setDateHeader("Expires", 0);
 
         String theFilename = aRequest.getPathInfo();
 

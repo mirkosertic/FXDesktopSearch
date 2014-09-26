@@ -12,23 +12,24 @@
  */
 package de.mirkosertic.desktopsearch.pdfpreview;
 
+import de.mirkosertic.desktopsearch.ImageUtils;
 import de.mirkosertic.desktopsearch.Preview;
+import de.mirkosertic.desktopsearch.PreviewConstants;
 import de.mirkosertic.desktopsearch.PreviewGenerator;
+import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdfviewer.PageDrawer;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
-import org.apache.pdfbox.pdfviewer.PageDrawer;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
+public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
 
-public class PDFPreviewGenerator implements PreviewGenerator {
-
-    private static final int THUMB_WIDTH = (int)(210 / 2.5);
-    private static final int THUMB_HEIGHT = (int) (297 / 2.5);
+    private static final Logger LOGGER = Logger.getLogger(PDFPreviewGenerator.class);
 
     @Override
     public Preview createPreviewFor(File aFile) {
@@ -62,9 +63,10 @@ public class PDFPreviewGenerator implements PreviewGenerator {
                 g.rotate(Math.toRadians(rotation), w / 2, h / 2);
                 g.drawImage(theImage, null, 0, 0);
             }
-
-            return new Preview(theImage);
+            theGraphics.dispose();
+            return new Preview(ImageUtils.rescale(theImage, THUMB_WIDTH, THUMB_HEIGHT, ImageUtils.RescaleMethod.RESIZE_FIT_ONE_DIMENSION));
         } catch (Exception e) {
+            LOGGER.error("Error creating preview for " + aFile, e);
             return null;
         }
     }
