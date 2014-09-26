@@ -57,13 +57,16 @@ public class DesktopSearch extends Application {
 
         stage = aStage;
 
+        // Create the known preview processors
+        PreviewProcessor thePreviewProcessor = new PreviewProcessor();
+
         try {
             // Boot the search backend and set it up for listening to configuration changes
-            backend = new Backend(theNotifier, configurationManager.getConfiguration());
+            backend = new Backend(theNotifier, configurationManager.getConfiguration(), thePreviewProcessor);
             configurationManager.addChangeListener(backend);
 
             // Boot embedded JSP container
-            embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend);
+            embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend, thePreviewProcessor);
 
             embeddedWebServer.start();
         } catch (BindException|LockReleaseFailedException|LockObtainFailedException e) {

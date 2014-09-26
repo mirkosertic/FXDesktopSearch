@@ -60,8 +60,10 @@ class LuceneIndexHandler {
     private final FieldType contentFieldType;
     private final ExecutorPool executorPool;
     private final Configuration configuration;
+    private final PreviewProcessor previewProcessor;
 
-    public LuceneIndexHandler(Configuration aConfiguration, AnalyzerCache aAnalyzerCache, ExecutorPool aExecutorPool) throws IOException {
+    public LuceneIndexHandler(Configuration aConfiguration, AnalyzerCache aAnalyzerCache, ExecutorPool aExecutorPool, PreviewProcessor aPreviewProcessor) throws IOException {
+        previewProcessor = aPreviewProcessor;
         configuration = aConfiguration;
         analyzerCache = aAnalyzerCache;
         executorPool = aExecutorPool;
@@ -135,6 +137,7 @@ class LuceneIndexHandler {
 
         SupportedLanguage theLanguage = aContent.getLanguage();
 
+        theDocument.add(new StringField(IndexFields.UNIQUEID, UUID.randomUUID().toString(), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.FILENAME, aContent.getFileName(), Field.Store.YES));
         theDocument.add(new SortedSetDocValuesFacetField(IndexFields.LANGUAGEFACET, theLanguage.name()));
         theDocument.add(new TextField(IndexFields.LANGUAGESTORED, theLanguage.name(), Field.Store.YES));
@@ -350,6 +353,7 @@ class LuceneIndexHandler {
                     theUniqueDocumentsFound.add(theDocumentID);
                     Document theDocument = theSearcher.doc(theDocumentID);
 
+                    String theUniqueID = theDocument.getField(IndexFields.UNIQUEID).stringValue();
                     String theFoundFileName = theDocument.getField(IndexFields.FILENAME).stringValue();
                     String theHash = theDocument.getField(IndexFields.CONTENTMD5).stringValue();
                     QueryResultDocument theExistingDocument = theDocumentsByHash.get(theHash);
@@ -384,10 +388,17 @@ class LuceneIndexHandler {
 
                         int theNormalizedScore = (int)(theDocs.scoreDocs[i].score / theDocs.getMaxScore() * 5);
 
-                        // Cache the existing documents
-                        theExistingDocument = new QueryResultDocument(theDocumentID, theFoundFileName, theHighligherResult, Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()), theNormalizedScore);
-                        theDocumentsByHash.put(theHash, theExistingDocument);
-                        theResultDocuments.add(theExistingDocument);
+                        File theFileOnDisk = new File(theFoundFileName);
+                        if (theFileOnDisk.exists()) {
+
+                            boolean thePreviewAvailable = previewProcessor.previewAvailableFor(theFileOnDisk);
+
+                            theExistingDocument = new QueryResultDocument(theDocumentID, theFoundFileName, theHighligherResult,
+                                    Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()),
+                                    theNormalizedScore, theUniqueID, thePreviewAvailable);
+                            theDocumentsByHash.put(theHash, theExistingDocument);
+                            theResultDocuments.add(theExistingDocument);
+                        }
                     }
                 }
 
@@ -503,14 +514,18 @@ class LuceneIndexHandler {
         }
     }
 
-    public File getFileOnDiskForDocument(int aDocumentID) throws IOException {
+    public File getFileOnDiskForDocument(String aUniqueID) throws IOException {
         searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
 
         try {
-            Document theDocument = theSearcher.doc(aDocumentID);
-            if (theDocument != null) {
-                return new File(theDocument.get(IndexFields.FILENAME));
+            TermQuery theTermQuery = new TermQuery(new Term(IndexFields.UNIQUEID, aUniqueID));
+            TopDocs theTopDocs = theSearcher.search(theTermQuery, null, 1);
+            if (theTopDocs.totalHits == 1) {
+                Document theDocument = theSearcher.doc(theTopDocs.scoreDocs[0].doc);
+                if (theDocument != null) {
+                    return new File(theDocument.get(IndexFields.FILENAME));
+                }
             }
             return null;
         } finally {

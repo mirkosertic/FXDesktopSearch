@@ -26,7 +26,7 @@ class FrontendEmbeddedWebServer {
 
     private final Server jetty;
 
-    public FrontendEmbeddedWebServer(Stage aStage, Backend aBackend) {
+    public FrontendEmbeddedWebServer(Stage aStage, Backend aBackend, PreviewProcessor aPreviewProcessor) {
         jetty = new Server(PORT_NUMMER);
 
         WebAppContext theWebApp = new WebAppContext();
@@ -37,7 +37,7 @@ class FrontendEmbeddedWebServer {
         theWebApp.addServlet(new ServletHolder(new SearchServlet(aBackend, "http://127.0.0.1:" + PORT_NUMMER)), SearchServlet.URL + "/*");
         theWebApp.addServlet(new ServletHolder(new BringToFrontServlet(aStage)), BringToFrontServlet.URL);
         theWebApp.addServlet(new ServletHolder(new SuggestionServlet(aBackend)), SuggestionServlet.URL);
-        theWebApp.addServlet(new ServletHolder(new ThumbnailServlet(aBackend)), ThumbnailServlet.URL + "/*");
+        theWebApp.addServlet(new ServletHolder(new ThumbnailServlet(aBackend, aPreviewProcessor)), ThumbnailServlet.URL + "/*");
 
         jetty.setHandler(theWebApp);
     }

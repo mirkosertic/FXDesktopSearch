@@ -52,30 +52,40 @@
 
                 <#list queryResult.documents as document>
 
-                    <#list document.fileNames as filename>
-                        <#if filename_index == 0>
-                            <b><span>
-                                <#list 1..5 as index>
-                                    <#if document.normalizedScore &gt;= index>
-                                        <img class="ratingStar" src="star_light.png"/>
+                    <table>
+                        <tr>
+                            <#if document.previewAvailable>
+                                <td rowspan="2"><img src="/thumbnail/preview/${document.uniqueID}.png"/></td>
+                            </#if>
+                            <td valign="top">
+                                <#list document.fileNames as filename>
+                                    <#if filename_index == 0>
+                                        <b><span>
+                                        <#list 1..5 as index>
+                                            <#if document.normalizedScore &gt;= index>
+                                                <img class="ratingStar" src="star_light.png"/>
+                                            <#else>
+                                                <img class="ratingStar" src="star_dark.png"/>
+                                            </#if>
+                                        </#list>
+                                        <img src="/thumbnail/icon/${document.uniqueID}.png"/>
+                                        </span><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${queryResult.getSimpleFileName(filename)}</a></b><br/>
+                                        <a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
                                     <#else>
-                                        <img class="ratingStar" src="star_dark.png"/>
+                                        <br/><a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
                                     </#if>
                                 </#list>
-                                <img src="/thumbnail/${document.documentID}.png"/>
-                            </span><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${queryResult.getSimpleFileName(filename)}</a></b><br/>
-                            <a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
-                        <#else>
-                            <br/><a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
-                        </#if>
-                    </#list>
-
-                    <div class="searchResultAreaContentHighlighted">${document.highlightedSearchResult}</div>
-
-                    <#list document.similarFiles as similarFile>
-                        <div><a onclick="desktop.openFile('${queryResult.getEscapedFileName(similarFile)}')" class="searchResultAreaResultSimilar">${queryResult.getSimpleFileName(similarFile)}</a></div>
-                    </#list>
-                    <br/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top"><div class="searchResultAreaContentHighlighted">${document.highlightedSearchResult}</div>
+                                <#list document.similarFiles as similarFile>
+                                    <div><a onclick="desktop.openFile('${queryResult.getEscapedFileName(similarFile)}')" class="searchResultAreaResultSimilar">${queryResult.getSimpleFileName(similarFile)}</a></div>
+                                </#list>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
                 </#list>
                 </div>
             <#else>
