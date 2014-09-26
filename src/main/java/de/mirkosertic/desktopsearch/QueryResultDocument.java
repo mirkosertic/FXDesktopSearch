@@ -31,7 +31,12 @@ public class QueryResultDocument {
 
     private final int normalizedScore;
 
-    public QueryResultDocument(int aDocumentID, String aFileName, Future<String> aHighlighterResult, long aLastModified, int aNormalizedScore) {
+    private final String uniqueID;
+
+    private final boolean previewAvailable;
+
+    public QueryResultDocument(int aDocumentID, String aFileName, Future<String> aHighlighterResult, long aLastModified, int aNormalizedScore, String aUniqueID, boolean aPreviewAvailable) {
+        previewAvailable = aPreviewAvailable;
         fileNames = new ArrayList<>();
         fileNames.add(aFileName);
         highlightedSearchResult = aHighlighterResult;
@@ -39,6 +44,7 @@ public class QueryResultDocument {
         documentID = aDocumentID;
         similarFiles = new ArrayList<>();
         normalizedScore = aNormalizedScore;
+        uniqueID = aUniqueID;
     }
 
     public List<String> getFileNames() {
@@ -79,5 +85,13 @@ public class QueryResultDocument {
 
     public int getNormalizedScore() {
         return normalizedScore;
+    }
+
+    public String getUniqueID() {
+        return uniqueID;
+    }
+
+    public boolean isPreviewAvailable() {
+        return previewAvailable;
     }
 }

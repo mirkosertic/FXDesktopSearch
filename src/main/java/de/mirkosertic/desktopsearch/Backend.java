@@ -34,10 +34,12 @@ class Backend implements ConfigurationChangeListener {
     private final ExecutorPool executorPool;
     private final Notifier notifier;
     private final WatchServiceCache watchServiceCache;
+    private final PreviewProcessor previewProcessor;
     private Configuration configuration;
 
-    public Backend(Notifier aNotifier, Configuration aConfiguration) throws IOException {
+    public Backend(Notifier aNotifier, Configuration aConfiguration, PreviewProcessor aPreviewProcessor) throws IOException {
         notifier = aNotifier;
+        previewProcessor = aPreviewProcessor;
         locations = new HashMap<>();
         executorPool = new ExecutorPool();
         watchServiceCache = new WatchServiceCache();
@@ -130,7 +132,7 @@ class Backend implements ConfigurationChangeListener {
             shutdown();
         }
         AnalyzerCache theCache = new AnalyzerCache(aConfiguration);
-        luceneIndexHandler = new LuceneIndexHandler(aConfiguration, theCache, executorPool);
+        luceneIndexHandler = new LuceneIndexHandler(aConfiguration, theCache, executorPool, previewProcessor);
     }
 
     public void crawlLocations() throws IOException {
@@ -167,7 +169,7 @@ class Backend implements ConfigurationChangeListener {
         return luceneIndexHandler.findSuggestionTermsFor(aTerm);
     }
 
-    public File getFileOnDiskForDocument(int aDocumentID) throws IOException {
+    public File getFileOnDiskForDocument(String aDocumentID) throws IOException {
         return luceneIndexHandler.getFileOnDiskForDocument(aDocumentID);
     }
 }

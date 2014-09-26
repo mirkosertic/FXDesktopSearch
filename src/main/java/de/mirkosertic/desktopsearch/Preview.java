@@ -12,21 +12,17 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.lucene.util.Version;
+import java.awt.image.BufferedImage;
 
-public interface IndexFields {
+public class Preview {
 
-    Version LUCENE_VERSION = Version.LUCENE_4_10_0;
+    private final BufferedImage image;
 
-    String UNIQUEID = "uniqueid";
-    String FILENAME = "filename";
-    String EXTENSION = "extension";
-    String LANGUAGESTORED = "language_s";
-    String LANGUAGEFACET = "language_f";
-    String CONTENT = "content";
-    String CONTENT_NOT_STEMMED = "contentnotstemmed";
-    String CONTENTMD5 = "contentmd5";
-    String FILESIZE = "filesize";
-    String LASTMODIFIED = "lastmodified";
-    String LOCATIONID = "locationId";
+    public Preview(BufferedImage aPreviewImage) {
+        image = aPreviewImage;
+    }
+
+    public BufferedImage getImage() {
+        return image;
+    }
 }

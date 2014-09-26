@@ -31,32 +31,67 @@ public class ThumbnailServlet extends HttpServlet {
 
     public static final String URL = "/thumbnail";
 
-    private final Backend backend;
+    private static final String TYPE_ICON = "icon";
+    private static final String TYPE_PREVIEW = "preview";
 
-    public ThumbnailServlet(Backend aBackend) {
+    private final Backend backend;
+    private final PreviewProcessor previewProcessor;
+
+    public ThumbnailServlet(Backend aBackend, PreviewProcessor aProcessor) {
         backend = aBackend;
+        previewProcessor = aProcessor;
     }
 
     @Override
     protected void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
+
+        aResponse.setHeader("Cache-Control", "no-cache"); //HTTP 1.1
+        aResponse.setHeader("Pragma", "no-cache"); //HTTP 1.0
+        aResponse.setDateHeader("Expires", 0); //prevents
+
         String theFilename = aRequest.getPathInfo();
 
         LOGGER.info("Was requested for thumbnail of " + theFilename);
 
+        // Strip the first path
+        theFilename = theFilename.substring(1);
+
+        int theSlash = theFilename.indexOf("/");
+        String theType = theFilename.substring(0, theSlash);
+
+        theFilename = theFilename.substring(theSlash + 1);
+
         int theDot = theFilename.lastIndexOf('.');
-        int theDocumentID = Integer.parseInt(theFilename.substring(1, theDot));
+        String theDocumentID = theFilename.substring(0, theDot);
         String theFileType = theFilename.substring(theDot + 1);
 
         File theFileOnDisk = backend.getFileOnDiskForDocument(theDocumentID);
+
         if (theFileOnDisk != null && theFileOnDisk.exists()) {
+
             LOGGER.info("Found file on disk " + theFileOnDisk);
 
-            Icon theFileIcon = FileSystemView.getFileSystemView().getSystemIcon(theFileOnDisk);
+            if (TYPE_ICON.equals(theType)) {
+                Icon theFileIcon = FileSystemView.getFileSystemView().getSystemIcon(theFileOnDisk);
 
-            BufferedImage theImage = new BufferedImage(theFileIcon.getIconWidth(), theFileIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-            theFileIcon.paintIcon(null, theImage.getGraphics(), 0, 0);
+                BufferedImage theImage = new BufferedImage(theFileIcon.getIconWidth(), theFileIcon.getIconHeight(),
+                        BufferedImage.TYPE_INT_ARGB);
+                theFileIcon.paintIcon(null, theImage.getGraphics(), 0, 0);
 
-            ImageIO.write(theImage, theFileType, aResponse.getOutputStream());
+                ImageIO.write(theImage, theFileType, aResponse.getOutputStream());
+            }
+
+            if (TYPE_PREVIEW.equals(theType)) {
+                Preview thePreview = previewProcessor.computePreviewFor(theFileOnDisk);
+                if (thePreview != null) {
+
+                    ImageIO.write(thePreview.getImage(), theFileType, aResponse.getOutputStream());
+
+                } else {
+                    LOGGER.info("Nothing was found...");
+                    aResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
+            }
         } else {
             LOGGER.info("Nothing was found...");
             aResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
