@@ -12,6 +12,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import java.io.File;
 import java.util.Locale;
 
 public enum SupportedDocumentType {
@@ -98,6 +99,12 @@ public enum SupportedDocumentType {
         public String getDisplayName(Locale aLocale) {
             return "EBook (.mobi)";
         }
+    },
+    odt {
+        @Override
+        public String getDisplayName(Locale aLocale) {
+            return "Open Office Document (.odt)";
+        }
     };
 
     public boolean supports(String aFilename) {
@@ -106,4 +113,8 @@ public enum SupportedDocumentType {
     }
 
     public abstract String getDisplayName(Locale aLocale);
+
+    public boolean matches(File aFile) {
+        return aFile.getName().toLowerCase().endsWith("." +name());
+    }
 }

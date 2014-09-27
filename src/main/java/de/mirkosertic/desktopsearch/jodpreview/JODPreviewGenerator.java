@@ -17,10 +17,7 @@ import com.artofsolving.jodconverter.DocumentFamily;
 import com.artofsolving.jodconverter.DocumentFormat;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
-import de.mirkosertic.desktopsearch.ImageUtils;
-import de.mirkosertic.desktopsearch.Preview;
-import de.mirkosertic.desktopsearch.PreviewConstants;
-import de.mirkosertic.desktopsearch.PreviewGenerator;
+import de.mirkosertic.desktopsearch.*;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -29,6 +26,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -37,6 +36,8 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
     private static final Logger LOGGER = Logger.getLogger(JODPreviewGenerator.class);
 
     private boolean enabled;
+    private final Set<SupportedDocumentType> suppportedDocumentTypes;
+    private final DefaultDocumentFormatRegistry documentFormatRegistry;
 
     private static SocketOpenOfficeConnection createConnection() throws ConnectException {
         SocketOpenOfficeConnection theConnection = new SocketOpenOfficeConnection(8100);
@@ -45,6 +46,25 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
     }
 
     public JODPreviewGenerator() {
+        suppportedDocumentTypes = new HashSet<>();
+        suppportedDocumentTypes.add(SupportedDocumentType.txt);
+        suppportedDocumentTypes.add(SupportedDocumentType.doc);
+        suppportedDocumentTypes.add(SupportedDocumentType.docx);
+        //Presentations disabled due to memory issues
+        //suppportedDocumentTypes.add(SupportedDocumentType.ppt);
+        //suppportedDocumentTypes.add(SupportedDocumentType.pptx);
+        suppportedDocumentTypes.add(SupportedDocumentType.rtf);
+
+        documentFormatRegistry = new DefaultDocumentFormatRegistry();
+        // DOCX Stuff is missing in the default registry
+        DocumentFormat theDOCXFormat = new DocumentFormat("Microsoft Word", DocumentFamily.TEXT, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx");
+        theDOCXFormat.setExportFilter(DocumentFamily.TEXT, "MS Word 2007");
+        documentFormatRegistry.addDocumentFormat(theDOCXFormat);
+        // PPTX Stuff is missing in the default registry
+        DocumentFormat thePPTXFormat = new DocumentFormat("Microsoft Powerpoint", DocumentFamily.PRESENTATION, "application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx");
+        theDOCXFormat.setExportFilter(DocumentFamily.TEXT, "MS Word 2007");
+        documentFormatRegistry.addDocumentFormat(thePPTXFormat);
+
         try {
             SocketOpenOfficeConnection theConnection = createConnection();
             theConnection.disconnect();
@@ -60,8 +80,10 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
         if (!enabled) {
             return false;
         }
-        if (aFile.getName().toLowerCase().endsWith(".doc") || aFile.getName().toLowerCase().endsWith(".docx")) {
-            return true;
+        for (SupportedDocumentType theType : suppportedDocumentTypes) {
+            if (theType.matches(aFile)) {
+                return true;
+            }
         }
         return false;
     }
@@ -74,13 +96,7 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
 
             theConnection = createConnection();
 
-            DefaultDocumentFormatRegistry theRegistry = new DefaultDocumentFormatRegistry();
-
-            final DocumentFormat doc = new DocumentFormat("Microsoft Word", DocumentFamily.TEXT, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx");
-            doc.setExportFilter(DocumentFamily.TEXT, "MS Word 2007");
-            theRegistry.addDocumentFormat(doc);
-
-            OpenOfficeDocumentConverter theConverter = new OpenOfficeDocumentConverter(theConnection, theRegistry);
+            OpenOfficeDocumentConverter theConverter = new OpenOfficeDocumentConverter(theConnection, documentFormatRegistry);
             // Convert to OfficeOpen file
             theTempFile = File.createTempFile("jodtemp", ".odt");
             theConverter.convert(aFile, theTempFile);

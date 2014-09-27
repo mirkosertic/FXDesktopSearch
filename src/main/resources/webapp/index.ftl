@@ -55,7 +55,7 @@
                     <table>
                         <tr>
                             <#if document.previewAvailable>
-                                <td rowspan="2"><img src="/thumbnail/preview/${document.uniqueID}.png"/></td>
+                                <td rowspan="2"><img src="loading.gif" data-src="/thumbnail/preview/${document.uniqueID}.png"/></td>
                             </#if>
                             <td valign="top">
                                 <#list document.fileNames as filename>
@@ -68,7 +68,7 @@
                                                 <img class="ratingStar" src="star_dark.png"/>
                                             </#if>
                                         </#list>
-                                        <img src="/thumbnail/icon/${document.uniqueID}.png"/>
+                                        <img src="ui-anim_basic_16x16.gif" data-src="/thumbnail/icon/${document.uniqueID}.png"/>
                                         </span><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${queryResult.getSimpleFileName(filename)}</a></b><br/>
                                         <a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
                                     <#else>
@@ -102,6 +102,7 @@
         </div>
 
         <script src="jquery-ui-1.11.1.custom/external/jquery/jquery.js"></script>
+        <script src="jquery-ui-1.11.1.custom/external/unveil/jquery.unveil.js"></script>
         <script src="jquery-ui-1.11.1.custom/jquery-ui.min.js"></script>
         <script>
             $(function() {
@@ -115,6 +116,10 @@
                                     .append( $( "<a></a>" ).html( item.label ) )
                                     .appendTo( ul );
                         };
+            });
+
+            $(document).ready(function() {
+                $("img").unveil();
             });
         </script>
     </body>
