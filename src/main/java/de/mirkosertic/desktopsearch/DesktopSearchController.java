@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class DesktopSearchController implements Initializable {
@@ -160,6 +162,19 @@ public class DesktopSearchController implements Initializable {
         webView.setContextMenuEnabled(false);
         webView.getEngine().load(aSearchURL);
         webView.getEngine().setJavaScriptEnabled(true);
+
+        if (aApplication.getConfigurationManager().getConfiguration().isCrawlOnStartup()) {
+            // Scedule a crawl run 5 seconds after startup...
+            Timer theTimer = new Timer();
+            theTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        recrawl();
+                    });
+                }
+            }, 5000);
+        }
     }
 
     public void initialize(URL aUrl, ResourceBundle aResourceBundle) {
@@ -186,14 +201,18 @@ public class DesktopSearchController implements Initializable {
     }
 
     void recrawl() {
-        statusBar.setVisible(true);
-        statusBar.setManaged(true);
-        menuItemRecrawl.setDisable(true);
-        statusText.setText("");
-        try {
-            backend.crawlLocations();
-        } catch (Exception e) {
-            LOGGER.error("Error crawling locations", e);
+        // Check if there is already a crawl run in progress
+        // this might happen due to the crawl on startup feature
+        if (!menuItemRecrawl.isDisable()) {
+            statusBar.setVisible(true);
+            statusBar.setManaged(true);
+            menuItemRecrawl.setDisable(true);
+            statusText.setText("");
+            try {
+                backend.crawlLocations();
+            } catch (Exception e) {
+                LOGGER.error("Error crawling locations", e);
+            }
         }
     }
 
