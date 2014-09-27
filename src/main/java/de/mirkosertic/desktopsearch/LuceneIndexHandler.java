@@ -24,10 +24,7 @@ import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
-import org.apache.lucene.index.FieldInfo;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.index.*;
 import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.highlight.Highlighter;
@@ -528,6 +525,26 @@ class LuceneIndexHandler {
                 }
             }
             return null;
+        } finally {
+            searcherManager.release(theSearcher);
+        }
+    }
+
+    public void cleanupDeadContent() throws IOException {
+        searcherManager.maybeRefreshBlocking();
+        IndexSearcher theSearcher = searcherManager.acquire();
+
+        try {
+            IndexReader theReader = theSearcher.getIndexReader();
+            for (int i = 0; i < theReader.maxDoc(); i++) {
+                Document theDocument = theReader.document(i);
+                File theFile = new File(theDocument.getField(IndexFields.FILENAME).stringValue());
+                if (!theFile.exists()) {
+                    LOGGER.info("Removing file "+theFile+" from index as it does not exist anymore.");
+                    String theUniqueID = theDocument.getField(IndexFields.UNIQUEID).stringValue();
+                    indexWriter.deleteDocuments(new Term(IndexFields.UNIQUEID, theUniqueID));
+                }
+            }
         } finally {
             searcherManager.release(theSearcher);
         }

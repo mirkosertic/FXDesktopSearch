@@ -75,7 +75,7 @@ class Backend implements ConfigurationChangeListener {
                         progressListener.newFileFound(theFileName);
 
                         BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-                        UpdateCheckResult theUpdateCheckResult = luceneIndexHandler.checkIfModified(theFileName, theAttributes.size());
+                        UpdateCheckResult theUpdateCheckResult = luceneIndexHandler.checkIfModified(theFileName, theAttributes.lastModifiedTime().toMillis());
                         if (theUpdateCheckResult == UpdateCheckResult.UPDATED) {
 
                             if (aShowInformation) {
@@ -86,8 +86,6 @@ class Backend implements ConfigurationChangeListener {
                             if (theContent != null) {
                                 luceneIndexHandler.addToIndex(aLocation.getId(), theContent);
                             }
-                        } else {
-                            LOGGER.info("File " + aFile+" was modified, but Index Status is " + theUpdateCheckResult);
                         }
                     } catch (Exception e) {
                         aNotifier.showError("Error re-inxeding " + aFile.getFileName(), e);
@@ -142,6 +140,12 @@ class Backend implements ConfigurationChangeListener {
         Thread theRunner = new Thread() {
             @Override
             public void run() {
+
+                try {
+                    luceneIndexHandler.cleanupDeadContent();
+                } catch (IOException e) {
+                    LOGGER.error("Error removing dead content", e);
+                }
 
                 locations.values().stream().forEach(theWatcher -> {
                     try {

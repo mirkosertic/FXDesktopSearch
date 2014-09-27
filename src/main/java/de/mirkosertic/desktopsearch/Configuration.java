@@ -51,6 +51,7 @@ public class Configuration {
     private int suggestionWindowAfter;
     private boolean suggestionInOrder;
     private boolean showSimilarDocuments;
+    private boolean crawlOnStartup;
     private List<CrawlLocation> crawlLocations;
     private Set<SupportedLanguage> enabledLanguages;
     private Set<SupportedDocumentType> enabledDocumentTypes;
@@ -66,6 +67,7 @@ public class Configuration {
         suggestionWindowAfter = 3;
         suggestionInOrder = true;
         showSimilarDocuments = false;
+        crawlOnStartup = true;
         crawlLocations = new ArrayList<>();
         enabledLanguages = new HashSet<>();
         enabledDocumentTypes = new HashSet<>();
@@ -160,6 +162,10 @@ public class Configuration {
         return suggestionInOrder;
     }
 
+    public boolean isCrawlOnStartup() {
+        return crawlOnStartup;
+    }
+
     public Configuration addLocation(CrawlLocation aCrawlLocation) {
         Configuration theConfiguration = new Configuration(this);
         theConfiguration.crawlLocations.add(aCrawlLocation);
@@ -235,6 +241,12 @@ public class Configuration {
     public Configuration updateSuggestionsInOrder(boolean aValue) {
         Configuration theConfiguration = new Configuration(this);
         theConfiguration.suggestionInOrder = aValue;
+        return theConfiguration;
+    }
+
+    public Configuration updateCrawlOnStartup(boolean aValue) {
+        Configuration theConfiguration = new Configuration(this);
+        theConfiguration.crawlOnStartup = aValue;
         return theConfiguration;
     }
 }
