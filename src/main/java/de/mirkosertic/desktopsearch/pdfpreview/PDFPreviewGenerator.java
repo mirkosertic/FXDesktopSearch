@@ -12,10 +12,7 @@
  */
 package de.mirkosertic.desktopsearch.pdfpreview;
 
-import de.mirkosertic.desktopsearch.ImageUtils;
-import de.mirkosertic.desktopsearch.Preview;
-import de.mirkosertic.desktopsearch.PreviewConstants;
-import de.mirkosertic.desktopsearch.PreviewGenerator;
+import de.mirkosertic.desktopsearch.*;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdfviewer.PageDrawer;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -25,17 +22,30 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
 
     private static final Logger LOGGER = Logger.getLogger(PDFPreviewGenerator.class);
 
+    private final Set<SupportedDocumentType> suppportedDocumentTypes;
+
+    public PDFPreviewGenerator() {
+        suppportedDocumentTypes = new HashSet<>();
+        suppportedDocumentTypes.add(SupportedDocumentType.pdf);
+    }
+
     @Override
-    public Preview createPreviewFor(File aFile) {
+    public synchronized Preview createPreviewFor(File aFile) {
+        PDDocument theDocument = null;
         try {
-            PDDocument theDocument = PDDocument.load(aFile);
+            theDocument = PDDocument.load(aFile);
             List<?> thePages = theDocument.getDocumentCatalog().getAllPages();
+            if (thePages.isEmpty()) {
+                return null;
+            }
             PDPage theFirstPage = (PDPage) thePages.get(0);
 
             PDRectangle mBox = theFirstPage.findMediaBox();
@@ -68,11 +78,22 @@ public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
         } catch (Exception e) {
             LOGGER.error("Error creating preview for " + aFile, e);
             return null;
+        } finally {
+            try {
+                // Always close the document
+                theDocument.close();
+            } catch (Exception e) {
+            }
         }
     }
 
     @Override
     public boolean supportsFile(File aFile) {
-        return aFile.getName().toLowerCase().endsWith(".pdf");
+        for (SupportedDocumentType theType : suppportedDocumentTypes) {
+            if (theType.matches(aFile)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

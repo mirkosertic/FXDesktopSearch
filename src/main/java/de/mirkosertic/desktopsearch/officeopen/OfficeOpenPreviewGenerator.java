@@ -12,10 +12,7 @@
  */
 package de.mirkosertic.desktopsearch.officeopen;
 
-import de.mirkosertic.desktopsearch.ImageUtils;
-import de.mirkosertic.desktopsearch.Preview;
-import de.mirkosertic.desktopsearch.PreviewConstants;
-import de.mirkosertic.desktopsearch.PreviewGenerator;
+import de.mirkosertic.desktopsearch.*;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -23,6 +20,8 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -30,10 +29,19 @@ public class OfficeOpenPreviewGenerator implements PreviewGenerator, PreviewCons
 
     private static final Logger LOGGER = Logger.getLogger(OfficeOpenPreviewGenerator.class);
 
+    private final Set<SupportedDocumentType> suppportedDocumentTypes;
+
+    public OfficeOpenPreviewGenerator() {
+        suppportedDocumentTypes = new HashSet<>();
+        suppportedDocumentTypes.add(SupportedDocumentType.odt);
+    }
+
     @Override
     public boolean supportsFile(File aFile) {
-        if (aFile.getName().toLowerCase().endsWith(".odt")) {
-            return true;
+        for (SupportedDocumentType theType : suppportedDocumentTypes) {
+            if (theType.matches(aFile)) {
+                return true;
+            }
         }
         return false;
     }
