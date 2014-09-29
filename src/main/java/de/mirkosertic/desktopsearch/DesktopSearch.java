@@ -66,7 +66,7 @@ public class DesktopSearch extends Application {
             configurationManager.addChangeListener(backend);
 
             // Boot embedded JSP container
-            embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend, thePreviewProcessor);
+            embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend, thePreviewProcessor, configurationManager);
 
             embeddedWebServer.start();
         } catch (BindException|LockReleaseFailedException|LockObtainFailedException e) {
