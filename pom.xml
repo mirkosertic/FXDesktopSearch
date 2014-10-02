@@ -15,7 +15,7 @@
     </organization>
 
     <properties>
-        <lucene.version>4.10.0</lucene.version>
+        <lucene.version>4.10.1</lucene.version>
         <tika.version>1.6</tika.version>
     </properties>
 
