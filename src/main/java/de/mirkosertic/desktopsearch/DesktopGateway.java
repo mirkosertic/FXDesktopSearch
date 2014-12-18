@@ -12,48 +12,21 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import javafx.application.Platform;
-import javafx.scene.Cursor;
-import javafx.stage.Stage;
-import org.apache.log4j.Logger;
+import javafx.application.Application;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import org.apache.log4j.Logger;
 
 public class DesktopGateway {
 
     private static final Logger LOGGER  = Logger.getLogger(DesktopGateway.class);
 
-    private final Stage stage;
+    private final Application application;
 
-    DesktopGateway(Stage aStage) {
-        stage = aStage;
-    }
-
-    private void open(String aFile) {
-        try {
-            LOGGER.info("Opening file " + aFile);
-            stage.getScene().setCursor(Cursor.WAIT);
-            Desktop.getDesktop().open(new File(aFile));
-            LOGGER.info("Finished");
-            stage.getScene().setCursor(Cursor.DEFAULT);
-        } catch (IOException e) {
-            LOGGER.error("Error opening file " + aFile, e);
-        }
+    DesktopGateway(Application aApplication) {
+        application = aApplication;
     }
 
     public void openFile(String aFile) {
-        if (Desktop.isDesktopSupported()) {
-            if (Platform.isFxApplicationThread()) {
-                LOGGER.info("In FXApplicationThread");
-                new Thread(() -> open(aFile), "OpenFileThread").start();
-            } else {
-                LOGGER.info("Not in FXApplicationThread");
-                open(aFile);
-            }
-        } else {
-            LOGGER.error("No Desktop is supported on this machine");
-        }
+        application.getHostServices().showDocument(aFile);
     }
 }
