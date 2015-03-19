@@ -15,8 +15,8 @@
     </organization>
 
     <properties>
-        <lucene.version>4.10.1</lucene.version>
-        <tika.version>1.6</tika.version>
+        <lucene.version>5.0.0</lucene.version>
+        <tika.version>1.7</tika.version>
     </properties>
 
     <build>
@@ -107,6 +107,11 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-suggest</artifactId>
+            <version>${lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-backward-codecs</artifactId>
             <version>${lucene.version}</version>
         </dependency>
         <dependency>

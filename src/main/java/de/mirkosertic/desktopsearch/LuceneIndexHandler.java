@@ -66,28 +66,22 @@ class LuceneIndexHandler {
         executorPool = aExecutorPool;
 
         contentFieldType = new FieldType();
-        contentFieldType.setIndexed(true);
+        contentFieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
         contentFieldType.setStored(true);
         contentFieldType.setTokenized(true);
         contentFieldType.setStoreTermVectorOffsets(true);
         contentFieldType.setStoreTermVectorPayloads(true);
         contentFieldType.setStoreTermVectorPositions(true);
         contentFieldType.setStoreTermVectors(true);
-        contentFieldType.setIndexOptions(FieldInfo.IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
 
         analyzer = analyzerCache.getAnalyzer();
 
         File theIndexDirectory = new File(aConfiguration.getConfigDirectory(), "index");
         theIndexDirectory.mkdirs();
 
-        Directory theIndexFSDirectory = new NRTCachingDirectory(FSDirectory.open(theIndexDirectory), 100, 100);
-        try {
-            theIndexFSDirectory.clearLock(IndexWriter.WRITE_LOCK_NAME);
-        } catch (IOException e) {
-            // No Lock there
-        }
+        Directory theIndexFSDirectory = new NRTCachingDirectory(FSDirectory.open(theIndexDirectory.toPath()), 100, 100);
 
-        IndexWriterConfig theConfig = new IndexWriterConfig(IndexFields.LUCENE_VERSION, analyzer);
+        IndexWriterConfig theConfig = new IndexWriterConfig(analyzer);
         theConfig.setSimilarity(new CustomSimilarity());
         indexWriter = new IndexWriter(theIndexFSDirectory, theConfig);
 
@@ -104,12 +98,6 @@ class LuceneIndexHandler {
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-
-                        /*try {
-                            suggester.refresh();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }*/
                     }
 
                     try {

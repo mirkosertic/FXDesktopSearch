@@ -23,7 +23,7 @@ import java.io.IOException;
 public class SearchTest {
 
     public static void main(String[] args) throws IOException {
-        Directory theDirectory = FSDirectory.open(new File("/home/sertic/FreeSearchIndexDir/index"));
+        Directory theDirectory = FSDirectory.open(new File("/home/sertic/FreeSearchIndexDir/index").toPath());
         IndexReader theReader = DirectoryReader.open(theDirectory);
         IndexSearcher theSearcher = new IndexSearcher(theReader);
 
@@ -38,7 +38,8 @@ public class SearchTest {
         theQueries[1] = new SpanTermQuery(new Term(IndexFields.CONTENT_NOT_STEMMED, "sertic"));
         SpanNearQuery theQuery2 = new SpanNearQuery(theQueries, 0, true);
 
-        Analyzer theStandardAnalyzer = new StandardAnalyzer(IndexFields.LUCENE_VERSION);
+        Analyzer theStandardAnalyzer = new StandardAnalyzer();
+        theStandardAnalyzer.setVersion(IndexFields.LUCENE_VERSION);
         QueryParser theParser = new QueryParser(theStandardAnalyzer);
         Query thequery3 = theParser.parse("mirko sertic", IndexFields.CONTENT_NOT_STEMMED);
 
