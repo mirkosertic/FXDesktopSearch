@@ -69,7 +69,7 @@ class SearchPhraseSuggester {
 
             LOGGER.info("created span query " + theSpanQuery);
 
-            AtomicReader theAtomicReader = SlowCompositeReaderWrapper.wrap(indexReader);
+            LeafReader theAtomicReader = SlowCompositeReaderWrapper.wrap(indexReader);
 
             Map<Term, TermContext> theTermContexts = new HashMap<>();
             Map<String, Long> theSpanFrequencies = new HashMap<>();
