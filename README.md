@@ -7,6 +7,8 @@ During the fulltext search, you can do drilldown queries on the found documents 
 
 FXDesktopSearch can crawl the local and remote filesystems. It also watches already crawled files for changes, so once a file is indexed and changed on the filesystem, the index is automatically updated.
 
+[![Gitter](https://badges.gitter.im/mirkosertic/FXDesktopSearch.svg)](https://gitter.im/mirkosertic/FXDesktopSearch?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 Download
 --------
 
