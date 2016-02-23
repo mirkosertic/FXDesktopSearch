@@ -1,6 +1,8 @@
 FXDesktopSearch - The free search application for your desktop
 ==============================================================
 
+[![Join the chat at https://gitter.im/mirkosertic/FXDesktopSearch](https://badges.gitter.im/mirkosertic/FXDesktopSearch.svg)](https://gitter.im/mirkosertic/FXDesktopSearch?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 FXDesktopSearch is a Java and JavaFX based Desktop Search Application. It crawls a configured set of directories and allows you to do fulltext search with different languages support on the content.
 
 During the fulltext search, you can do drilldown queries on the found documents do restrict search results by date, author, document type or language.
