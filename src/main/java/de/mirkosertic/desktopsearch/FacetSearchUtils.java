@@ -15,7 +15,9 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 final class FacetSearchUtils {
 
@@ -26,8 +28,11 @@ final class FacetSearchUtils {
         return aDimension+"="+aValue;
     }
 
-    public static void addToMap(final String aDimensionCriteria, final Map<String, String> aDrilldownDimensions) {
+    public static void addToMap(final String aDimensionCriteria, final Map<String, Set<String>> aDrilldownDimensions) {
         final var p = aDimensionCriteria.indexOf("=");
-        aDrilldownDimensions.put(aDimensionCriteria.substring(0, p), aDimensionCriteria.substring(p + 1));
+        final var dim = aDimensionCriteria.substring(0, p);
+        final var bag = aDrilldownDimensions.getOrDefault(dim, new HashSet<>());
+        bag.add(aDimensionCriteria.substring(p + 1));
+        aDrilldownDimensions.put(dim, bag);
     }
 }
