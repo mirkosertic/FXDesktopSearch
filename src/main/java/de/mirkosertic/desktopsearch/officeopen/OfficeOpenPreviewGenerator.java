@@ -12,7 +12,11 @@
  */
 package de.mirkosertic.desktopsearch.officeopen;
 
-import de.mirkosertic.desktopsearch.*;
+import de.mirkosertic.desktopsearch.ImageUtils;
+import de.mirkosertic.desktopsearch.Preview;
+import de.mirkosertic.desktopsearch.PreviewConstants;
+import de.mirkosertic.desktopsearch.PreviewGenerator;
+import de.mirkosertic.desktopsearch.SupportedDocumentType;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
