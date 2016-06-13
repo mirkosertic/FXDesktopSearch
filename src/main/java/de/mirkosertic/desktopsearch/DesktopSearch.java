@@ -26,7 +26,9 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.LockReleaseFailedException;
 
-import java.awt.*;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -84,6 +86,8 @@ public class DesktopSearch extends Application {
         aStage.setTitle("Free Desktop Search");
         aStage.setWidth(800);
         aStage.setHeight(600);
+        aStage.setMinWidth(640);
+        aStage.setMinHeight(480);
         aStage.initStyle(StageStyle.TRANSPARENT);
 
         FXMLLoader theLoader = new FXMLLoader(getClass().getResource("/scenes/mainscreen.fxml"));

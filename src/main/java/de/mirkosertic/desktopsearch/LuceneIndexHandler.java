@@ -18,15 +18,37 @@ import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.*;
-import org.apache.lucene.facet.*;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.LegacyLongField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.facet.DrillDownQuery;
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.LabelAndValue;
 import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
-import org.apache.lucene.index.*;
+import org.apache.lucene.index.IndexOptions;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queries.mlt.MoreLikeThis;
-import org.apache.lucene.search.*;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.SearcherFactory;
+import org.apache.lucene.search.SearcherManager;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
@@ -39,7 +61,17 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ForkJoinTask;
 
 class LuceneIndexHandler {
@@ -82,10 +114,9 @@ class LuceneIndexHandler {
         Directory theIndexFSDirectory = new NRTCachingDirectory(FSDirectory.open(theIndexDirectory.toPath()), 100, 100);
 
         IndexWriterConfig theConfig = new IndexWriterConfig(analyzer);
-        theConfig.setSimilarity(new CustomSimilarity());
         indexWriter = new IndexWriter(theIndexFSDirectory, theConfig);
 
-        searcherManager = new SearcherManager(indexWriter, true, new SearcherFactory());
+        searcherManager = new SearcherManager(indexWriter, true, true, new SearcherFactory());
 
         commitThread = new Thread("Lucene Commit Thread") {
             @Override
@@ -201,8 +232,8 @@ class LuceneIndexHandler {
 
         theDocument.add(new TextField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LOCATIONID, aLocationId, Field.Store.YES));
-        theDocument.add(new LongField(IndexFields.FILESIZE, aContent.getFileSize(), Field.Store.YES));
-        theDocument.add(new LongField(IndexFields.LASTMODIFIED, aContent.getLastModified(), Field.Store.YES));
+        theDocument.add(new LegacyLongField(IndexFields.FILESIZE, aContent.getFileSize(), Field.Store.YES));
+        theDocument.add(new LegacyLongField(IndexFields.LASTMODIFIED, aContent.getLastModified(), Field.Store.YES));
 
         // Update the document in our search index
         indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), facetsConfig.build(theDocument));
@@ -225,7 +256,7 @@ class LuceneIndexHandler {
         IndexSearcher theSearcher = searcherManager.acquire();
         try {
             Query theQuery = new TermQuery(new Term(IndexFields.FILENAME, aFilename));
-            TopDocs theDocs = theSearcher.search(theQuery, null, 100);
+            TopDocs theDocs = theSearcher.search(theQuery, 100, Sort.INDEXORDER);
             return theDocs.scoreDocs.length != 0;
         } finally {
             searcherManager.release(theSearcher);
@@ -238,7 +269,7 @@ class LuceneIndexHandler {
         IndexSearcher theSearcher = searcherManager.acquire();
         try {
             Query theQuery = new TermQuery(new Term(IndexFields.FILENAME, aFilename));
-            TopDocs theDocs = theSearcher.search(theQuery, null, 100);
+            TopDocs theDocs = theSearcher.search(theQuery, 100, Sort.INDEXORDER);
             if (theDocs.scoreDocs.length == 0) {
                 return UpdateCheckResult.UPDATED;
             }
@@ -271,14 +302,14 @@ class LuceneIndexHandler {
     private BooleanQuery computeBooleanQueryFor(String aQueryString) throws IOException {
         QueryParser theParser = new QueryParser(analyzer);
 
-        BooleanQuery theBooleanQuery = new BooleanQuery();
+        BooleanQuery.Builder theBooleanQuery = new BooleanQuery.Builder();
         theBooleanQuery.setMinimumNumberShouldMatch(1);
 
         for (String theFieldName : analyzerCache.getAllFieldNames()) {
             Query theSingle = theParser.parse(aQueryString, theFieldName);
             theBooleanQuery.add(theSingle, BooleanClause.Occur.SHOULD);
         }
-        return theBooleanQuery;
+        return theBooleanQuery.build();
     }
 
     public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Configuration aConfiguration, Map<String, String> aDrilldownFields) throws IOException {
@@ -318,7 +349,7 @@ class LuceneIndexHandler {
 
                 FacetsCollector theFacetCollector = new FacetsCollector();
 
-                TopDocs theDocs = FacetsCollector.search(theSearcher, theDrilldownQuery, null, aConfiguration.getNumberOfSearchResults(), theFacetCollector);
+                TopDocs theDocs = FacetsCollector.search(theSearcher, theDrilldownQuery, aConfiguration.getNumberOfSearchResults(), Sort.RELEVANCE, true, true, theFacetCollector);
                 SortedSetDocValuesFacetCounts theFacetCounts = new SortedSetDocValuesFacetCounts(theSortedSetState, theFacetCollector);
 
                 List<Facet> theAuthorFacets = new ArrayList<>();
@@ -326,7 +357,7 @@ class LuceneIndexHandler {
                 List<Facet> theLastModifiedYearFacet = new ArrayList<>();
                 List<Facet> theLanguageFacet = new ArrayList<>();
 
-                LOGGER.info("Found "+theDocs.scoreDocs.length+" documents");
+                LOGGER.info("Found " + theDocs.scoreDocs.length + " documents");
 
                 // We need this cache to detect duplicate documents while searching for similarities
                 Set<Integer> theUniqueDocumentsFound = new HashSet<>();
@@ -488,8 +519,7 @@ class LuceneIndexHandler {
         IndexSearcher theSearcher = searcherManager.acquire();
 
         try {
-
-            SearchPhraseSuggester theSuggester = new SearchPhraseSuggester(theSearcher.getIndexReader(), analyzer, configuration);
+            SearchPhraseSuggester theSuggester = new SearchPhraseSuggester(theSearcher, analyzer, configuration);
             List<Suggestion> theResult = theSuggester.suggestSearchPhrase(IndexFields.CONTENT_NOT_STEMMED, aTerm);
 
             return theResult.toArray(new Suggestion[theResult.size()]);
@@ -505,7 +535,7 @@ class LuceneIndexHandler {
 
         try {
             TermQuery theTermQuery = new TermQuery(new Term(IndexFields.UNIQUEID, aUniqueID));
-            TopDocs theTopDocs = theSearcher.search(theTermQuery, null, 1);
+            TopDocs theTopDocs = theSearcher.search(theTermQuery, 1, Sort.INDEXORDER);
             if (theTopDocs.totalHits == 1) {
                 Document theDocument = theSearcher.doc(theTopDocs.scoreDocs[0].doc);
                 if (theDocument != null) {

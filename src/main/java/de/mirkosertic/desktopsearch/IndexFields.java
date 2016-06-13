@@ -16,7 +16,7 @@ import org.apache.lucene.util.Version;
 
 public interface IndexFields {
 
-    Version LUCENE_VERSION = Version.LUCENE_5_0_0;
+    Version LUCENE_VERSION = Version.LATEST;
 
     String UNIQUEID = "uniqueid";
     String FILENAME = "filename";

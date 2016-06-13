@@ -12,18 +12,23 @@
  */
 package de.mirkosertic.desktopsearch.pdfpreview;
 
-import de.mirkosertic.desktopsearch.*;
+import de.mirkosertic.desktopsearch.Preview;
+import de.mirkosertic.desktopsearch.PreviewConstants;
+import de.mirkosertic.desktopsearch.PreviewGenerator;
+import de.mirkosertic.desktopsearch.SupportedDocumentType;
+
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.pdfviewer.PageDrawer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
@@ -38,33 +43,29 @@ public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
     }
 
     @Override
-    public synchronized Preview createPreviewFor(File aFile) {
-        PDDocument theDocument = null;
-        try {
-            theDocument = PDDocument.load(aFile);
-            List<?> thePages = theDocument.getDocumentCatalog().getAllPages();
-            if (thePages.isEmpty()) {
+    public Preview createPreviewFor(File aFile) {
+        try(PDDocument theDocument = PDDocument.load(aFile))  {
+            PDPageTree thePages = theDocument.getPages();
+            if (thePages.getCount() == 0) {
                 return null;
             }
             PDPage theFirstPage = (PDPage) thePages.get(0);
 
-            PDRectangle mBox = theFirstPage.findMediaBox();
+            PDRectangle mBox = theFirstPage.getMediaBox();
             float theWidthPt = mBox.getWidth();
-            float theHeightPt = mBox.getHeight();
             int theWidthPx = THUMB_WIDTH; // Math.round(widthPt * scaling);
             int theHeightPx = THUMB_HEIGHT; // Math.round(heightPt * scaling);
             float theScaling = THUMB_WIDTH / theWidthPt; // resolution / 72.0F;
 
-            Dimension thePageDimension = new Dimension((int) theWidthPt, (int) theHeightPt);
             BufferedImage theImage = new BufferedImage(theWidthPx, theHeightPx, BufferedImage.TYPE_INT_RGB);
             Graphics2D theGraphics = (Graphics2D) theImage.getGraphics();
             theGraphics.setBackground(new Color(255, 255, 255, 0));
-
             theGraphics.clearRect(0, 0, theImage.getWidth(), theImage.getHeight());
-            theGraphics.scale(theScaling, theScaling);
-            PageDrawer theDrawer = new PageDrawer();
-            theDrawer.drawPage(theGraphics, theFirstPage, thePageDimension);
-            int rotation = theFirstPage.findRotation();
+
+            PDFRenderer theRenderer = new PDFRenderer(theDocument);
+            theRenderer.renderPageToGraphics(0, theGraphics, theScaling);
+
+            int rotation = theFirstPage.getRotation();
             if ((rotation == 90) || (rotation == 270)) {
                 int w = theImage.getWidth();
                 int h = theImage.getHeight();
@@ -74,16 +75,10 @@ public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
                 g.drawImage(theImage, null, 0, 0);
             }
             theGraphics.dispose();
-            return new Preview(ImageUtils.rescale(theImage, THUMB_WIDTH, THUMB_HEIGHT, ImageUtils.RescaleMethod.RESIZE_FIT_ONE_DIMENSION));
+            return new Preview(theImage);
         } catch (Exception e) {
             LOGGER.error("Error creating preview for " + aFile, e);
             return null;
-        } finally {
-            try {
-                // Always close the document
-                theDocument.close();
-            } catch (Exception e) {
-            }
         }
     }
 

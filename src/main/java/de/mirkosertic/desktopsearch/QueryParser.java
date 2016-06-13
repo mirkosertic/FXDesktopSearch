@@ -20,7 +20,13 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.*;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BoostQuery;
+import org.apache.lucene.search.FuzzyQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
@@ -49,7 +55,7 @@ class QueryParser {
         return "";
     }
 
-    private void addToBooleanQuery(List<String> aTermList, String aFieldName, BooleanQuery aQuery, BooleanClause.Occur aOccour)
+    private void addToBooleanQuery(List<String> aTermList, String aFieldName, BooleanQuery.Builder aQuery, BooleanClause.Occur aOccour)
             throws IOException {
         for (String theTerm : aTermList) {
             if (QueryUtils.isWildCard(theTerm)) {
@@ -72,7 +78,7 @@ class QueryParser {
 
         // Now we have the terms, lets construct the query
 
-        BooleanQuery theResult = new BooleanQuery();
+        BooleanQuery.Builder theResult = new BooleanQuery.Builder();
 
         if (!theTokenizer.getRequiredTerms().isEmpty()) {
 
@@ -91,18 +97,18 @@ class QueryParser {
                 }
             }
 
-            // This is the original span, so we boost it a lot
-            SpanQuery theExactMatchQuery = new SpanNearQuery(theSpans.toArray(new SpanQuery[theSpans.size()]), 0, true);
-            theExactMatchQuery.setBoost(61);
-            theResult.add(theExactMatchQuery, BooleanClause.Occur.SHOULD);
+            if (theSpans.size() > 1) {
+                // This is the original span, so we boost it a lot
+                SpanQuery theExactMatchQuery = new SpanNearQuery(theSpans.toArray(new SpanQuery[theSpans.size()]), 0, true);
+                theResult.add(new BoostQuery(theExactMatchQuery, 61), BooleanClause.Occur.SHOULD);
 
-            // We expect a maximum edit distance of 10 between the searched terms in any order
-            // This seems to be the most useful value
-            int theMaxEditDistance = 10;
-            for (int theSlop=0;theSlop<theMaxEditDistance;theSlop++) {
-                SpanQuery theNearQuery = new SpanNearQuery(theSpans.toArray(new SpanQuery[theSpans.size()]), theSlop, false);
-                theNearQuery.setBoost(50 + theMaxEditDistance - theSlop);
-                theResult.add(theNearQuery, BooleanClause.Occur.SHOULD);
+                // We expect a maximum edit distance of 10 between the searched terms in any order
+                // This seems to be the most useful value
+                int theMaxEditDistance = 10;
+                for (int theSlop = 0; theSlop < theMaxEditDistance; theSlop++) {
+                    SpanQuery theNearQuery = new SpanNearQuery(theSpans.toArray(new SpanQuery[theSpans.size()]), theSlop, false);
+                    theResult.add(new BoostQuery(theNearQuery, 50 + theMaxEditDistance - theSlop), BooleanClause.Occur.SHOULD);
+                }
             }
 
             // Finally, we just add simple term queries, but do not boost them
@@ -115,6 +121,6 @@ class QueryParser {
         // Finally, add the terms that must not occur in the search result
         addToBooleanQuery(theTokenizer.getNotRequiredTerms(), aSearchField, theResult, BooleanClause.Occur.MUST_NOT);
 
-        return theResult;
+        return theResult.build();
     }
 }

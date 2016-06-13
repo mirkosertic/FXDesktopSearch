@@ -14,12 +14,15 @@ package de.mirkosertic.desktopsearch;
 
 import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
-import org.apache.tika.language.LanguageIdentifier;
+import org.apache.tika.langdetect.OptimaizeLangDetector;
+import org.apache.tika.language.detect.LanguageDetector;
+import org.apache.tika.language.detect.LanguageResult;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +42,7 @@ class ContentExtractor {
     private final Tika tika;
     private final Pattern metaDataDatePattern;
     private final Configuration configuration;
+    private final LanguageDetector languageDetector;
 
     public ContentExtractor(Configuration aConfiguration) {
 
@@ -48,6 +52,16 @@ class ContentExtractor {
 
         configuration = aConfiguration;
         tika = new Tika();
+        tika.setMaxStringLength(1024 * 1024 * 5);
+
+        OptimaizeLangDetector theDetector = new OptimaizeLangDetector();
+        try {
+            theDetector.loadModels();
+
+            languageDetector = theDetector;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String harmonizeMetaDataName(String aName) {
@@ -79,17 +93,17 @@ class ContentExtractor {
                 }
             }
 
-            LanguageIdentifier theLanguageIdentifier = new LanguageIdentifier(theStringData);
+            LanguageResult theLanguageResult = languageDetector.detect(theStringData);
 
             FileTime theFileTime = aBasicFileAttributes.lastModifiedTime();
             SupportedLanguage theLanguage = SupportedLanguage.getDefault();
             try {
-                theLanguage = SupportedLanguage.valueOf(theLanguageIdentifier.getLanguage());
+                theLanguage = SupportedLanguage.valueOf(theLanguageResult.getLanguage());
                 if (!configuration.getEnabledLanguages().contains(theLanguage)) {
                     theLanguage = SupportedLanguage.getDefault();
                 }
             } catch (Exception e) {
-                LOGGER.info("Language "+theLanguageIdentifier.getLanguage()+" was detected, but is not supported");
+                LOGGER.info("Language " + theLanguageResult.getLanguage() + " was detected, but is not supported");
             }
             Content theContent = new Content(aFile.toString(), theStringData, aBasicFileAttributes.size(), theFileTime.toMillis(), theLanguage);
             for (String theName : theMetaData.names()) {

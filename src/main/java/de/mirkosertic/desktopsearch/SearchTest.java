@@ -28,7 +28,7 @@ public class SearchTest {
         IndexSearcher theSearcher = new IndexSearcher(theReader);
 
         // Term Query maxScore = 94.1545 / 0.3337ms per Query
-        PhraseQuery theQuery = new PhraseQuery();
+        PhraseQuery.Builder theQuery = new PhraseQuery.Builder();
         theQuery.add(new Term(IndexFields.CONTENT_NOT_STEMMED, "mirko"));
         theQuery.add(new Term(IndexFields.CONTENT_NOT_STEMMED, "sertic"));
 
@@ -62,7 +62,7 @@ public class SearchTest {
         for (int count=theMax;count >= 0 ;count--) {
             FacetsCollector theFacetCollector = new FacetsCollector();
 
-            TopDocs theDocs = FacetsCollector.search(theSearcher, thequery3, null, 5, theFacetCollector);
+            TopDocs theDocs = FacetsCollector.search(theSearcher, thequery3, 5, null, theFacetCollector);
             if (count == 0) {
                 System.out.println("maxScore = " + theDocs.getMaxScore());
                 System.out.println("Size = " + theDocs.scoreDocs.length);
