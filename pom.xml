@@ -20,8 +20,8 @@
     </scm>
 
     <properties>
-        <lucene.version>6.0.1</lucene.version>
-        <tika.version>1.13</tika.version>
+        <lucene.version>6.4.1</lucene.version>
+        <tika.version>1.14</tika.version>
     </properties>
 
     <build>
@@ -33,32 +33,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.zenjava</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>8.1.2</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>native</goal>
-                            <!--<goal>web</goal>-->
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <identifier>FXDesktopSearch</identifier>
-                    <mainClass>de.mirkosertic.desktopsearch.DesktopSearch</mainClass>
-                    <vendor>Mirko Sertic</vendor>
-                    <needMenu>true</needMenu>
-                    <needShortcut>true</needShortcut>
-                    <nativeReleaseVersion>${project.version}</nativeReleaseVersion>
-                    <jvmArgs>
-                        <jvmArg>-Xmx1024m</jvmArg>
-                    </jvmArgs>
-                    <verbose>true</verbose>
                 </configuration>
             </plugin>
             <plugin>
@@ -183,4 +157,40 @@
             <version>2.2.1</version>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>fxrelease</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.zenjava</groupId>
+                        <artifactId>javafx-maven-plugin</artifactId>
+                        <version>8.1.2</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>native</goal>
+                                    <!--<goal>web</goal>-->
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <identifier>FXDesktopSearch</identifier>
+                            <mainClass>de.mirkosertic.desktopsearch.DesktopSearch</mainClass>
+                            <vendor>Mirko Sertic</vendor>
+                            <needMenu>true</needMenu>
+                            <needShortcut>true</needShortcut>
+                            <nativeReleaseVersion>${project.version}</nativeReleaseVersion>
+                            <jvmArgs>
+                                <jvmArg>-Xmx1024m</jvmArg>
+                            </jvmArgs>
+                            <verbose>true</verbose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
