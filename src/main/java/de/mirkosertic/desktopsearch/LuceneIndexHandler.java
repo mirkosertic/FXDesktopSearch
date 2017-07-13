@@ -252,18 +252,6 @@ class LuceneIndexHandler {
         }
     }
 
-    public boolean checkIfExists(String aFilename) throws IOException {
-        IndexSearcher theSearcher = searcherManager.acquire();
-        try {
-            Query theQuery = new TermQuery(new Term(IndexFields.FILENAME, aFilename));
-            TopDocs theDocs = theSearcher.search(theQuery, 100, Sort.INDEXORDER);
-            return theDocs.scoreDocs.length != 0;
-        } finally {
-            searcherManager.release(theSearcher);
-        }
-
-    }
-
     public UpdateCheckResult checkIfModified(String aFilename, long aLastModified) throws IOException {
 
         IndexSearcher theSearcher = searcherManager.acquire();
