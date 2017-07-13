@@ -13,6 +13,11 @@
 package de.mirkosertic.desktopsearch;
 
 import org.apache.log4j.Logger;
+import org.reactivestreams.Subscription;
+import reactor.core.Exceptions;
+import reactor.core.publisher.BaseSubscriber;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +26,39 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 class Backend implements ConfigurationChangeListener {
+
+    public static class FileEvent {
+        public enum EventType {
+            UPDATED, DELETED;
+        }
+        private final Configuration.CrawlLocation crawlLocation;
+        private final Path path;
+        private final EventType type;
+        private final BasicFileAttributes attributes;
+
+        public FileEvent(Configuration.CrawlLocation aCrawlLocation, Path aPath, BasicFileAttributes aFileAttributes, EventType aEventType) {
+            crawlLocation = aCrawlLocation;
+            path = aPath;
+            type = aEventType;
+            attributes = aFileAttributes;
+        }
+    }
+
+    public static class LuceneCommand {
+
+        private final FileEvent fileEvent;
+        private final Content content;
+
+        public LuceneCommand(FileEvent aFileEvent, Content aContent) {
+            fileEvent = aFileEvent;
+            content = aContent;
+        }
+    }
 
     private static final Logger LOGGER = Logger.getLogger(Backend.class);
 
@@ -30,12 +66,12 @@ class Backend implements ConfigurationChangeListener {
     private final ContentExtractor contentExtractor;
     private ProgressListener progressListener;
     private final Map<Configuration.CrawlLocation, DirectoryWatcher> locations;
-    private final DirectoryListener directoryListener;
     private final ExecutorPool executorPool;
     private final Notifier notifier;
     private final WatchServiceCache watchServiceCache;
     private final PreviewProcessor previewProcessor;
     private Configuration configuration;
+    private DirectoryListener directoryListener;
 
     public Backend(Notifier aNotifier, Configuration aConfiguration, PreviewProcessor aPreviewProcessor) throws IOException {
         notifier = aNotifier;
@@ -44,55 +80,131 @@ class Backend implements ConfigurationChangeListener {
         executorPool = new ExecutorPool();
         watchServiceCache = new WatchServiceCache();
         contentExtractor = new ContentExtractor(aConfiguration);
-        directoryListener = new DirectoryListener() {
-            @Override
-            public void fileDeleted(Configuration.CrawlLocation aFileSystemLocation, Path aFile) {
-                try {
-                    String theFilename = aFile.toString();
-                    if (luceneIndexHandler.checkIfExists(theFilename)) {
-                        luceneIndexHandler.removeFromIndex(theFilename);
-                        aNotifier.showInformation("Deleted " + aFile.getFileName());
-                    }
-                } catch (Exception e) {
-                    aNotifier.showError("Error removing " + aFile.getFileName(), e);
-                }
-            }
 
-            @Override
-            public void fileFoundByCrawler(Configuration.CrawlLocation aLocation, Path aFile) {
-                fileCreatedOrModified(aLocation, aFile, false);
-            }
+        // This is our simple flux
+        Flux<FileEvent> theFileEventFlux = Flux.push(sink -> {
+            directoryListener = new DirectoryListener() {
 
-            @Override
-            public void fileCreatedOrModified(Configuration.CrawlLocation aLocation, Path aFile) {
-                fileCreatedOrModified(aLocation, aFile, true);
-            }
-
-            private void fileCreatedOrModified(Configuration.CrawlLocation aLocation, Path aFile, boolean aShowInformation) {
-                String theFileName = aFile.toString();
-                if (contentExtractor.supportsFile(theFileName)) {
-                    try {
-                        progressListener.newFileFound(theFileName);
-
-                        BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-                        UpdateCheckResult theUpdateCheckResult = luceneIndexHandler.checkIfModified(theFileName, theAttributes.lastModifiedTime().toMillis());
-                        if (theUpdateCheckResult == UpdateCheckResult.UPDATED) {
-
-                            if (aShowInformation) {
-                                notifier.showInformation("Reindexed " + aFile.getFileName());
-                            }
-
-                            Content theContent = contentExtractor.extractContentFrom(aFile, theAttributes);
-                            if (theContent != null) {
-                                luceneIndexHandler.addToIndex(aLocation.getId(), theContent);
-                            }
+                @Override
+                public void fileDeleted(Configuration.CrawlLocation aLocation, Path aFile) {
+                    synchronized (this) {
+                        try {
+                            BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.DELETED));
+                        } catch (Exception e) {
+                            LOGGER.error("Error processing file " + aFile, e);
                         }
+                    }
+                }
+
+                @Override
+                public void fileCreatedOrModified(Configuration.CrawlLocation aLocation, Path aFile) {
+                    synchronized (this) {
+                        try {
+                            BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
+                        } catch (Exception e) {
+                            LOGGER.error("Error processing file " + aFile, e);
+                        }
+                    }
+                }
+
+                @Override
+                public void fileFoundByCrawler(Configuration.CrawlLocation aLocation, Path aFile) {
+                    synchronized (this) {
+                        try {
+                            BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
+                        } catch (Exception e) {
+                            LOGGER.error("Error processing file " + aFile, e);
+                        }
+                    }
+                }
+            };
+        });
+
+        // Filter update events for Files that were not changed
+        theFileEventFlux = theFileEventFlux.filter(new Predicate<FileEvent>() {
+            @Override
+            public boolean test(FileEvent aFileEvent) {
+                // Always keep delete file events
+                if (aFileEvent.type == FileEvent.EventType.DELETED) {
+                    return true;
+                }
+                Path thePath = aFileEvent.path;
+                String theFileName = thePath.toString();
+
+                try {
+                    UpdateCheckResult theUpdateCheckResult = luceneIndexHandler
+                            .checkIfModified(theFileName, aFileEvent.attributes.lastModifiedTime().toMillis());
+                    return theUpdateCheckResult == UpdateCheckResult.UPDATED;
+                } catch (Exception e) {
+                    throw Exceptions.propagate(e);
+                }
+            }
+        });
+
+        // Ok, we now map the file events to lucene commands
+        Flux<LuceneCommand> theLuceneFlux = theFileEventFlux.publishOn(Schedulers.newSingle("ContentExtractor")).map(new Function<FileEvent, LuceneCommand>() {
+            @Override
+            public LuceneCommand apply(FileEvent aFileEvent) {
+                if (aFileEvent.type == FileEvent.EventType.DELETED) {
+                    return new LuceneCommand(aFileEvent, null);
+                }
+
+                Path thePath = aFileEvent.path;
+                Content theContent = contentExtractor.extractContentFrom(thePath, aFileEvent.attributes);
+                return new LuceneCommand(aFileEvent, theContent);
+            }
+        });
+
+        // Ok, finally we add everything to the index
+        theLuceneFlux.publishOn(Schedulers.newSingle("LuceneUpdater")).doOnNext(new Consumer<LuceneCommand>() {
+            @Override
+            public void accept(LuceneCommand aCommand) {
+                if (aCommand.fileEvent.type == FileEvent.EventType.DELETED) {
+                    try {
+                        luceneIndexHandler.removeFromIndex(aCommand.fileEvent.path.toString());
+
+                        aNotifier.showInformation("Deleted " + aCommand.fileEvent.path.getFileName());
+
+                        progressListener.newFileFound(aCommand.fileEvent.path.toString());
                     } catch (Exception e) {
-                        aNotifier.showError("Error re-inxeding " + aFile.getFileName(), e);
+                        aNotifier.showError("Error removing " + aCommand.fileEvent.path.getFileName(), e);
+                    }
+                } else {
+                    if (aCommand.content != null) {
+                        try {
+                            luceneIndexHandler.addToIndex(aCommand.fileEvent.crawlLocation.getId(), aCommand.content);
+
+                            notifier.showInformation("Reindexed " + aCommand.fileEvent.path.getFileName());
+
+                            progressListener.newFileFound(aCommand.fileEvent.path.toString());
+
+                        } catch (Exception e) {
+                            aNotifier.showError("Error re-inxeding " + aCommand.fileEvent.path.getFileName(), e);
+                        }
                     }
                 }
             }
-        };
+        }).subscribe(new BaseSubscriber<LuceneCommand>() {
+            @Override
+            protected void hookOnSubscribe(Subscription aSubscription) {
+                request(1);
+            }
+
+            @Override
+            protected void hookOnNext(LuceneCommand aCommand) {
+                LOGGER.info("Processed command for "  + aCommand.fileEvent.path);
+                request(1);
+            }
+
+            @Override
+            protected void hookOnError(Throwable aThrowable) {
+                LOGGER.error("Flux went into error state", aThrowable);
+            }
+        });
+
         configurationUpdated(aConfiguration);
     }
 
