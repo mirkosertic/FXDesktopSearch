@@ -73,7 +73,7 @@ Language analyzers                             | Advanced: enable or disable lan
 Doing some search
 -----------------
 
-After you have configured the application, you have to run an initial crawl. This can be done by clicking on File -> Perform complete crawl. Now FXDesktopSearch will scan the configured paths and add the file to the index. You can see the indexing progress in the status bar of the application.
+After you have configured the application, crawling starts automatically a few seconds after application start. When crawling is completed, the index can be updated by clicking on File -> Perform complete crawl (this option will be grayed out while crawling). Now FXDesktopSearch will scan the configured paths and add the file to the index. You can see the indexing progress in the status bar of the application.
 
 After the crawl is finished, you can start to search by clicking File -> Search document. The following search screen will be shown. Now you can enter a search phrase and click the magnifier icon. A search result as follows will be displayed:
 
