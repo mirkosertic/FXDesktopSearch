@@ -21,7 +21,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.LegacyLongField;
+import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.facet.DrillDownQuery;
@@ -230,10 +230,10 @@ class LuceneIndexHandler {
 
         theDocument.add(new Field(IndexFields.CONTENT_NOT_STEMMED, theContentAsString.toString(), contentFieldType));
 
-        theDocument.add(new TextField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
+        theDocument.add(new StringField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
         theDocument.add(new StringField(IndexFields.LOCATIONID, aLocationId, Field.Store.YES));
-        theDocument.add(new LegacyLongField(IndexFields.FILESIZE, aContent.getFileSize(), Field.Store.YES));
-        theDocument.add(new LegacyLongField(IndexFields.LASTMODIFIED, aContent.getLastModified(), Field.Store.YES));
+        theDocument.add(new LongPoint(IndexFields.FILESIZE, aContent.getFileSize()));
+        theDocument.add(new StringField(IndexFields.LASTMODIFIED, Long.toString(aContent.getLastModified()), Field.Store.YES));
 
         // Update the document in our search index
         indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), facetsConfig.build(theDocument));
@@ -364,7 +364,7 @@ class LuceneIndexHandler {
                     if (theExistingDocument != null) {
                         theExistingDocument.addFileName(theFoundFileName);
                     } else {
-                        Date theLastModified = new Date(theDocument.getField(IndexFields.LASTMODIFIED).numericValue().longValue());
+                        Date theLastModified = new Date(Long.valueOf(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()));
                         SupportedLanguage theLanguage = SupportedLanguage.valueOf(theDocument.getField(IndexFields.LANGUAGESTORED).stringValue());
                         String theFieldName;
                         if (analyzerCache.supportsLanguage(theLanguage)) {
