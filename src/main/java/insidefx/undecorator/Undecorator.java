@@ -28,10 +28,8 @@
 package insidefx.undecorator;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.FadeTransitionBuilder;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
-import javafx.animation.TranslateTransitionBuilder;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
@@ -42,23 +40,13 @@ import javafx.geometry.Side;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
@@ -266,12 +254,12 @@ public class Undecorator extends StackPane {
                         fullscreenButtonTransition.stop();
                     }
                     // Animate the fullscreen button
-                    fullscreenButtonTransition = TranslateTransitionBuilder.create()
-                            .duration(Duration.millis(3000))
-                            .toX(66)
-                            .node(fullscreen)
-                            .onFinished(t1 -> fullscreenButtonTransition = null)
-                            .build();
+                    fullscreenButtonTransition = new TranslateTransition();
+                    fullscreenButtonTransition.setDuration(Duration.millis(3000));
+                    fullscreenButtonTransition.setToX(66);
+                    fullscreenButtonTransition.setNode(fullscreen);
+                    fullscreenButtonTransition.setOnFinished(t1 -> fullscreenButtonTransition = null);
+
                     fullscreenButtonTransition.play();
                     fullscreen.setOpacity(0.2);
                 } else {
@@ -285,12 +273,11 @@ public class Undecorator extends StackPane {
                         fullscreenButtonTransition.stop();
                     }
                     // Animate the change
-                    fullscreenButtonTransition = TranslateTransitionBuilder.create()
-                            .duration(Duration.millis(1000))
-                            .toX(0)
-                            .node(fullscreen)
-                            .onFinished(t1 -> fullscreenButtonTransition = null)
-                            .build();
+                    fullscreenButtonTransition = new TranslateTransition();
+                    fullscreenButtonTransition.setDuration(Duration.millis(1000));
+                    fullscreenButtonTransition.setToX(0);
+                    fullscreenButtonTransition.setNode(fullscreen);
+                    fullscreenButtonTransition.setOnFinished(t1 -> fullscreenButtonTransition = null);
 
                     fullscreenButtonTransition.play();
                 }
@@ -700,47 +687,18 @@ public class Undecorator extends StackPane {
         dockFeedback.setOpacity(1);
         dockFeedbackPopup.show();
 
-        dockFadeTransition = FadeTransitionBuilder.create()
-                .duration(Duration.millis(200))
-                .node(dockFeedback)
-                .fromValue(0)
-                .toValue(1)
-                .autoReverse(true)
-                .cycleCount(3)
-                .onFinished(t -> {
+        dockFadeTransition = new FadeTransition();
+        dockFadeTransition.setDuration(Duration.millis(200));
+        dockFadeTransition.setNode(dockFeedback);
+        dockFadeTransition.setFromValue(0);
+        dockFadeTransition.setToValue(1);
+        dockFadeTransition.setAutoReverse(true);
+        dockFadeTransition.setCycleCount(3);
+        dockFadeTransition.setOnFinished(t -> {
                     //dockFeedback.setVisible(false);
                     //dockFeedbackPopup.hide();
-                })
-                .build();
-        /*
-         ScaleTransition scaleTransition = ScaleTransitionBuilder.create()
-         .duration(Duration.millis(1000))
-         .node(dockFeedback)
-         .fromX(0.4)
-         .fromY(0.4)
-         .toX(1)
-         .toY(1)
-         .build();
-
-         TranslateTransition translateTransition = TranslateTransitionBuilder.create()
-         .duration(Duration.millis(2000))
-         .node(dockFeedback)
-         .fromY((height * 0.4) / 2)
-         .toY(0)
-         .build();
-
-         parallelTransition = new ParallelTransition(dockFeedback);
-         parallelTransition.getChildren().addAll(dockFadeTransition,scaleTransition);
-         parallelTransition.setOnFinished(new EventHandler<ActionEvent>() {
-         @Override
-         public void handle(ActionEvent t) {
-         //dockFeedback.setVisible(false);
-         dockFeedbackPopup.hide();
-         }
-         });
-         parallelTransition.play();*/
+                });
         dockFadeTransition.play();
-
     }
 
     public void setDockFeedbackInvisible() {
