@@ -29,10 +29,10 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.7.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>9</source>
+                    <target>9</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -192,6 +192,15 @@
                             </jvmArgs>
                             <verbose>true</verbose>
                         </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>javafx-packager</groupId>
+                                <artifactId>javafx-packager</artifactId>
+                                <version>9</version>
+                                <scope>system</scope>
+                                <systemPath>${java.home}/lib/ant-javafx.jar</systemPath>
+                            </dependency>
+                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
