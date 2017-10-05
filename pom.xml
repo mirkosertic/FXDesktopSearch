@@ -22,6 +22,7 @@
     <properties>
         <lucene.version>7.0.0</lucene.version>
         <tika.version>1.15</tika.version>
+        <projectrelease.version>2.2.0</projectrelease.version>
     </properties>
 
     <build>
@@ -198,39 +199,43 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.zenjava</groupId>
-                        <artifactId>javafx-maven-plugin</artifactId>
-                        <version>8.8.3</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>native</goal>
-                                    <!--<goal>web</goal>-->
+                                    <goal>exec</goal>
                                 </goals>
                             </execution>
                         </executions>
                         <configuration>
-                            <identifier>FXDesktopSearch</identifier>
-                            <mainClass>de.mirkosertic.desktopsearch.DesktopSearch</mainClass>
-                            <vendor>Mirko Sertic</vendor>
-                            <needMenu>true</needMenu>
-                            <needShortcut>true</needShortcut>
-                            <nativeReleaseVersion>${project.version}</nativeReleaseVersion>
-                            <jvmArgs>
-                                <jvmArg>-Xmx1024m</jvmArg>
-                            </jvmArgs>
-                            <verbose>true</verbose>
+                            <executable>${env.JAVA_HOME}/bin/javapackager</executable>
+                            <arguments>
+                                <argument>-deploy</argument>
+                                <argument>-native</argument>
+                                <argument>installer</argument>
+                                <argument>-name</argument>
+                                <argument>FXDesktopSearch</argument>
+                                <argument>-title</argument>
+                                <argument>FXDesktopSearch</argument>
+                                <argument>-vendor</argument>
+                                <argument>Mirko Sertic</argument>
+                                <argument>-Bidentifier=de.mirkosertic.fxdesktopsearch</argument>
+                                <argument>-BjvmOptions=-Xmx1024m</argument>
+                                <argument>-BappVersion=${projectrelease.version}</argument>
+                                <argument>-appclass</argument>
+                                <argument>de.mirkosertic.desktopsearch.DesktopSearch</argument>
+                                <argument>-srcfiles</argument>
+                                <argument>${project.build.directory}/FXDesktopSearch.jar</argument>
+                                <argument>-outdir</argument>
+                                <argument>${project.build.directory}</argument>
+                                <argument>-outfile</argument>
+                                <argument>FXDesktopSearchApp</argument>
+                                <argument>-v</argument>
+                            </arguments>
                         </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>javafx-packager</groupId>
-                                <artifactId>javafx-packager</artifactId>
-                                <version>1.8.0_20</version>
-                                <scope>system</scope>
-                                <systemPath>${java.home}/lib/ant-javafx.jar</systemPath>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
