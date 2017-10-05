@@ -215,7 +215,7 @@
                             <arguments>
                                 <argument>-deploy</argument>
                                 <argument>-native</argument>
-                                <argument>installer</argument>
+                                <argument>all</argument>
                                 <argument>-name</argument>
                                 <argument>FXDesktopSearch</argument>
                                 <argument>-title</argument>
@@ -225,10 +225,13 @@
                                 <argument>-Bidentifier=de.mirkosertic.fxdesktopsearch</argument>
                                 <argument>-BjvmOptions=-Xmx1024m</argument>
                                 <argument>-BappVersion=${projectrelease.version}</argument>
+                                <argument>-BmainJar=FXDesktopSearch.jar</argument>
                                 <argument>-appclass</argument>
                                 <argument>de.mirkosertic.desktopsearch.DesktopSearch</argument>
+                                <argument>-srcdir</argument>
+                                <argument>${project.build.directory}</argument>
                                 <argument>-srcfiles</argument>
-                                <argument>${project.build.directory}/FXDesktopSearch.jar</argument>
+                                <argument>FXDesktopSearch.jar</argument>
                                 <argument>-outdir</argument>
                                 <argument>${project.build.directory}</argument>
                                 <argument>-outfile</argument>
