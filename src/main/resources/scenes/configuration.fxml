@@ -9,7 +9,7 @@
   <children>
     <VBox>
       <children>
-            <PropertySheet fx:id="propertySheet" minHeight="400.0" />
+            <PropertySheet fx:id="propertySheet" minHeight="400.0" mode="CATEGORY" />
         <HBox alignment="TOP_RIGHT" styleClass="dialogButtonArea" VBox.vgrow="NEVER">
           <children>
             <Button fx:id="buttonOk" alignment="CENTER" contentDisplay="CENTER" maxWidth="120.0" minWidth="120.0" mnemonicParsing="false" prefWidth="120.0" text="Ok" textAlignment="CENTER" />
