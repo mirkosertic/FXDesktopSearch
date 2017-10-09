@@ -14,16 +14,31 @@ package de.mirkosertic.desktopsearch;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.ListView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.controlsfx.control.PropertySheet;
 
-import java.util.*;
+import java.io.File;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.UUID;
 
 public class ConfigurationController {
 
     private static String CATEGORY_COMMON = "Common";
     private static String CATEGORY_SUGGEST = "Suggestion";
+    private static String CATEGORY_LANGUAGE = "Language analyzers";
+    private static String CATEGORY_FILEFORMATS = "File formats";
+
+    @FXML
+    ListView indexedDirectories;
+
+    @FXML
+    Button buttonAdd;
+
+    @FXML
+    Button buttonRemove;
 
     @FXML
     PropertySheet propertySheet;
@@ -34,20 +49,18 @@ public class ConfigurationController {
     private ConfigurationManager configurationManager;
     private Stage stage;
 
-
-    private final Set<Configuration.CrawlLocation> removedLocations = new HashSet<>();
-    private final Set<Configuration.CrawlLocation> addedLocations = new HashSet<>();
-    private final Map<SupportedDocumentType, CheckBox> supportedDocuments = new HashMap<>();
-    private final Map<SupportedLanguage, CheckBox> supportedLanguages = new HashMap<>();
-
     public void initialize(ConfigurationManager aConfigurationManager, Stage aStage) {
         Objects.requireNonNull(propertySheet);
         Objects.requireNonNull(buttonOk);
 
+        buttonRemove.setOnAction(actionEvent -> removeSelectedLocation());
+        buttonAdd.setOnAction(actionEvent -> addNewLocation());
         buttonOk.setOnAction(actionEvent -> ok());
 
         stage = aStage;
         configurationManager = aConfigurationManager;
+
+        indexedDirectories.getItems().addAll(configurationManager.getConfiguration().getCrawlLocations());
 
         propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_COMMON, "Max number of documents in search result", SpinnerPropertyEditor.class) {
 
@@ -133,10 +146,62 @@ public class ConfigurationController {
                 configurationManager.updateConfiguration(configurationManager.getConfiguration().updateSuggestionsInOrder((Boolean) o));
             }
         });
+
+        for (SupportedLanguage theLanguage : SupportedLanguage.values()) {
+
+            propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_LANGUAGE, theLanguage.toLocale().getDisplayName(), BooleanPropertyEditor.class) {
+
+                @Override
+                public Object getValue() {
+                    return configurationManager.getConfiguration().getEnabledLanguages().contains(theLanguage);
+                }
+
+                @Override
+                public void setValue(Object o) {
+                    configurationManager.updateConfiguration(configurationManager.getConfiguration().enableLanguage(theLanguage));
+                }
+            });
+        }
+
+        for (SupportedDocumentType theDocumentType : SupportedDocumentType.values()) {
+
+            propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_FILEFORMATS, theDocumentType.getDisplayName(Locale.getDefault()), BooleanPropertyEditor.class) {
+
+                @Override
+                public Object getValue() {
+                    return configurationManager.getConfiguration().getEnabledDocumentTypes().contains(theDocumentType);
+                }
+
+                @Override
+                public void setValue(Object o) {
+                    configurationManager.updateConfiguration(configurationManager.getConfiguration().enableDocumentType(theDocumentType));
+                }
+            });
+        }
+
+    }
+
+    private void removeSelectedLocation() {
+
+        Configuration.CrawlLocation theLocation = (Configuration.CrawlLocation) indexedDirectories.getSelectionModel().getSelectedItem();
+        indexedDirectories.getItems().remove(theLocation);
+
+        configurationManager.updateConfiguration(configurationManager.getConfiguration().removeLocation(theLocation));
+    }
+
+    private void addNewLocation() {
+        DirectoryChooser theChooser = new DirectoryChooser();
+        theChooser.setTitle("Add new crawl location");
+        File theFile = theChooser.showDialog(stage.getOwner());
+        if (theFile != null) {
+            Configuration.CrawlLocation theNewLocation = new Configuration.CrawlLocation(UUID.randomUUID().toString(), theFile);
+            indexedDirectories.getItems().add(theNewLocation);
+
+            configurationManager.updateConfiguration(configurationManager.getConfiguration().addLocation(theNewLocation));
+        }
     }
 
     private void ok() {
-
         stage.hide();
     }
 }
