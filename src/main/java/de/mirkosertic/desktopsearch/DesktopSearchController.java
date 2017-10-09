@@ -20,10 +20,10 @@ import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
@@ -223,7 +223,7 @@ public class DesktopSearchController implements Initializable {
             stage.initStyle(StageStyle.UTILITY);
 
             FXMLLoader theLoader = new FXMLLoader(getClass().getResource("/scenes/configuration.fxml"));
-            AnchorPane theConfigurationRoot = theLoader.load();
+            Parent theConfigurationRoot = theLoader.load();
             stage.setScene(new Scene(theConfigurationRoot));
             stage.setTitle("Configuration");
             stage.initModality(Modality.APPLICATION_MODAL);
