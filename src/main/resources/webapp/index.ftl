@@ -63,9 +63,9 @@
                                         <b><span>
                                         <#list 1..5 as index>
                                             <#if document.normalizedScore &gt;= index>
-                                                <img class="ratingStar" src="star_light.png"/>
+                                                <img class="ratingStar" src="star.svg"/>
                                             <#else>
-                                                <img class="ratingStar" src="star_dark.png"/>
+                                                <img class="ratingStar" src="star-o.svg"/>
                                             </#if>
                                         </#list>
                                         <img src="ui-anim_basic_16x16.gif" data-src="/thumbnail/icon/${document.uniqueID}.png"/>

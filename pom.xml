@@ -21,7 +21,7 @@
 
     <properties>
         <lucene.version>7.0.0</lucene.version>
-        <tika.version>1.15</tika.version>
+        <tika.version>1.16</tika.version>
         <projectrelease.version>2.2.0</projectrelease.version>
     </properties>
 

@@ -52,16 +52,18 @@ input:focus {
 .submitbutton {
     border: 1px solid gray;
     background-color: rgb(75,141,248);
-    background-image: url(searchbutton.png);
+    background-image: url(search-white.svg);
+    background-size: 16px 16px;
     background-repeat: no-repeat;
     background-position: center;
     width: 50px;
-    height: 30px;
+    height: 32px;
     float: right;
 }
 
 .submitbutton:hover {
     border: 1px solid black;
+    cursor: pointer;
 }
 
 .searchResult {
@@ -110,8 +112,16 @@ input:focus {
     text-decoration: none;
 }
 
+.searchResultAreaFileName:hover {
+    cursor: pointer;
+}
+
 .searchResultAreaFileNameComplete {
     color: #27ae60;
+}
+
+.searchResultAreaFileNameComplete:hover {
+    cursor: pointer;
 }
 
 .searchResultAreaContentHighlighted {
@@ -121,6 +131,10 @@ input:focus {
 .searchResultAreaResultSimilar {
     color: #27ae60;
     padding-left: 20px;
+}
+
+.searchResultAreaResultSimilar:hover {
+    cursor: pointer;
 }
 
 .logoDiv {
