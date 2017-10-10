@@ -268,7 +268,7 @@ class LuceneIndexHandler {
             ScoreDoc theFirstScore = theDocs.scoreDocs[0];
             Document theDocument = theSearcher.doc(theFirstScore.doc);
 
-            long theStoredLastModified = theDocument.getField(IndexFields.LASTMODIFIED).numericValue().longValue();
+            long theStoredLastModified = Long.valueOf(theDocument.getField(IndexFields.LASTMODIFIED).stringValue());
             if (theStoredLastModified != aLastModified) {
                 return UpdateCheckResult.UPDATED;
             }
