@@ -103,44 +103,35 @@
             <artifactId>tika-parsers</artifactId>
             <version>${tika.version}</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-langdetect</artifactId>
             <version>${tika.version}</version>
-        </dependency>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.cybozu.labs</groupId>
+                    <artifactId>langdetect</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>-->
         <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queries</artifactId>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-core</artifactId>
             <version>${lucene.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers-common</artifactId>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>${lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-langid</artifactId>
             <version>${lucene.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-facet</artifactId>
-            <version>${lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
-            <version>${lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-highlighter</artifactId>
-            <version>${lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-suggest</artifactId>
-            <version>${lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-backward-codecs</artifactId>
             <version>${lucene.version}</version>
         </dependency>
         <dependency>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solr>
+    <shardHandlerFactory name="shardHandlerFactory" class="HttpShardHandlerFactory">
+        <int name="socketTimeout">${socketTimeout:600000}</int>
+        <int name="connTimeout">${connTimeout:60000}</int>
+    </shardHandlerFactory>
+    <logging>
+        <str name="enabled">true</str>
+        <str name="class">org.apache.solr.logging.log4j.Log4jWatcher</str>
+        <watcher>
+            <int name="size">100</int>
+            <str name="threshold">INFO</str>
+        </watcher>
+    </logging>
+</solr>
