@@ -962,12 +962,12 @@
         </processor>
 
 
-        <processor class="org.apache.solr.update.processor.LangDetectLanguageIdentifierUpdateProcessorFactory">
+        <!--<processor class="org.apache.solr.update.processor.LangDetectLanguageIdentifierUpdateProcessorFactory">
             <lst name="defaults">
                 <str name="langid.fl">content</str>
                 <str name="langid.langField">language</str>
             </lst>
-        </processor>
+        </processor>-->
 
         <processor class="solr.StatelessScriptUpdateProcessorFactory">
             <str name="script">update-script.js</str>

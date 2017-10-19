@@ -14,6 +14,7 @@ package de.mirkosertic.desktopsearch;
 
 import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
+import org.apache.tika.langdetect.OptimaizeLangDetector;
 import org.apache.tika.language.detect.LanguageDetector;
 import org.apache.tika.language.detect.LanguageResult;
 import org.apache.tika.metadata.Metadata;
@@ -53,12 +54,10 @@ class ContentExtractor {
         tika = new Tika();
         tika.setMaxStringLength(1024 * 1024 * 5);
 
-//        OptimaizeLangDetector theDetector = new OptimaizeLangDetector();
+        OptimaizeLangDetector theDetector = new OptimaizeLangDetector();
         try {
-  //          theDetector.loadModels();
-
-            //languageDetector = theDetector;
-            throw new IOException("e");
+            theDetector.loadModels();
+            languageDetector = theDetector;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

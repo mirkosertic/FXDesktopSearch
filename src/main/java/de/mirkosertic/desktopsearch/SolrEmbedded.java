@@ -78,6 +78,11 @@ public class SolrEmbedded {
         return embeddedSolrServer;
     }
 
+    public void shutdown() throws IOException {
+        coreContainer.shutdown();
+        embeddedSolrServer.close();
+    }
+
     private static void copyResourceToFile(String aResource, File aTargetFile) throws IOException {
         try (FileOutputStream theFos = new FileOutputStream(aTargetFile)) {
             IOUtils.copy(SolrEmbedded.class.getResourceAsStream(aResource), theFos);

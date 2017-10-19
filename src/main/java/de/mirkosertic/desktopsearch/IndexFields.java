@@ -18,15 +18,12 @@ public interface IndexFields {
 
     Version LUCENE_VERSION = Version.LATEST;
 
-    String UNIQUEID = "uniqueid";
-    String FILENAME = "filename";
+    String UNIQUEID = "id";
     String EXTENSION = "extension";
-    String LANGUAGESTORED = "language_s";
-    String LANGUAGEFACET = "language_f";
+    String LANGUAGE = "language";
     String CONTENT = "content";
-    String CONTENT_NOT_STEMMED = "contentnotstemmed";
     String CONTENTMD5 = "contentmd5";
     String FILESIZE = "filesize";
     String LASTMODIFIED = "lastmodified";
-    String LOCATIONID = "locationId";
+    String LOCATIONID = "locationid";
 }
