@@ -85,13 +85,8 @@
     <dependencies>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
-            <version>9.1.3.v20140225</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jsp</artifactId>
-            <version>9.1.3.v20140225</version>
+            <version>9.3.14.v20161028</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
@@ -103,17 +98,16 @@
             <artifactId>tika-parsers</artifactId>
             <version>${tika.version}</version>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-langdetect</artifactId>
             <version>${tika.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.cybozu.labs</groupId>
-                    <artifactId>langdetect</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>-->
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>

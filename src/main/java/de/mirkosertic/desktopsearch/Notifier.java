@@ -20,9 +20,9 @@ class Notifier {
 
     public void showInformation(String aMessage) {
         LOGGER.info(aMessage);
-        Platform.runLater(() ->
+        /*Platform.runLater(() ->
             notifier.notifyInfo("FXDesktopSearch", aMessage)
-        );
+        );*/
     }
 
     public void showError(String aMessage, Exception aException) {

@@ -17,62 +17,18 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.LongPoint;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.facet.DrillDownQuery;
-import org.apache.lucene.facet.FacetResult;
-import org.apache.lucene.facet.FacetsCollector;
-import org.apache.lucene.facet.FacetsConfig;
-import org.apache.lucene.facet.LabelAndValue;
-import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
-import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
-import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
-import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queries.mlt.MoreLikeThis;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.SearcherFactory;
-import org.apache.lucene.search.SearcherManager;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.highlight.Highlighter;
-import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.NRTCachingDirectory;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.common.SolrInputDocument;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ForkJoinTask;
 
 class LuceneIndexHandler {
 
@@ -80,84 +36,37 @@ class LuceneIndexHandler {
 
     private static final int NUMBER_OF_FRAGMENTS = 5;
 
-    private final IndexWriter indexWriter;
-    private final SearcherManager searcherManager;
-    private final AnalyzerCache analyzerCache;
-    private final Analyzer analyzer;
-    private final FacetsConfig facetsConfig;
-    private final Thread commitThread;
-    private final FieldType contentFieldType;
-    private final ExecutorPool executorPool;
     private final Configuration configuration;
     private final PreviewProcessor previewProcessor;
+    private final SolrEmbedded solrEmbedded;
+    private final SolrClient solrClient;
 
-    public LuceneIndexHandler(Configuration aConfiguration, AnalyzerCache aAnalyzerCache, ExecutorPool aExecutorPool, PreviewProcessor aPreviewProcessor) throws IOException {
+    public LuceneIndexHandler(Configuration aConfiguration, PreviewProcessor aPreviewProcessor) throws IOException {
         previewProcessor = aPreviewProcessor;
         configuration = aConfiguration;
-        analyzerCache = aAnalyzerCache;
-        executorPool = aExecutorPool;
-
-        contentFieldType = new FieldType();
-        contentFieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
-        contentFieldType.setStored(true);
-        contentFieldType.setTokenized(true);
-        contentFieldType.setStoreTermVectorOffsets(true);
-        contentFieldType.setStoreTermVectorPayloads(true);
-        contentFieldType.setStoreTermVectorPositions(true);
-        contentFieldType.setStoreTermVectors(true);
-
-        analyzer = analyzerCache.getAnalyzer();
 
         File theIndexDirectory = new File(aConfiguration.getConfigDirectory(), "index");
         theIndexDirectory.mkdirs();
 
-        Directory theIndexFSDirectory = new NRTCachingDirectory(FSDirectory.open(theIndexDirectory.toPath()), 100, 100);
-
-        IndexWriterConfig theConfig = new IndexWriterConfig(analyzer);
-        indexWriter = new IndexWriter(theIndexFSDirectory, theConfig);
-
-        searcherManager = new SearcherManager(indexWriter, true, true, new SearcherFactory());
-
-        commitThread = new Thread("Lucene Commit Thread") {
-            @Override
-            public void run() {
-                while (!isInterrupted()) {
-
-                    if (indexWriter.hasUncommittedChanges()) {
-                        try {
-                            indexWriter.commit();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        // Do nothing here
-                    }
-                }
-            }
-        };
-        commitThread.start();
-
-        facetsConfig = new FacetsConfig();
+        solrEmbedded = new SolrEmbedded(new SolrEmbedded.Config(theIndexDirectory));
+        solrClient = solrEmbedded.solrClient();
     }
 
     public void crawlingStarts() throws IOException {
-        searcherManager.maybeRefreshBlocking();
     }
 
     public void addToIndex(String aLocationId, Content aContent) throws IOException {
-        Document theDocument = new Document();
 
         SupportedLanguage theLanguage = aContent.getLanguage();
 
-        theDocument.add(new StringField(IndexFields.UNIQUEID, UUID.randomUUID().toString(), Field.Store.YES));
-        theDocument.add(new StringField(IndexFields.FILENAME, aContent.getFileName(), Field.Store.YES));
-        theDocument.add(new SortedSetDocValuesFacetField(IndexFields.LANGUAGEFACET, theLanguage.name()));
-        theDocument.add(new TextField(IndexFields.LANGUAGESTORED, theLanguage.name(), Field.Store.YES));
-        theDocument.add(new TextField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
+        SolrInputDocument theDocument = new SolrInputDocument();
+        theDocument.setField(IndexFields.UNIQUEID, aContent.getFileName());
+        theDocument.setField(IndexFields.LOCATIONID, aLocationId);
+        theDocument.setField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()));
+        theDocument.setField(IndexFields.LOCATIONID, aLocationId);
+        theDocument.setField(IndexFields.FILESIZE, Long.toString(aContent.getFileSize()));
+        theDocument.setField(IndexFields.LASTMODIFIED, Long.toString(aContent.getLastModified()));
+        theDocument.setField(IndexFields.LANGUAGE, theLanguage.name());
 
         StringBuilder theContentAsString = new StringBuilder(aContent.getFileContent());
 
@@ -165,15 +74,12 @@ class LuceneIndexHandler {
             if (!StringUtils.isEmpty(theEntry.key)) {
                 Object theValue = theEntry.value;
                 if (theValue instanceof String) {
-                    facetsConfig.setMultiValued(theEntry.key, true);
                     String theStringValue = (String) theValue;
-                    theContentAsString.append(" ").append(theStringValue);
                     if (!StringUtils.isEmpty(theStringValue)) {
-                        theDocument.add(new SortedSetDocValuesFacetField(theEntry.key, theStringValue));
+                        theDocument.setField("attr_" + theEntry.key, theStringValue);
                     }
                 }
                 if (theValue instanceof Date) {
-                    facetsConfig.setHierarchical(theEntry.key, true);
                     Date theDateValue = (Date) theValue;
                     Calendar theCalendar = GregorianCalendar.getInstance(DateUtils.UTC, Locale.US);
                     theCalendar.setTime(theDateValue);
@@ -186,10 +92,7 @@ class LuceneIndexHandler {
                                 theCalendar.get(Calendar.MONTH) + 1,
                                 theCalendar.get(Calendar.DAY_OF_MONTH));
 
-                        theContentAsString.append(" ").append(thePathInfo);
-
-                        facetsConfig.setMultiValued(theEntry.key+"-year-month-day", true);
-                        theDocument.add(new SortedSetDocValuesFacetField(theEntry.key+"-year-month-day", thePathInfo));
+                        theDocument.setField("attr_" + theEntry.key+"-year-month-day", thePathInfo);
                     }
                     // Year
                     {
@@ -197,10 +100,7 @@ class LuceneIndexHandler {
                                 "%04d",
                                 theCalendar.get(Calendar.YEAR));
 
-                        theContentAsString.append(" ").append(thePathInfo);
-
-                        facetsConfig.setMultiValued(theEntry.key+"-year", true);
-                        theDocument.add(new SortedSetDocValuesFacetField(theEntry.key+"-year", thePathInfo));
+                        theDocument.setField("attr_" + theEntry.key+"-year", thePathInfo);
                     }
                     // Year-month
                     {
@@ -209,51 +109,40 @@ class LuceneIndexHandler {
                                 theCalendar.get(Calendar.YEAR),
                                 theCalendar.get(Calendar.MONTH) + 1);
 
-                        theContentAsString.append(" ").append(thePathInfo);
-
-                        facetsConfig.setMultiValued(theEntry.key+"-year-month", true);
-                        theDocument.add(new SortedSetDocValuesFacetField(theEntry.key+"-year-month", thePathInfo));
+                        theDocument.setField("attr_" + theEntry.key+"-year-month", thePathInfo);
                     }
 
                 }
             }
         });
 
-        if (analyzerCache.supportsLanguage(theLanguage)) {
-            LOGGER.info("Language and analyzer " + theLanguage+" detected for " + aContent.getFileName()+", using the corresponding language index field");
-            String theFieldName = analyzerCache.getFieldNameFor(theLanguage);
-            theDocument.add(new Field(theFieldName, theContentAsString.toString(), contentFieldType));
-        } else {
-            LOGGER.info("No matching language and analyzer detected for " + theLanguage+" and " + aContent.getFileName()+", using the default index field and analyzer");
-            theDocument.add(new Field(IndexFields.CONTENT, theContentAsString.toString(), contentFieldType));
+        theDocument.setField(IndexFields.CONTENT, theContentAsString.toString());
+
+        try {
+            solrClient.add(theDocument);
+        } catch (Exception e) {
+            throw new IOException(e);
         }
-
-        theDocument.add(new Field(IndexFields.CONTENT_NOT_STEMMED, theContentAsString.toString(), contentFieldType));
-
-        theDocument.add(new StringField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
-        theDocument.add(new StringField(IndexFields.LOCATIONID, aLocationId, Field.Store.YES));
-        theDocument.add(new LongPoint(IndexFields.FILESIZE, aContent.getFileSize()));
-        theDocument.add(new StringField(IndexFields.LASTMODIFIED, Long.toString(aContent.getLastModified()), Field.Store.YES));
-
-        // Update the document in our search index
-        indexWriter.updateDocument(new Term(IndexFields.FILENAME, aContent.getFileName()), facetsConfig.build(theDocument));
     }
 
     public void removeFromIndex(String aFileName) throws IOException {
-        indexWriter.deleteDocuments(new Term(IndexFields.FILENAME, aFileName));
+        try {
+            solrClient.deleteById(aFileName);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 
     public void shutdown() {
-        commitThread.interrupt();
         try {
-            indexWriter.close();
+            solrEmbedded.shutdown();
         } catch (Exception e) {
             LOGGER.error("Error while closing IndexWriter", e);
         }
     }
 
     public UpdateCheckResult checkIfModified(String aFilename, long aLastModified) throws IOException {
-
+/*
         IndexSearcher theSearcher = searcherManager.acquire();
         try {
             Query theQuery = new TermQuery(new Term(IndexFields.FILENAME, aFilename));
@@ -275,7 +164,8 @@ class LuceneIndexHandler {
             return UpdateCheckResult.UNMODIFIED;
         } finally {
             searcherManager.release(theSearcher);
-        }
+        }*/
+        return UpdateCheckResult.UPDATED;
     }
 
     private String encode(String aValue) {
@@ -287,21 +177,10 @@ class LuceneIndexHandler {
         }
     }
 
-    private BooleanQuery computeBooleanQueryFor(String aQueryString) throws IOException {
-        QueryParser theParser = new QueryParser(analyzer);
-
-        BooleanQuery.Builder theBooleanQuery = new BooleanQuery.Builder();
-        theBooleanQuery.setMinimumNumberShouldMatch(1);
-
-        for (String theFieldName : analyzerCache.getAllFieldNames()) {
-            Query theSingle = theParser.parse(aQueryString, theFieldName);
-            theBooleanQuery.add(theSingle, BooleanClause.Occur.SHOULD);
-        }
-        return theBooleanQuery.build();
-    }
-
     public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Configuration aConfiguration, Map<String, String> aDrilldownFields) throws IOException {
 
+        return new QueryResult(0, Collections.EMPTY_LIST, Collections.EMPTY_LIST, 0, "");
+/*
         searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
         SortedSetDocValuesReaderState theSortedSetState = new DefaultSortedSetDocValuesReaderState(theSearcher.getIndexReader());
@@ -498,11 +377,11 @@ class LuceneIndexHandler {
             throw new RuntimeException(e);
         } finally {
             searcherManager.release(theSearcher);
-        }
+        }*/
     }
 
     public Suggestion[] findSuggestionTermsFor(String aTerm) throws IOException {
-
+/*
         searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
 
@@ -514,11 +393,12 @@ class LuceneIndexHandler {
 
         } finally {
             searcherManager.release(theSearcher);
-        }
+        }*/
+        return new Suggestion[0];
     }
 
     public File getFileOnDiskForDocument(String aUniqueID) throws IOException {
-        searcherManager.maybeRefreshBlocking();
+/*        searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
 
         try {
@@ -533,11 +413,12 @@ class LuceneIndexHandler {
             return null;
         } finally {
             searcherManager.release(theSearcher);
-        }
+        }*/
+        return null;
     }
 
     public void cleanupDeadContent() throws IOException {
-        searcherManager.maybeRefreshBlocking();
+/*        searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
 
         try {
@@ -553,6 +434,6 @@ class LuceneIndexHandler {
             }
         } finally {
             searcherManager.release(theSearcher);
-        }
+        }*/
     }
 }

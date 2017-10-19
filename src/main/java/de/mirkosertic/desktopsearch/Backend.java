@@ -241,8 +241,7 @@ class Backend implements ConfigurationChangeListener {
         if (luceneIndexHandler != null) {
             shutdown();
         }
-        AnalyzerCache theCache = new AnalyzerCache(aConfiguration);
-        luceneIndexHandler = new LuceneIndexHandler(aConfiguration, theCache, executorPool, previewProcessor);
+        luceneIndexHandler = new LuceneIndexHandler(aConfiguration, previewProcessor);
     }
 
     public void crawlLocations() throws IOException {
