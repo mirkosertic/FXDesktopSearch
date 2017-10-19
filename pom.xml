@@ -4,7 +4,7 @@
 
     <groupId>de.mirkosertic</groupId>
     <artifactId>DesktopSearch</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
 
     <name>FXDesktopSearch</name>
     <organization>
@@ -20,7 +20,7 @@
     </scm>
 
     <properties>
-        <lucene.version>7.0.1</lucene.version>
+        <lucene.version>7.1.0</lucene.version>
         <tika.version>1.16</tika.version>
         <projectrelease.version>2.2.0</projectrelease.version>
     </properties>
