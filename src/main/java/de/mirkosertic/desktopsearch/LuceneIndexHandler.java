@@ -446,23 +446,7 @@ class LuceneIndexHandler {
     }
 
     public File getFileOnDiskForDocument(String aUniqueID) throws IOException {
-/*        searcherManager.maybeRefreshBlocking();
-        IndexSearcher theSearcher = searcherManager.acquire();
-
-        try {
-            TermQuery theTermQuery = new TermQuery(new Term(IndexFields.UNIQUEID, aUniqueID));
-            TopDocs theTopDocs = theSearcher.search(theTermQuery, 1, Sort.INDEXORDER);
-            if (theTopDocs.totalHits == 1) {
-                Document theDocument = theSearcher.doc(theTopDocs.scoreDocs[0].doc);
-                if (theDocument != null) {
-                    return new File(theDocument.get(IndexFields.FILENAME));
-                }
-            }
-            return null;
-        } finally {
-            searcherManager.release(theSearcher);
-        }*/
-        return null;
+        return new File(aUniqueID);
     }
 
     public void cleanupDeadContent() throws IOException {
