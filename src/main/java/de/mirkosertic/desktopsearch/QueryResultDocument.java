@@ -15,13 +15,12 @@ package de.mirkosertic.desktopsearch;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Future;
 
 public class QueryResultDocument {
 
     private final List<String> fileNames;
 
-    private final Future<String> highlightedSearchResult;
+    private final String highlightedSearchResult;
 
     private final long lastModified;
 
@@ -35,7 +34,7 @@ public class QueryResultDocument {
 
     private final boolean previewAvailable;
 
-    public QueryResultDocument(int aDocumentID, String aFileName, Future<String> aHighlighterResult, long aLastModified, int aNormalizedScore, String aUniqueID, boolean aPreviewAvailable) {
+    public QueryResultDocument(int aDocumentID, String aFileName, String aHighlighterResult, long aLastModified, int aNormalizedScore, String aUniqueID, boolean aPreviewAvailable) {
         previewAvailable = aPreviewAvailable;
         fileNames = new ArrayList<>();
         fileNames.add(aFileName);
@@ -58,11 +57,7 @@ public class QueryResultDocument {
     }
 
     public String getHighlightedSearchResult() {
-        try {
-            return highlightedSearchResult.get();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return highlightedSearchResult;
     }
 
     public long getLastModified() {

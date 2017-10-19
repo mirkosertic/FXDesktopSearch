@@ -18,15 +18,21 @@ import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -142,30 +148,26 @@ class LuceneIndexHandler {
     }
 
     public UpdateCheckResult checkIfModified(String aFilename, long aLastModified) throws IOException {
-/*
-        IndexSearcher theSearcher = searcherManager.acquire();
-        try {
-            Query theQuery = new TermQuery(new Term(IndexFields.FILENAME, aFilename));
-            TopDocs theDocs = theSearcher.search(theQuery, 100, Sort.INDEXORDER);
-            if (theDocs.scoreDocs.length == 0) {
-                return UpdateCheckResult.UPDATED;
-            }
-            if (theDocs.scoreDocs.length > 1) {
-                // Multiple documents in index, we need to clean up
-                return UpdateCheckResult.UPDATED;
-            }
-            ScoreDoc theFirstScore = theDocs.scoreDocs[0];
-            Document theDocument = theSearcher.doc(theFirstScore.doc);
 
-            long theStoredLastModified = Long.valueOf(theDocument.getField(IndexFields.LASTMODIFIED).stringValue());
+        Map<String, Object> theParams = new HashMap<>();
+        theParams.put("q", IndexFields.UNIQUEID + ":" + ClientUtils.escapeQueryChars(aFilename));
+
+        try {
+            QueryResponse theQueryResponse = solrClient.query(new SearchMapParams(theParams));
+            if (theQueryResponse.getResults().isEmpty()) {
+                // Nothing in Index, hence mark it as updated
+                return UpdateCheckResult.UPDATED;
+            }
+            SolrDocument theDocument = theQueryResponse.getResults().get(0);
+
+            long theStoredLastModified = Long.valueOf((String) theDocument.getFieldValue(IndexFields.LASTMODIFIED));
             if (theStoredLastModified != aLastModified) {
                 return UpdateCheckResult.UPDATED;
             }
             return UpdateCheckResult.UNMODIFIED;
-        } finally {
-            searcherManager.release(theSearcher);
-        }*/
-        return UpdateCheckResult.UPDATED;
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 
     private String encode(String aValue) {
@@ -179,7 +181,53 @@ class LuceneIndexHandler {
 
     public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Configuration aConfiguration, Map<String, String> aDrilldownFields) throws IOException {
 
-        return new QueryResult(0, Collections.EMPTY_LIST, Collections.EMPTY_LIST, 0, "");
+        Map<String, Object> theParams = new HashMap<>();
+        theParams.put("q", IndexFields.CONTENT + ":" + ClientUtils.escapeQueryChars(aQueryString));
+        //theParams.put("facet", "true");
+        theParams.put("facet.field", new String[] {"language"});
+        theParams.put("hl", "true");
+        theParams.put("hl.fl", IndexFields.CONTENT);
+        theParams.put("hl.snippets", "5");
+        theParams.put("hl.fragsize", "100");
+
+        if (aConfiguration.isShowSimilarDocuments()) {
+            theParams.put("mlt", "true");
+            theParams.put("mlt.count", "5");
+            theParams.put("mlt.fl", IndexFields.CONTENT);
+        }
+
+        try {
+            long theStartTime = System.currentTimeMillis();
+            QueryResponse theQueryResponse = solrClient.query(new SearchMapParams(theParams));
+
+            List<QueryResultDocument> theDocuments = new ArrayList<>();
+            for (int i=0;i<theQueryResponse.getResults().size();i++) {
+                SolrDocument theSolrDocument = theQueryResponse.getResults().get(i);
+
+                String theFileName  = (String) theSolrDocument.getFieldValue(IndexFields.UNIQUEID);
+                long theStoredLastModified = Long.valueOf((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
+
+                int theNormalizedScore = 5;
+                Map<String, List<String>> theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
+                StringBuffer theHighlight = new StringBuffer();
+                for (String thePhrase : theHighlightPhrases.get(IndexFields.CONTENT)) {
+                    if (theHighlight.length() > 0) {
+                        theHighlight.append(" ... ");
+                    }
+                    theHighlight.append(thePhrase);
+                }
+
+                QueryResultDocument theDocument = new QueryResultDocument(i, theFileName, theHighlight.toString(), theStoredLastModified, theNormalizedScore, theFileName, true);
+                theDocuments.add(theDocument);
+            }
+
+            long theDuration = System.currentTimeMillis() - theStartTime;
+
+            return new QueryResult(theDuration, theDocuments, Collections.EMPTY_LIST, 0, "");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
 /*
         searcherManager.maybeRefreshBlocking();
         IndexSearcher theSearcher = searcherManager.acquire();
