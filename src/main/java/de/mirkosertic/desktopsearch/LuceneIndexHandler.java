@@ -183,8 +183,10 @@ class LuceneIndexHandler {
 
         Map<String, Object> theParams = new HashMap<>();
         theParams.put("q", IndexFields.CONTENT + ":" + ClientUtils.escapeQueryChars(aQueryString));
-        //theParams.put("facet", "true");
-        theParams.put("facet.field", new String[] {"language"});
+        theParams.put("stats", "true");
+        theParams.put("stats.field", IndexFields.UNIQUEID);
+        theParams.put("facet", "true");
+        theParams.put("facet.field", new String[] {IndexFields.LANGUAGE, "attr_author", "attr_last-modified-year", "attr_" + IndexFields.EXTENSION});
         theParams.put("hl", "true");
         theParams.put("hl.fl", IndexFields.CONTENT);
         theParams.put("hl.snippets", "5");
@@ -208,13 +210,20 @@ class LuceneIndexHandler {
                 long theStoredLastModified = Long.valueOf((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
 
                 int theNormalizedScore = 5;
-                Map<String, List<String>> theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
                 StringBuffer theHighlight = new StringBuffer();
-                for (String thePhrase : theHighlightPhrases.get(IndexFields.CONTENT)) {
-                    if (theHighlight.length() > 0) {
-                        theHighlight.append(" ... ");
+                Map<String, List<String>> theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
+                if (theHighlightPhrases != null) {
+                    List<String> theContentSpans = theHighlightPhrases.get(IndexFields.CONTENT);
+                    if (theContentSpans != null) {
+                        for (String thePhrase : theContentSpans) {
+                            if (theHighlight.length() > 0) {
+                                theHighlight.append(" ... ");
+                            }
+                            theHighlight.append(thePhrase);
+                        }
+                    } else {
+                        LOGGER.warn("No highligting for " + theFileName);
                     }
-                    theHighlight.append(thePhrase);
                 }
 
                 QueryResultDocument theDocument = new QueryResultDocument(i, theFileName, theHighlight.toString(), theStoredLastModified, theNormalizedScore, theFileName, true);
