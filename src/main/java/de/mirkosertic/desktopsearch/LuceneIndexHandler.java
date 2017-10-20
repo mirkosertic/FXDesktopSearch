@@ -18,9 +18,13 @@ import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.tika.utils.DateUtils;
 
@@ -28,13 +32,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 
 class LuceneIndexHandler {
 
@@ -179,18 +183,35 @@ class LuceneIndexHandler {
         }
     }
 
+    private long indexSize() throws IOException, SolrServerException {
+        SolrQuery q = new SolrQuery("*:*");
+        q.setRows(0);  // don't actually request any data
+        return solrClient.query(q).getResults().getNumFound();
+    }
+
     public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Configuration aConfiguration, Map<String, String> aDrilldownFields) throws IOException {
 
         Map<String, Object> theParams = new HashMap<>();
         theParams.put("q", IndexFields.CONTENT + ":" + ClientUtils.escapeQueryChars(aQueryString));
+        theParams.put("rows", "" + configuration.getNumberOfSearchResults());
         theParams.put("stats", "true");
         theParams.put("stats.field", IndexFields.UNIQUEID);
         theParams.put("facet", "true");
         theParams.put("facet.field", new String[] {IndexFields.LANGUAGE, "attr_author", "attr_last-modified-year", "attr_" + IndexFields.EXTENSION});
         theParams.put("hl", "true");
         theParams.put("hl.fl", IndexFields.CONTENT);
-        theParams.put("hl.snippets", "5");
+        theParams.put("hl.snippets", "" + NUMBER_OF_FRAGMENTS);
         theParams.put("hl.fragsize", "100");
+
+        if (aDrilldownFields != null) {
+            List<String> theFilters = new ArrayList<>();
+            for (Map.Entry<String, String> theField : aDrilldownFields.entrySet()) {
+                theFilters.add(theField.getKey()+":"+ClientUtils.escapeQueryChars(theField.getValue()));
+            }
+            if (!theFilters.isEmpty()) {
+                theParams.put("fq", theFilters.toArray(new String[theFilters.size()]));
+            }
+        }
 
         if (aConfiguration.isShowSimilarDocuments()) {
             theParams.put("mlt", "true");
@@ -226,215 +247,68 @@ class LuceneIndexHandler {
                     }
                 }
 
-                QueryResultDocument theDocument = new QueryResultDocument(i, theFileName, theHighlight.toString(), theStoredLastModified, theNormalizedScore, theFileName, true);
-                theDocuments.add(theDocument);
+                File theFileOnDisk = new File(theFileName);
+                if (theFileOnDisk.exists()) {
+
+                    boolean thePreviewAvailable = previewProcessor.previewAvailableFor(theFileOnDisk);
+
+                    QueryResultDocument theDocument = new QueryResultDocument(i, theFileName, theHighlight.toString(),
+                            theStoredLastModified, theNormalizedScore, theFileName, thePreviewAvailable);
+
+                    if (configuration.isShowSimilarDocuments()) {
+                        SolrDocumentList theMoreLikeThisDocuments = theQueryResponse.getMoreLikeThis().get(theFileName);
+                        if (theMoreLikeThisDocuments != null) {
+                            for (int j = 0; j < theMoreLikeThisDocuments.size(); j++) {
+                                SolrDocument theMLt = theMoreLikeThisDocuments.get(j);
+                                theDocument.addSimilarFile(((String) theMLt.getFieldValue(IndexFields.UNIQUEID)));
+                            }
+                        }
+                    }
+
+                    theDocuments.add(theDocument);
+
+                } else {
+
+                    // Document can be deleted, as it is no longer on the hard drive
+                    solrClient.deleteById(theFileName);
+                }
             }
+
+            long theIndexSize = indexSize();
 
             long theDuration = System.currentTimeMillis() - theStartTime;
 
-            return new QueryResult(theDuration, theDocuments, Collections.EMPTY_LIST, 0, "");
+            List<FacetDimension> theDimensions = new ArrayList<>();
+            fillFacet(IndexFields.LANGUAGE, "Language", aBasePath, theQueryResponse, theDimensions, t -> SupportedLanguage.valueOf(t).toLocale().getDisplayName());
+            fillFacet("attr_author", "Author", aBasePath, theQueryResponse, theDimensions, t -> t);
+            fillFacet("attr_last-modified-yea", "Last modified", aBasePath, theQueryResponse, theDimensions, t -> t);
+            fillFacet("attr_" + IndexFields.EXTENSION, "File type", aBasePath, theQueryResponse, theDimensions, t -> t);
+
+            return new QueryResult(theDuration, theDocuments, theDimensions, theIndexSize, aBacklink);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
 
-/*
-        searcherManager.maybeRefreshBlocking();
-        IndexSearcher theSearcher = searcherManager.acquire();
-        SortedSetDocValuesReaderState theSortedSetState = new DefaultSortedSetDocValuesReaderState(theSearcher.getIndexReader());
-
-        List<QueryResultDocument> theResultDocuments = new ArrayList<>();
-
-        long theStartTime = System.currentTimeMillis();
-
-        LOGGER.info("Querying for "+aQueryString);
-
-        DateFormat theDateFormat = new SimpleDateFormat("dd.MMMM.yyyy", Locale.ENGLISH);
-
-        try {
-
-            List<FacetDimension> theDimensions = new ArrayList<>();
-
-            // Search only if a search query is given
-            if (!StringUtils.isEmpty(aQueryString)) {
-
-                Query theQuery = computeBooleanQueryFor(aQueryString);
-
-                LOGGER.info(" query is " + theQuery);
-
-                theQuery = theQuery.rewrite(theSearcher.getIndexReader());
-
-                LOGGER.info(" rewritten query is " + theQuery);
-
-                DrillDownQuery theDrilldownQuery = new DrillDownQuery(facetsConfig, theQuery);
-                aDrilldownFields.entrySet().stream().forEach(aEntry -> {
-                    LOGGER.info(" with Drilldown "+aEntry.getKey()+" for "+aEntry.getValue());
-                    theDrilldownQuery.add(aEntry.getKey(), aEntry.getValue());
-                });
-
-                FacetsCollector theFacetCollector = new FacetsCollector();
-
-                TopDocs theDocs = FacetsCollector.search(theSearcher, theDrilldownQuery, aConfiguration.getNumberOfSearchResults(), Sort.RELEVANCE, true, true, theFacetCollector);
-                SortedSetDocValuesFacetCounts theFacetCounts = new SortedSetDocValuesFacetCounts(theSortedSetState, theFacetCollector);
-
-                List<Facet> theAuthorFacets = new ArrayList<>();
-                List<Facet> theFileTypesFacets = new ArrayList<>();
-                List<Facet> theLastModifiedYearFacet = new ArrayList<>();
-                List<Facet> theLanguageFacet = new ArrayList<>();
-
-                LOGGER.info("Found " + theDocs.scoreDocs.length + " documents");
-
-                // We need this cache to detect duplicate documents while searching for similarities
-                Set<Integer> theUniqueDocumentsFound = new HashSet<>();
-
-                Map<String, QueryResultDocument> theDocumentsByHash = new HashMap<>();
-
-                for (int i = 0; i < theDocs.scoreDocs.length; i++) {
-                    int theDocumentID = theDocs.scoreDocs[i].doc;
-                    theUniqueDocumentsFound.add(theDocumentID);
-                    Document theDocument = theSearcher.doc(theDocumentID);
-
-                    String theUniqueID = theDocument.getField(IndexFields.UNIQUEID).stringValue();
-                    String theFoundFileName = theDocument.getField(IndexFields.FILENAME).stringValue();
-                    String theHash = theDocument.getField(IndexFields.CONTENTMD5).stringValue();
-                    QueryResultDocument theExistingDocument = theDocumentsByHash.get(theHash);
-                    if (theExistingDocument != null) {
-                        theExistingDocument.addFileName(theFoundFileName);
-                    } else {
-                        Date theLastModified = new Date(Long.valueOf(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()));
-                        SupportedLanguage theLanguage = SupportedLanguage.valueOf(theDocument.getField(IndexFields.LANGUAGESTORED).stringValue());
-                        String theFieldName;
-                        if (analyzerCache.supportsLanguage(theLanguage)) {
-                            theFieldName = analyzerCache.getFieldNameFor(theLanguage);
-                        } else {
-                            theFieldName = IndexFields.CONTENT;
-                        }
-
-                        String theOriginalContent = theDocument.getField(theFieldName).stringValue();
-
-                        final Query theFinalQuery = theQuery;
-
-                        ForkJoinTask<String> theHighligherResult = executorPool.submit(() -> {
-                            StringBuilder theResult = new StringBuilder(theDateFormat.format(theLastModified));
-                            theResult.append("&nbsp;-&nbsp;");
-                            Highlighter theHighlighter = new Highlighter(new SimpleHTMLFormatter(), new QueryScorer(theFinalQuery));
-                            for (String theFragment : theHighlighter.getBestFragments(analyzer, theFieldName, theOriginalContent, NUMBER_OF_FRAGMENTS)) {
-                                if (theResult.length() > 0) {
-                                    theResult = theResult.append("...");
-                                }
-                                theResult = theResult.append(theFragment);
-                            }
-                            return theResult.toString();
-                        });
-
-                        int theNormalizedScore = (int)(theDocs.scoreDocs[i].score / theDocs.getMaxScore() * 5);
-
-                        File theFileOnDisk = new File(theFoundFileName);
-                        if (theFileOnDisk.exists()) {
-
-                            boolean thePreviewAvailable = previewProcessor.previewAvailableFor(theFileOnDisk);
-
-                            theExistingDocument = new QueryResultDocument(theDocumentID, theFoundFileName, theHighligherResult,
-                                    Long.parseLong(theDocument.getField(IndexFields.LASTMODIFIED).stringValue()),
-                                    theNormalizedScore, theUniqueID, thePreviewAvailable);
-                            theDocumentsByHash.put(theHash, theExistingDocument);
-                            theResultDocuments.add(theExistingDocument);
-                        }
+    private void fillFacet(String aFacetField, String aFacetDisplayLabel, String aBacklink, QueryResponse aQueryResponse, List<FacetDimension> aDimensions,
+            Function<String, String> aConverter) {
+        FacetField theFacet = aQueryResponse.getFacetField(aFacetField);
+        if (theFacet != null) {
+            List<Facet> theFacets = new ArrayList<>();
+            for (FacetField.Count theCount : theFacet.getValues()) {
+                if (theCount.getCount() > 0) {
+                    String theName = theCount.getName().trim();
+                    if (theName.length() > 0) {
+                        theFacets.add(new Facet(aConverter.apply(theName), theCount.getCount(),
+                                aBacklink + "/" + encode(
+                                        FacetSearchUtils.encode(aFacetField, theCount.getName()))));
                     }
                 }
-
-                if (aConfiguration.isShowSimilarDocuments()) {
-
-                    MoreLikeThis theMoreLikeThis = new MoreLikeThis(theSearcher.getIndexReader());
-                    theMoreLikeThis.setAnalyzer(analyzer);
-                    theMoreLikeThis.setMinTermFreq(1);
-                    theMoreLikeThis.setMinDocFreq(1);
-                    theMoreLikeThis.setFieldNames(analyzerCache.getAllFieldNames());
-
-                    for (QueryResultDocument theDocument : theResultDocuments) {
-                        Query theMoreLikeThisQuery = theMoreLikeThis.like(theDocument.getDocumentID());
-                        TopDocs theMoreLikeThisTopDocs = theSearcher.search(theMoreLikeThisQuery, 5);
-                        for (ScoreDoc theMoreLikeThisScoreDoc : theMoreLikeThisTopDocs.scoreDocs) {
-                            int theSimilarDocument = theMoreLikeThisScoreDoc.doc;
-                            if (theUniqueDocumentsFound.add(theSimilarDocument)) {
-                                Document theMoreLikeThisDocument = theSearcher.doc(theSimilarDocument);
-                                String theFilename = theMoreLikeThisDocument.getField(IndexFields.FILENAME).stringValue();
-                                theDocument.addSimilarFile(theFilename);
-                            }
-                        }
-                    }
-                }
-
-                LOGGER.info("Got Dimensions");
-                for (FacetResult theResult : theFacetCounts.getAllDims(20000)) {
-                    String theDimension = theResult.dim;
-                    if ("author".equals(theDimension)) {
-                        for (LabelAndValue theLabelAndValue : theResult.labelValues) {
-                            if (!StringUtils.isEmpty(theLabelAndValue.label)) {
-                                theAuthorFacets.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(),
-                                        aBasePath + "/" + encode(
-                                                FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
-                            }
-                        }
-                    }
-                    if ("extension".equals(theDimension)) {
-                        for (LabelAndValue theLabelAndValue : theResult.labelValues) {
-                            if (!StringUtils.isEmpty(theLabelAndValue.label)) {
-                                theFileTypesFacets.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(),
-                                        aBasePath + "/" + encode(
-                                                FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
-                            }
-                        }
-                    }
-                    if ("last-modified-year".equals(theDimension)) {
-                        for (LabelAndValue theLabelAndValue : theResult.labelValues) {
-                            if (!StringUtils.isEmpty(theLabelAndValue.label)) {
-                                theLastModifiedYearFacet.add(new Facet(theLabelAndValue.label, theLabelAndValue.value.intValue(),
-                                        aBasePath + "/" + encode(
-                                                FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
-                            }
-                        }
-                    }
-                    if (IndexFields.LANGUAGEFACET.equals(theDimension)) {
-                        for (LabelAndValue theLabelAndValue : theResult.labelValues) {
-                            if (!StringUtils.isEmpty(theLabelAndValue.label)) {
-                                Locale theLocale = new Locale(theLabelAndValue.label);
-                                theLanguageFacet.add(new Facet(theLocale.getDisplayLanguage(Locale.ENGLISH),
-                                        theLabelAndValue.value.intValue(), aBasePath + "/" + encode(
-                                        FacetSearchUtils.encode(theDimension, theLabelAndValue.label))));
-                            }
-                        }
-                    }
-
-                    LOGGER.info(" "+theDimension);
-                }
-
-                if (!theAuthorFacets.isEmpty()) {
-                    theDimensions.add(new FacetDimension("Author", theAuthorFacets));
-                }
-                if (!theLastModifiedYearFacet.isEmpty()) {
-                    theDimensions.add(new FacetDimension("Last modified", theLastModifiedYearFacet));
-                }
-                if (!theFileTypesFacets.isEmpty()) {
-                    theDimensions.add(new FacetDimension("File types", theFileTypesFacets));
-                }
-                if (!theLanguageFacet.isEmpty()) {
-                    theDimensions.add(new FacetDimension("Language", theLanguageFacet));
-                }
-
-                // Wait for all Tasks to complete for the search result highlighter
-                ForkJoinTask.helpQuiesce();
             }
-
-            long theDuration = System.currentTimeMillis() - theStartTime;
-
-            LOGGER.info("Total amount of time : "+theDuration+"ms");
-
-            return new QueryResult(System.currentTimeMillis() - theStartTime, theResultDocuments, theDimensions, theSearcher.getIndexReader().numDocs(), aBacklink);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            searcherManager.release(theSearcher);
-        }*/
+            if (!theFacets.isEmpty()) {
+                aDimensions.add(new FacetDimension(aFacetDisplayLabel, theFacets));
+            }
+        }
     }
 
     public Suggestion[] findSuggestionTermsFor(String aTerm) throws IOException {
@@ -456,25 +330,5 @@ class LuceneIndexHandler {
 
     public File getFileOnDiskForDocument(String aUniqueID) throws IOException {
         return new File(aUniqueID);
-    }
-
-    public void cleanupDeadContent() throws IOException {
-/*        searcherManager.maybeRefreshBlocking();
-        IndexSearcher theSearcher = searcherManager.acquire();
-
-        try {
-            IndexReader theReader = theSearcher.getIndexReader();
-            for (int i = 0; i < theReader.maxDoc(); i++) {
-                Document theDocument = theReader.document(i);
-                File theFile = new File(theDocument.getField(IndexFields.FILENAME).stringValue());
-                if (!theFile.exists()) {
-                    LOGGER.info("Removing file "+theFile+" from index as it does not exist anymore.");
-                    String theUniqueID = theDocument.getField(IndexFields.UNIQUEID).stringValue();
-                    indexWriter.deleteDocuments(new Term(IndexFields.UNIQUEID, theUniqueID));
-                }
-            }
-        } finally {
-            searcherManager.release(theSearcher);
-        }*/
     }
 }
