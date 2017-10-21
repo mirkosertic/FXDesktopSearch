@@ -1093,6 +1093,9 @@
          by SearchHandler) or in LocalParams
       -->
     <!-- example of registering a query parser -->
+
+    <queryParser name="google" class="de.mirkosertic.desktopsearch.QueryParserPlugin"/>
+
     <!--
        <queryParser name="myparser" class="com.mycompany.MyQParserPlugin"/>
       -->
