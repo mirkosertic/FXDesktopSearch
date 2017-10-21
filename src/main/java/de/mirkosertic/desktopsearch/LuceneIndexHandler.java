@@ -30,14 +30,7 @@ import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 class LuceneIndexHandler {
@@ -192,7 +185,9 @@ class LuceneIndexHandler {
     public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Configuration aConfiguration, Map<String, String> aDrilldownFields) throws IOException {
 
         Map<String, Object> theParams = new HashMap<>();
-        theParams.put("q", IndexFields.CONTENT + ":" + ClientUtils.escapeQueryChars(aQueryString));
+        theParams.put("defType", "google");
+        theParams.put("q", aQueryString);
+        theParams.put("fl", "*,score");
         theParams.put("rows", "" + configuration.getNumberOfSearchResults());
         theParams.put("stats", "true");
         theParams.put("stats.field", IndexFields.UNIQUEID);
@@ -230,7 +225,7 @@ class LuceneIndexHandler {
                 String theFileName  = (String) theSolrDocument.getFieldValue(IndexFields.UNIQUEID);
                 long theStoredLastModified = Long.valueOf((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
 
-                int theNormalizedScore = 5;
+                int theNormalizedScore = (int) (5 * (float) theSolrDocument.getFieldValue("score"));
                 StringBuffer theHighlight = new StringBuffer();
                 Map<String, List<String>> theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
                 if (theHighlightPhrases != null) {
