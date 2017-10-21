@@ -225,7 +225,8 @@ class LuceneIndexHandler {
                 String theFileName  = (String) theSolrDocument.getFieldValue(IndexFields.UNIQUEID);
                 long theStoredLastModified = Long.valueOf((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
 
-                int theNormalizedScore = (int) (5 * (float) theSolrDocument.getFieldValue("score"));
+                int theNormalizedScore = (int)(((float) theSolrDocument.getFieldValue("score")) / theQueryResponse.getResults().getMaxScore() * 5);
+
                 StringBuffer theHighlight = new StringBuffer();
                 Map<String, List<String>> theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
                 if (theHighlightPhrases != null) {
