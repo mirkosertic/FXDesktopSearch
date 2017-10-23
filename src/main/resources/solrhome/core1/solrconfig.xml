@@ -472,6 +472,8 @@
           -->
     </requestDispatcher>
 
+    <searchComponent name="fxsuggest" class="de.mirkosertic.desktopsearch.SearchPhraseSuggesterComponent"/>
+
     <!-- Request Handlers
          http://wiki.apache.org/solr/SolrRequestHandler
          Incoming queries will be dispatched to a specific handler by name
@@ -549,6 +551,9 @@
              <str>nameOfCustomComponent2</str>
            </arr>
           -->
+        <arr name="components">
+            <str>fxsuggest</str>
+        </arr>
     </requestHandler>
 
     <!-- A request handler that returns indented JSON by default -->

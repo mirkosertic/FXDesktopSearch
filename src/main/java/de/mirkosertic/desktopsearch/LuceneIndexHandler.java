@@ -26,11 +26,19 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.util.NamedList;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 
 class LuceneIndexHandler {
@@ -308,20 +316,31 @@ class LuceneIndexHandler {
     }
 
     public Suggestion[] findSuggestionTermsFor(String aTerm) throws IOException {
-/*
-        searcherManager.maybeRefreshBlocking();
-        IndexSearcher theSearcher = searcherManager.acquire();
+
+        Map<String, Object> theParams = new HashMap<>();
+        theParams.put("fxsuggest.enabled", "true");
+        theParams.put("fxsuggest.q", aTerm);
+        theParams.put("fxsuggest.slop", Integer.toString(configuration.getSuggestionSlop()));
+        theParams.put("fxsuggest.inorder", Boolean.toString(configuration.isSuggestionInOrder()));
+        theParams.put("fxsuggest.numbersuggest", Integer.toString(configuration.getNumberOfSuggestions()));
 
         try {
-            SearchPhraseSuggester theSuggester = new SearchPhraseSuggester(theSearcher, analyzer, configuration);
-            List<Suggestion> theResult = theSuggester.suggestSearchPhrase(IndexFields.CONTENT_NOT_STEMMED, aTerm);
+            QueryResponse theQueryResponse = solrClient.query(new SearchMapParams(theParams));
+
+            NamedList theSuggestions = (NamedList) theQueryResponse.getResponse().get("fxsuggest");
+            List<Suggestion> theResult = new ArrayList<>();
+            for (int i=0;i<theSuggestions.size();i++) {
+                Map theEntry = (Map) theSuggestions.get(Integer.toString(i));
+                String theLabel = (String) theEntry.get("label");
+                String theValue = (String) theEntry.get("value");
+                theResult.add(new Suggestion(theLabel, theValue));
+            }
 
             return theResult.toArray(new Suggestion[theResult.size()]);
 
-        } finally {
-            searcherManager.release(theSearcher);
-        }*/
-        return new Suggestion[0];
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public File getFileOnDiskForDocument(String aUniqueID) throws IOException {

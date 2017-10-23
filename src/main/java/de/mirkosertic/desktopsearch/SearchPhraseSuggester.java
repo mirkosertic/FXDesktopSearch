@@ -44,13 +44,22 @@ import java.util.stream.Collectors;
 
 class SearchPhraseSuggester {
 
+    public static interface SearchPhraseSuggesterConfiguration {
+
+        int getSuggestionSlop();
+
+        boolean isSuggestionInOrder();
+
+        int getNumberOfSuggestions();
+    }
+
     private static final Logger LOGGER = Logger.getLogger(SearchPhraseSuggester.class);
 
     private final IndexSearcher indexSearcher;
     private final Analyzer analyzer;
-    private final Configuration configuration;
+    private final SearchPhraseSuggesterConfiguration configuration;
 
-    public SearchPhraseSuggester(IndexSearcher aIndexSearcher, Analyzer aAnalyzer, Configuration aConfiguration) {
+    public SearchPhraseSuggester(IndexSearcher aIndexSearcher, Analyzer aAnalyzer, SearchPhraseSuggesterConfiguration aConfiguration) {
         indexSearcher = aIndexSearcher;
         analyzer = aAnalyzer;
         configuration = aConfiguration;
