@@ -31,14 +31,7 @@ import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 class LuceneIndexHandler {
@@ -159,7 +152,7 @@ class LuceneIndexHandler {
 
         try {
             QueryResponse theQueryResponse = solrClient.query(new SearchMapParams(theParams));
-            if (theQueryResponse.getResults().isEmpty()) {
+            if (theQueryResponse.getResults() == null || theQueryResponse.getResults().isEmpty()) {
                 // Nothing in Index, hence mark it as updated
                 return UpdateCheckResult.UPDATED;
             }
