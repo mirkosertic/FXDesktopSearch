@@ -31,14 +31,7 @@ import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 class LuceneIndexHandler {
@@ -204,6 +197,7 @@ class LuceneIndexHandler {
         theParams.put("facet", "true");
         theParams.put("facet.field", new String[] {IndexFields.LANGUAGE, "attr_author", "attr_last-modified-year", "attr_" + IndexFields.EXTENSION});
         theParams.put("hl", "true");
+        theParams.put("hl.method", "unified");
         theParams.put("hl.fl", IndexFields.CONTENT);
         theParams.put("hl.snippets", "" + NUMBER_OF_FRAGMENTS);
         theParams.put("hl.fragsize", "100");
