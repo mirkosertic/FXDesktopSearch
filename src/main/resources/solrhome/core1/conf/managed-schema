@@ -24,7 +24,7 @@
 
   <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
   <field name="language" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-  <field name="content" type="text_general" termVectors="true"/>
+  <field name="content" type="text_general" termVectors="true" termPositions="true" termOffsets="true"/>
   <field name="contentmd5" type="string" multiValued="false" indexed="false" required="true" stored="true"/>
   <field name="filesize" type="string" multiValued="false" indexed="false" required="true" stored="true"/>
   <field name="lastmodified" type="string" multiValued="false" indexed="false" required="true" stored="true"/>
