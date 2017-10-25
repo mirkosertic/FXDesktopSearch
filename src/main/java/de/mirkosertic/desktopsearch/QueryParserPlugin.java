@@ -1,4 +1,4 @@
-/**
+/*
  * FreeDesktopSearch - A Search Engine for your Desktop
  * Copyright (C) 2017 Mirko Sertic
  *
@@ -14,6 +14,7 @@ package de.mirkosertic.desktopsearch;
 
 import org.apache.lucene.search.Query;
 import org.apache.solr.common.params.SolrParams;
+import org.apache.solr.common.util.NamedList;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.search.QParser;
@@ -21,6 +22,11 @@ import org.apache.solr.search.QParserPlugin;
 import org.apache.solr.search.SyntaxError;
 
 public class QueryParserPlugin extends QParserPlugin {
+
+    @Override
+    public void init(NamedList args) {
+        super.init(args);
+    }
 
     @Override
     public QParser createParser(String aQueryString, SolrParams aLocalParams, SolrParams aParams, SolrQueryRequest aRequest) {

@@ -31,63 +31,59 @@
 
             <#if queryResult?has_content>
 
-                The search was processed in ${queryResult.elapsedTime}ms., searched in ${queryResult.totalDocuments} documents.<br/><br/>
+                <div style="padding: 0; padding-top: 1em; padding-bottom: 1em;">The search was processed in ${queryResult.elapsedTime}ms., searched in ${queryResult.totalDocuments} documents.</div>
 
-                <div class="afterSearchNavigationArea">
-                    <#if queryResult.backLink?has_content>
-                        <a class="dimensionGoBackLink" href="${queryResult.backLink}" onclick="return prepareSubmit()">&lt;&lt; Go back</a>
-                    </#if>
-                    <#list queryResult.facetDimensions as dimension>
-                    <div class="dimension">
-                        <div class="dimensionTitle">${dimension.name}</div>
-                        <div class="dimensionValues">
-                            <#list dimension.facets as facet>
-                            <div class="dimensionValue"><a href="${facet.link}" class="dimensionValueLink" onclick="return prepareSubmit()">${facet.name}</a> (${facet.number})</div>
-                            </#list>
+                <table><tr>
+                    <td class="afterSearchNavigationArea">
+                        <#if queryResult.backLink?has_content>
+                            <a class="dimensionGoBackLink" href="${queryResult.backLink}" onclick="return prepareSubmit()">&lt;&lt; Go back</a>
+                        </#if>
+                        <#list queryResult.facetDimensions as dimension>
+                        <div class="dimension">
+                            <div class="dimensionTitle">${dimension.name}</div>
+                            <div class="dimensionValues">
+                                <#list dimension.facets as facet>
+                                <div class="dimensionValue"><a href="${facet.link}" class="dimensionValueLink" onclick="return prepareSubmit()">${facet.name}</a> (${facet.number})</div>
+                                </#list>
+                            </div>
                         </div>
-                    </div>
-                    </#list>
-                </div>
-                <div class="searchResultArea">
+                        </#list>
+                    </td>
 
-                <#list queryResult.documents as document>
-
-                    <table>
-                        <tr>
-                            <#if document.previewAvailable>
-                                <td rowspan="2"><img src="loading.gif" data-src="/thumbnail/preview/${document.uniqueID}.png"/></td>
-                            </#if>
-                            <td valign="top">
-                                <#list document.fileNames as filename>
-                                    <#if filename_index == 0>
-                                        <b><span>
-                                        <#list 1..5 as index>
-                                            <#if document.normalizedScore &gt;= index>
-                                                <img class="ratingStar" src="star.svg"/>
-                                            <#else>
-                                                <img class="ratingStar" src="star-o.svg"/>
-                                            </#if>
-                                        </#list>
-                                        <img src="ui-anim_basic_16x16.gif" data-src="/thumbnail/icon/${document.uniqueID}.png"/>
-                                        </span><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${queryResult.getSimpleFileName(filename)}</a></b><br/>
-                                        <a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
-                                    <#else>
-                                        <br/><a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
-                                    </#if>
-                                </#list>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td valign="top"><div class="searchResultAreaContentHighlighted">${document.highlightedSearchResult}</div>
-                                <#list document.similarFiles as similarFile>
-                                    <div><a onclick="desktop.openFile('${queryResult.getEscapedFileName(similarFile)}')" class="searchResultAreaResultSimilar">${queryResult.getSimpleFileName(similarFile)}</a></div>
-                                </#list>
-                            </td>
-                        </tr>
-                    </table>
-                    <br>
-                </#list>
-                </div>
+                    <td class="searchResultArea">
+                        <#list queryResult.documents as document>
+                            <div style="display: flex; flex-direction: row; padding-bottom: 1em;">
+                                <#if document.previewAvailable>
+                                    <div><img src="loading.gif" data-src="/thumbnail/preview/${document.uniqueID}.png"/></div>
+                                </#if>
+                                <div style="margin: 0.4em;">
+                                    <#list document.fileNames as filename>
+                                        <#if filename_index == 0>
+                                            <b><span>
+                                                    <#list 1..5 as index>
+                                                        <#if document.normalizedScore &gt;= index>
+                                                            <img class="ratingStar" src="star.svg"/>
+                                                        <#else>
+                                                            <img class="ratingStar" src="star-o.svg"/>
+                                                        </#if>
+                                                    </#list>
+                                                <img src="ui-anim_basic_16x16.gif" data-src="/thumbnail/icon/${document.uniqueID}.png"/>
+                                                    </span><a class="searchResultAreaFileName" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${queryResult.getSimpleFileName(filename)}</a></b><br/>
+                                            <a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
+                                        <#else>
+                                            <br/><a class="searchResultAreaFileNameComplete" onclick="desktop.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
+                                        </#if>
+                                    </#list>
+                                    <div class="searchResultAreaContentHighlighted" style="margin: 0; padding: 0; padding-top: 0.2em;">${document.highlightedSearchResult}</div>
+                                    <#list document.similarFiles as similarFile>
+                                        <div><a onclick="desktop.openFile('${queryResult.getEscapedFileName(similarFile)}')" class="searchResultAreaResultSimilar">${queryResult.getSimpleFileName(similarFile)}</a></div>
+                                    </#list>
+                                </div>
+                            </div>
+                        </div>
+                        </#list>
+                    </td>
+                </tr></table>
             <#else>
                 <div class="logoDiv"><img src="logo.png" class="logo"/>
                 <div class="introduction">

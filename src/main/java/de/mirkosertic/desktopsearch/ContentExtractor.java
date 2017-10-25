@@ -1,4 +1,4 @@
-/**
+/*
  * FreeDesktopSearch - A Search Engine for your Desktop
  * Copyright (C) 2013 Mirko Sertic
  *
@@ -88,7 +88,10 @@ class ContentExtractor {
                 theStringData = tika.parseToString(new ByteArrayInputStream(theData), theMetaData);
             } else {
                 try (InputStream theStream = Files.newInputStream(aFile, StandardOpenOption.READ)) {
-                    theStringData = tika.parseToString(new BufferedInputStream(theStream), theMetaData);
+                    theStringData = tika.parseToString(new BufferedInputStream(theStream), theMetaData)
+                            .replace('\n', ' ')
+                            .replace('\r', ' ')
+                            .replace('\t',' ');
                 }
             }
 

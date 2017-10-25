@@ -1,4 +1,4 @@
-/**
+/*
  * FreeDesktopSearch - A Search Engine for your Desktop
  * Copyright (C) 2013 Mirko Sertic
  *
@@ -48,6 +48,7 @@ public class ConfigurationController {
 
     private ConfigurationManager configurationManager;
     private Stage stage;
+    private Configuration currentConfiguration;
 
     public void initialize(ConfigurationManager aConfigurationManager, Stage aStage) {
         Objects.requireNonNull(propertySheet);
@@ -59,91 +60,92 @@ public class ConfigurationController {
 
         stage = aStage;
         configurationManager = aConfigurationManager;
+        currentConfiguration = configurationManager.getConfiguration();
 
-        indexedDirectories.getItems().addAll(configurationManager.getConfiguration().getCrawlLocations());
+        indexedDirectories.getItems().addAll(currentConfiguration.getCrawlLocations());
 
         propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_COMMON, "Max number of documents in search result", SpinnerPropertyEditor.class) {
 
             @Override
             public Object getValue() {
-                return configurationManager.getConfiguration().getNumberOfSearchResults();
+                return currentConfiguration.getNumberOfSearchResults();
             }
 
             @Override
             public void setValue(Object o) {
-                configurationManager.updateConfiguration(configurationManager.getConfiguration().updateNumberOfSearchResults((Integer) o));
+                currentConfiguration = currentConfiguration.updateNumberOfSearchResults((Integer) o);
             }
         });
         propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Show similar documents", BooleanPropertyEditor.class) {
 
             @Override
             public Object getValue() {
-                return configurationManager.getConfiguration().isShowSimilarDocuments();
+                return currentConfiguration.isShowSimilarDocuments();
             }
 
             @Override
             public void setValue(Object o) {
-                configurationManager.updateConfiguration(configurationManager.getConfiguration().updateIncludeSimilarDocuments((Boolean) o));
+                currentConfiguration = currentConfiguration.updateIncludeSimilarDocuments((Boolean) o);
             }
         });
         propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_SUGGEST, "Max number of suggestions", SpinnerPropertyEditor.class) {
 
             @Override
             public Object getValue() {
-                return configurationManager.getConfiguration().getNumberOfSuggestions();
+                return currentConfiguration.getNumberOfSuggestions();
             }
 
             @Override
             public void setValue(Object o) {
-                configurationManager.updateConfiguration(configurationManager.getConfiguration().updateNumberOfSuggestions((Integer) o));
+                currentConfiguration = currentConfiguration.updateNumberOfSuggestions((Integer) o);
             }
         });
         propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_SUGGEST, "Number of words before suggestion window", SpinnerPropertyEditor.class) {
 
             @Override
             public Object getValue() {
-                return configurationManager.getConfiguration().getSuggestionWindowBefore();
+                return currentConfiguration.getSuggestionWindowBefore();
             }
 
             @Override
             public void setValue(Object o) {
-                configurationManager.updateConfiguration(configurationManager.getConfiguration().updateSuggestionWindowBefore((Integer) o));
+                currentConfiguration = currentConfiguration.updateSuggestionWindowBefore((Integer) o);
             }
         });
         propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_SUGGEST, "Number of words after suggestion window", SpinnerPropertyEditor.class) {
 
             @Override
             public Object getValue() {
-                return configurationManager.getConfiguration().getSuggestionWindowAfter();
+                return currentConfiguration.getSuggestionWindowAfter();
             }
 
             @Override
             public void setValue(Object o) {
-                configurationManager.updateConfiguration(configurationManager.getConfiguration().updateSuggestionWindowAfter((Integer) o));
+                currentConfiguration = currentConfiguration.updateSuggestionWindowAfter((Integer) o);
             }
         });
         propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_SUGGEST, "Suggestion slop", SpinnerPropertyEditor.class) {
 
             @Override
             public Object getValue() {
-                return configurationManager.getConfiguration().getSuggestionSlop();
+                return currentConfiguration.getSuggestionSlop();
             }
 
             @Override
             public void setValue(Object o) {
-                configurationManager.updateConfiguration(configurationManager.getConfiguration().updateSuggestionSlop((Integer) o));
+                currentConfiguration = currentConfiguration.updateSuggestionSlop((Integer) o);
             }
         });
         propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_SUGGEST, "Show suggestions in order", BooleanPropertyEditor.class) {
 
             @Override
             public Object getValue() {
-                return configurationManager.getConfiguration().isSuggestionInOrder();
+                return currentConfiguration.isSuggestionInOrder();
             }
 
             @Override
             public void setValue(Object o) {
-                configurationManager.updateConfiguration(configurationManager.getConfiguration().updateSuggestionsInOrder((Boolean) o));
+                currentConfiguration = currentConfiguration.updateSuggestionsInOrder((Boolean) o);
             }
         });
 
@@ -153,12 +155,12 @@ public class ConfigurationController {
 
                 @Override
                 public Object getValue() {
-                    return configurationManager.getConfiguration().getEnabledLanguages().contains(theLanguage);
+                    return currentConfiguration.getEnabledLanguages().contains(theLanguage);
                 }
 
                 @Override
                 public void setValue(Object o) {
-                    configurationManager.updateConfiguration(configurationManager.getConfiguration().enableLanguage(theLanguage));
+                    currentConfiguration = currentConfiguration.enableLanguage(theLanguage);
                 }
             });
         }
@@ -169,12 +171,12 @@ public class ConfigurationController {
 
                 @Override
                 public Object getValue() {
-                    return configurationManager.getConfiguration().getEnabledDocumentTypes().contains(theDocumentType);
+                    return currentConfiguration.getEnabledDocumentTypes().contains(theDocumentType);
                 }
 
                 @Override
                 public void setValue(Object o) {
-                    configurationManager.updateConfiguration(configurationManager.getConfiguration().enableDocumentType(theDocumentType));
+                    currentConfiguration = currentConfiguration.enableDocumentType(theDocumentType);
                 }
             });
         }
@@ -186,7 +188,7 @@ public class ConfigurationController {
         Configuration.CrawlLocation theLocation = (Configuration.CrawlLocation) indexedDirectories.getSelectionModel().getSelectedItem();
         indexedDirectories.getItems().remove(theLocation);
 
-        configurationManager.updateConfiguration(configurationManager.getConfiguration().removeLocation(theLocation));
+        currentConfiguration = currentConfiguration.removeLocation(theLocation);
     }
 
     private void addNewLocation() {
@@ -197,11 +199,12 @@ public class ConfigurationController {
             Configuration.CrawlLocation theNewLocation = new Configuration.CrawlLocation(UUID.randomUUID().toString(), theFile);
             indexedDirectories.getItems().add(theNewLocation);
 
-            configurationManager.updateConfiguration(configurationManager.getConfiguration().addLocation(theNewLocation));
+            currentConfiguration = currentConfiguration.addLocation(theNewLocation);
         }
     }
 
     private void ok() {
+        configurationManager.updateConfiguration(currentConfiguration);
         stage.hide();
     }
 }
