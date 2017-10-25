@@ -199,10 +199,9 @@
              but does not ensure that data is synced to disk.  This is
              faster and more near-realtime friendly than a hard commit.
           -->
-        <!--
-          <autoSoftCommit>
+        <autoSoftCommit>
             <maxTime>1000</maxTime>
-          </autoSoftCommit>
+        </autoSoftCommit>
          -->
 
         <!-- Update Related Event Listeners
@@ -551,7 +550,7 @@
              <str>nameOfCustomComponent2</str>
            </arr>
           -->
-        <arr name="components">
+        <arr name="last-components">
             <str>fxsuggest</str>
         </arr>
     </requestHandler>

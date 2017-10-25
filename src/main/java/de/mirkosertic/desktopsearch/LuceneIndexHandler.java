@@ -1,4 +1,4 @@
-/**
+/*
  * FreeDesktopSearch - A Search Engine for your Desktop
  * Copyright (C) 2013 Mirko Sertic
  *
@@ -31,7 +31,14 @@ import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 
 class LuceneIndexHandler {
@@ -180,7 +187,11 @@ class LuceneIndexHandler {
     private long indexSize() throws IOException, SolrServerException {
         SolrQuery q = new SolrQuery("*:*");
         q.setRows(0);  // don't actually request any data
-        return solrClient.query(q).getResults().getNumFound();
+        QueryResponse theResponse = solrClient.query(q);
+        if (theResponse.getResults() != null) {
+            return theResponse.getResults().getNumFound();
+        }
+        return 0;
     }
 
     public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Configuration aConfiguration, Map<String, String> aDrilldownFields) throws IOException {
@@ -190,8 +201,6 @@ class LuceneIndexHandler {
         theParams.put("q", aQueryString);
         theParams.put("fl", "*,score");
         theParams.put("rows", "" + configuration.getNumberOfSearchResults());
-        theParams.put("stats", "true");
-        theParams.put("stats.field", IndexFields.UNIQUEID);
         theParams.put("facet", "true");
         theParams.put("facet.field", new String[] {IndexFields.LANGUAGE, "attr_author", "attr_last-modified-year", "attr_" + IndexFields.EXTENSION});
         theParams.put("hl", "true");
@@ -220,54 +229,57 @@ class LuceneIndexHandler {
             QueryResponse theQueryResponse = solrClient.query(new SearchMapParams(theParams));
 
             List<QueryResultDocument> theDocuments = new ArrayList<>();
-            for (int i=0;i<theQueryResponse.getResults().size();i++) {
-                SolrDocument theSolrDocument = theQueryResponse.getResults().get(i);
+            if (theQueryResponse.getResults() != null) {
+                for (int i = 0; i < theQueryResponse.getResults().size(); i++) {
+                    SolrDocument theSolrDocument = theQueryResponse.getResults().get(i);
 
-                String theFileName  = (String) theSolrDocument.getFieldValue(IndexFields.UNIQUEID);
-                long theStoredLastModified = Long.valueOf((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
+                    String theFileName = (String) theSolrDocument.getFieldValue(IndexFields.UNIQUEID);
+                    long theStoredLastModified = Long.valueOf((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
 
-                int theNormalizedScore = (int)(((float) theSolrDocument.getFieldValue("score")) / theQueryResponse.getResults().getMaxScore() * 5);
+                    int theNormalizedScore = (int) (
+                            ((float) theSolrDocument.getFieldValue("score")) / theQueryResponse.getResults().getMaxScore() * 5);
 
-                StringBuffer theHighlight = new StringBuffer();
-                Map<String, List<String>> theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
-                if (theHighlightPhrases != null) {
-                    List<String> theContentSpans = theHighlightPhrases.get(IndexFields.CONTENT);
-                    if (theContentSpans != null) {
-                        for (String thePhrase : theContentSpans) {
-                            if (theHighlight.length() > 0) {
-                                theHighlight.append(" ... ");
+                    StringBuffer theHighlight = new StringBuffer();
+                    Map<String, List<String>> theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
+                    if (theHighlightPhrases != null) {
+                        List<String> theContentSpans = theHighlightPhrases.get(IndexFields.CONTENT);
+                        if (theContentSpans != null) {
+                            for (String thePhrase : theContentSpans) {
+                                if (theHighlight.length() > 0) {
+                                    theHighlight.append(" ... ");
+                                }
+                                theHighlight.append(thePhrase.trim());
                             }
-                            theHighlight.append(thePhrase);
+                        } else {
+                            LOGGER.warn("No highligting for " + theFileName);
                         }
+                    }
+
+                    File theFileOnDisk = new File(theFileName);
+                    if (theFileOnDisk.exists()) {
+
+                        boolean thePreviewAvailable = previewProcessor.previewAvailableFor(theFileOnDisk);
+
+                        QueryResultDocument theDocument = new QueryResultDocument(i, theFileName, theHighlight.toString().trim(),
+                                theStoredLastModified, theNormalizedScore, theFileName, thePreviewAvailable);
+
+                        if (configuration.isShowSimilarDocuments()) {
+                            SolrDocumentList theMoreLikeThisDocuments = theQueryResponse.getMoreLikeThis().get(theFileName);
+                            if (theMoreLikeThisDocuments != null) {
+                                for (int j = 0; j < theMoreLikeThisDocuments.size(); j++) {
+                                    SolrDocument theMLt = theMoreLikeThisDocuments.get(j);
+                                    theDocument.addSimilarFile(((String) theMLt.getFieldValue(IndexFields.UNIQUEID)));
+                                }
+                            }
+                        }
+
+                        theDocuments.add(theDocument);
+
                     } else {
-                        LOGGER.warn("No highligting for " + theFileName);
+
+                        // Document can be deleted, as it is no longer on the hard drive
+                        solrClient.deleteById(theFileName);
                     }
-                }
-
-                File theFileOnDisk = new File(theFileName);
-                if (theFileOnDisk.exists()) {
-
-                    boolean thePreviewAvailable = previewProcessor.previewAvailableFor(theFileOnDisk);
-
-                    QueryResultDocument theDocument = new QueryResultDocument(i, theFileName, theHighlight.toString(),
-                            theStoredLastModified, theNormalizedScore, theFileName, thePreviewAvailable);
-
-                    if (configuration.isShowSimilarDocuments()) {
-                        SolrDocumentList theMoreLikeThisDocuments = theQueryResponse.getMoreLikeThis().get(theFileName);
-                        if (theMoreLikeThisDocuments != null) {
-                            for (int j = 0; j < theMoreLikeThisDocuments.size(); j++) {
-                                SolrDocument theMLt = theMoreLikeThisDocuments.get(j);
-                                theDocument.addSimilarFile(((String) theMLt.getFieldValue(IndexFields.UNIQUEID)));
-                            }
-                        }
-                    }
-
-                    theDocuments.add(theDocument);
-
-                } else {
-
-                    // Document can be deleted, as it is no longer on the hard drive
-                    solrClient.deleteById(theFileName);
                 }
             }
 

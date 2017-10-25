@@ -1,4 +1,4 @@
-/**
+/*
  * FreeDesktopSearch - A Search Engine for your Desktop
  * Copyright (C) 2013 Mirko Sertic
  *
@@ -86,8 +86,10 @@ class Backend implements ConfigurationChangeListener {
                 public void fileDeleted(Configuration.CrawlLocation aLocation, Path aFile) {
                     synchronized (this) {
                         try {
-                            BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.DELETED));
+                            if (contentExtractor.supportsFile(aFile.toString())) {
+                                BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                                sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.DELETED));
+                            }
                         } catch (Exception e) {
                             LOGGER.error("Error processing file " + aFile, e);
                         }
@@ -98,8 +100,10 @@ class Backend implements ConfigurationChangeListener {
                 public void fileCreatedOrModified(Configuration.CrawlLocation aLocation, Path aFile) {
                     synchronized (this) {
                         try {
-                            BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
+                            if (contentExtractor.supportsFile(aFile.toString())) {
+                                BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                                sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
+                            }
                         } catch (Exception e) {
                             LOGGER.error("Error processing file " + aFile, e);
                         }
@@ -110,8 +114,10 @@ class Backend implements ConfigurationChangeListener {
                 public void fileFoundByCrawler(Configuration.CrawlLocation aLocation, Path aFile) {
                     synchronized (this) {
                         try {
-                            BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
+                            if (contentExtractor.supportsFile(aFile.toString())) {
+                                BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                                sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
+                            }
                         } catch (Exception e) {
                             LOGGER.error("Error processing file " + aFile, e);
                         }
