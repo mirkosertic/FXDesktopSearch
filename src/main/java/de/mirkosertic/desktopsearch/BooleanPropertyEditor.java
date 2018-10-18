@@ -19,7 +19,7 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 public class BooleanPropertyEditor extends AbstractPropertyEditor<Boolean, CheckBox> {
 
-    public BooleanPropertyEditor(PropertySheet.Item property) {
+    public BooleanPropertyEditor(final PropertySheet.Item property) {
         super(property, new CheckBox());
     }
 
@@ -29,7 +29,7 @@ public class BooleanPropertyEditor extends AbstractPropertyEditor<Boolean, Check
     }
 
     @Override
-    public void setValue(Boolean aBoolean) {
+    public void setValue(final Boolean aBoolean) {
         getEditor().selectedProperty().setValue(aBoolean);
     }
 }

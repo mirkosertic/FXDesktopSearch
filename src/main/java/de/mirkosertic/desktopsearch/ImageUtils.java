@@ -44,10 +44,10 @@ public class ImageUtils {
         ALLOW_SMALLER,
     }
 
-    public static BufferedImage rescale(BufferedImage aImage, int aWidth, int aHeight, RescaleMethod aRescaleMethod) {
+    public static BufferedImage rescale(final BufferedImage aImage, final int aWidth, final int aHeight, final RescaleMethod aRescaleMethod) {
         double theResizeRatio = 1;
-        int theOriginalWidth = aImage.getWidth();
-        int theOriginalHeight = aImage.getHeight();
+        final int theOriginalWidth = aImage.getWidth();
+        final int theOriginalHeight = aImage.getHeight();
         switch (aRescaleMethod)
         {
             case RESIZE_FIT_BOTH_DIMENSIONS:
@@ -61,10 +61,10 @@ public class ImageUtils {
                 break;
         }
 
-        int theScaledWidth = (int) Math.round(theOriginalWidth * theResizeRatio);
-        int theScaledHeight = (int) Math.round(theOriginalHeight * theResizeRatio);
-        int theOffsetX;
-        int theOffsetY;
+        final int theScaledWidth = (int) Math.round(theOriginalWidth * theResizeRatio);
+        final int theScaledHeight = (int) Math.round(theOriginalHeight * theResizeRatio);
+        final int theOffsetX;
+        final int theOffsetY;
 
         // Center if smaller.
         if (theScaledWidth < aWidth) {
@@ -78,8 +78,8 @@ public class ImageUtils {
             theOffsetY = 0;
         }
 
-        BufferedImage outputImage = new BufferedImage(aWidth, aHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics2D = outputImage.createGraphics();
+        final BufferedImage outputImage = new BufferedImage(aWidth, aHeight, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D graphics2D = outputImage.createGraphics();
 
         // Fill background with white color
         graphics2D.setBackground(Color.WHITE);

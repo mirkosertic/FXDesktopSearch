@@ -22,11 +22,11 @@ public class DesktopGateway {
 
     private final Application application;
 
-    DesktopGateway(Application aApplication) {
+    DesktopGateway(final Application aApplication) {
         application = aApplication;
     }
 
-    public void openFile(String aFile) {
+    public void openFile(final String aFile) {
         application.getHostServices().showDocument(aFile);
     }
 }

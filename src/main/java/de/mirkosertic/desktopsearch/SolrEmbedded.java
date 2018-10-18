@@ -27,7 +27,7 @@ public class SolrEmbedded {
 
         private final File solrHome;
 
-        public Config(File solrHome) {
+        public Config(final File solrHome) {
             this.solrHome = solrHome;
         }
     }
@@ -35,17 +35,17 @@ public class SolrEmbedded {
     private final CoreContainer coreContainer;
     private final EmbeddedSolrServer embeddedSolrServer;
 
-    public SolrEmbedded(Config config) throws IOException {
+    public SolrEmbedded(final Config config) throws IOException {
         // Copy all required files
-        File solrHome = config.solrHome;
+        final File solrHome = config.solrHome;
         solrHome.mkdirs();
 
         copyResourceToFile("/solrhome/solr.xml", new File(solrHome, "solr.xml"));
 
-        File core1 = new File(solrHome, "core1");
-        File core1conf = new File(core1, "conf");
-        File core1data = new File(core1, "data");
-        File core1lang = new File(core1, "lang");
+        final File core1 = new File(solrHome, "core1");
+        final File core1conf = new File(core1, "conf");
+        final File core1data = new File(core1, "data");
+        final File core1lang = new File(core1, "lang");
 
         core1conf.mkdirs();
         core1data.mkdirs();
@@ -83,8 +83,8 @@ public class SolrEmbedded {
         embeddedSolrServer.close();
     }
 
-    private static void copyResourceToFile(String aResource, File aTargetFile) throws IOException {
-        try (FileOutputStream theFos = new FileOutputStream(aTargetFile)) {
+    private static void copyResourceToFile(final String aResource, final File aTargetFile) throws IOException {
+        try (final FileOutputStream theFos = new FileOutputStream(aTargetFile)) {
             IOUtils.copy(SolrEmbedded.class.getResourceAsStream(aResource), theFos);
         }
     }

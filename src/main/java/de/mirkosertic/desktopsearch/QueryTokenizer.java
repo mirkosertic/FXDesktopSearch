@@ -26,7 +26,7 @@ public class QueryTokenizer {
     private final List<String> requiredTerms;
     private final List<String> notRequiredTerms;
 
-    QueryTokenizer(String aQuery) {
+    QueryTokenizer(final String aQuery) {
 
         requiredTerms = new ArrayList<>();
         notRequiredTerms = new ArrayList<>();
@@ -36,7 +36,7 @@ public class QueryTokenizer {
         StringBuilder theCurrentTerm = new StringBuilder();
 
         for (int i = 0; i < aQuery.length(); i++) {
-            char theCurrentChar = Character.toLowerCase(aQuery.charAt(i));
+            final char theCurrentChar = Character.toLowerCase(aQuery.charAt(i));
             switch (theCurrentChar) {
                 case '-': {
                     if (isFirstChar) {
@@ -85,7 +85,7 @@ public class QueryTokenizer {
         }
     }
 
-    static boolean isValid(String aTerm) {
+    static boolean isValid(final String aTerm) {
         return !StringUtils.isEmpty(aTerm) && !"*".equals(aTerm) && !"?".equals(aTerm);
     }
 

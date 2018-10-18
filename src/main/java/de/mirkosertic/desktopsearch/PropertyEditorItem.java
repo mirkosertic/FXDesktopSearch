@@ -25,7 +25,7 @@ public abstract class PropertyEditorItem implements PropertySheet.Item {
     private final String name;
     private final Class propertyEditor;
 
-    public PropertyEditorItem(Class aType, String aCategory, String aName, Class aPropertyEditor) {
+    public PropertyEditorItem(final Class aType, final String aCategory, final String aName, final Class aPropertyEditor) {
         type = aType;
         category = aCategory;
         name = aName;

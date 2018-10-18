@@ -25,13 +25,13 @@ import java.util.Map;
 
 public class SolrServerTest {
 
-    public static void main(String[] args) throws IOException, SolrServerException {
+    public static void main(final String[] args) throws IOException, SolrServerException {
 
-        File theTempFile = new File("/tmp" , "test");
+        final File theTempFile = new File("/tmp" , "test");
 
-        SolrEmbedded theEmbedded = new SolrEmbedded(new SolrEmbedded.Config(theTempFile));
+        final SolrEmbedded theEmbedded = new SolrEmbedded(new SolrEmbedded.Config(theTempFile));
 
-        SolrClient server = theEmbedded.solrClient();
+        final SolrClient server = theEmbedded.solrClient();
 
         SolrInputDocument theDoc = new SolrInputDocument("id","42L", "content", "this is a test", "language", "en");
         UpdateResponse theResponse = server.add(theDoc);
@@ -42,7 +42,7 @@ public class SolrServerTest {
         System.out.println(theResponse);
 
 
-        Map<String, Object> theParams = new HashMap<>();
+        final Map<String, Object> theParams = new HashMap<>();
         theParams.put("q", "content:test");
         theParams.put("facet", "true");
         theParams.put("facet.field", new String[] {"language"});
@@ -54,7 +54,7 @@ public class SolrServerTest {
         theParams.put("mlt", "true");
         theParams.put("mlt.count", "5");
         theParams.put("mlt.fl", "content");
-        QueryResponse theQueryResponse = server.query(new SearchMapParams(theParams));
+        final QueryResponse theQueryResponse = server.query(new SearchMapParams(theParams));
         System.out.println(theQueryResponse);
     }
 }

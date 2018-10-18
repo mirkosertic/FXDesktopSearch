@@ -40,13 +40,13 @@ class QueryParser {
 
     private final Analyzer analyzer;
 
-    public QueryParser(Analyzer aAnalyzer) {
+    public QueryParser(final Analyzer aAnalyzer) {
         analyzer = aAnalyzer;
     }
 
-    private String toToken(String aToken, String aSearchField) throws IOException {
-        try (TokenStream theStream = analyzer.tokenStream(aSearchField, aToken)) {
-            CharTermAttribute theAttribute = theStream.getAttribute(CharTermAttribute.class);
+    private String toToken(final String aToken, final String aSearchField) throws IOException {
+        try (final TokenStream theStream = analyzer.tokenStream(aSearchField, aToken)) {
+            final CharTermAttribute theAttribute = theStream.getAttribute(CharTermAttribute.class);
             theStream.reset();
             if (theStream.incrementToken()) {
                 return theAttribute.toString();
@@ -55,15 +55,16 @@ class QueryParser {
         return "";
     }
 
-    private void addToBooleanQuery(List<String> aTermList, String aFieldName, BooleanQuery.Builder aQuery, BooleanClause.Occur aOccour)
+    private void addToBooleanQuery(
+            final List<String> aTermList, final String aFieldName, final BooleanQuery.Builder aQuery, final BooleanClause.Occur aOccour)
             throws IOException {
-        for (String theTerm : aTermList) {
+        for (final String theTerm : aTermList) {
             if (QueryUtils.isWildCard(theTerm)) {
                 aQuery.add(new WildcardQuery(new Term(aFieldName, theTerm)), aOccour);
             } else if (QueryUtils.isFuzzy(theTerm)) {
                 aQuery.add(new FuzzyQuery(new Term(aFieldName, theTerm)), aOccour);
             } else {
-                String theTokenizedTerm = toToken(theTerm, aFieldName);
+                final String theTokenizedTerm = toToken(theTerm, aFieldName);
                 if (!StringUtils.isEmpty(theTokenizedTerm)) {
                     aQuery.add(new TermQuery(new Term(aFieldName, theTokenizedTerm)), aOccour);
                 }
@@ -72,25 +73,25 @@ class QueryParser {
 
     }
 
-    public Query parse(String aQuery, String aSearchField) throws IOException {
+    public Query parse(final String aQuery, final String aSearchField) throws IOException {
 
-        QueryTokenizer theTokenizer = new QueryTokenizer(aQuery);
+        final QueryTokenizer theTokenizer = new QueryTokenizer(aQuery);
 
         // Now we have the terms, lets construct the query
 
-        BooleanQuery.Builder theResult = new BooleanQuery.Builder();
+        final BooleanQuery.Builder theResult = new BooleanQuery.Builder();
 
         if (!theTokenizer.getRequiredTerms().isEmpty()) {
 
-            List<SpanQuery> theSpans = new ArrayList<>();
-            for (String theTerm : theTokenizer.getRequiredTerms()) {
+            final List<SpanQuery> theSpans = new ArrayList<>();
+            for (final String theTerm : theTokenizer.getRequiredTerms()) {
                 if (QueryUtils.isWildCard(theTerm)) {
                     theSpans.add(new SpanMultiTermQueryWrapper<>(new WildcardQuery(new Term(aSearchField, theTerm))));
                 } else if (QueryUtils.isFuzzy(theTerm)) {
                     theSpans.add(new SpanMultiTermQueryWrapper<>(new FuzzyQuery(new Term(aSearchField, theTerm))));
                 } else {
                     // Ok, we need to check of the token would be removed due to stopwords and so on
-                    String theTokenizedTerm = toToken(theTerm, aSearchField);
+                    final String theTokenizedTerm = toToken(theTerm, aSearchField);
                     if (!StringUtils.isEmpty(theTokenizedTerm)) {
                         theSpans.add(new SpanTermQuery(new Term(aSearchField, theTokenizedTerm)));
                     }
@@ -99,14 +100,14 @@ class QueryParser {
 
             if (theSpans.size() > 1) {
                 // This is the original span, so we boost it a lot
-                SpanQuery theExactMatchQuery = new SpanNearQuery(theSpans.toArray(new SpanQuery[theSpans.size()]), 0, true);
+                final SpanQuery theExactMatchQuery = new SpanNearQuery(theSpans.toArray(new SpanQuery[theSpans.size()]), 0, true);
                 theResult.add(new BoostQuery(theExactMatchQuery, 61), BooleanClause.Occur.SHOULD);
 
                 // We expect a maximum edit distance of 10 between the searched terms in any order
                 // This seems to be the most useful value
-                int theMaxEditDistance = 10;
+                final int theMaxEditDistance = 10;
                 for (int theSlop = 0; theSlop < theMaxEditDistance; theSlop++) {
-                    SpanQuery theNearQuery = new SpanNearQuery(theSpans.toArray(new SpanQuery[theSpans.size()]), theSlop, false);
+                    final SpanQuery theNearQuery = new SpanNearQuery(theSpans.toArray(new SpanQuery[theSpans.size()]), theSlop, false);
                     theResult.add(new BoostQuery(theNearQuery, 50 + theMaxEditDistance - theSlop), BooleanClause.Occur.SHOULD);
                 }
             }

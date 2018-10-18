@@ -26,10 +26,11 @@ class FrontendEmbeddedWebServer {
 
     private final Server jetty;
 
-    public FrontendEmbeddedWebServer(Stage aStage, Backend aBackend, PreviewProcessor aPreviewProcessor, ConfigurationManager aConfigurationManager) {
+    public FrontendEmbeddedWebServer(
+            final Stage aStage, final Backend aBackend, final PreviewProcessor aPreviewProcessor, final ConfigurationManager aConfigurationManager) {
         jetty = new Server(PORT_NUMMER);
 
-        WebAppContext theWebApp = new WebAppContext();
+        final WebAppContext theWebApp = new WebAppContext();
         theWebApp.setContextPath("/");
         theWebApp.setBaseResource(Resource.newClassPathResource("/webapp"));
         theWebApp.setDescriptor("WEB-INF/web.xml");
@@ -45,9 +46,9 @@ class FrontendEmbeddedWebServer {
     public void start() throws BindException {
         try {
             jetty.start();
-        } catch (BindException e) {
+        } catch (final BindException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -55,7 +56,7 @@ class FrontendEmbeddedWebServer {
     public void stop() {
         try {
             jetty.stop();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }

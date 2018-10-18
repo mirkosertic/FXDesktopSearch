@@ -13,19 +13,19 @@ class Notifier {
     private final Notification.Notifier notifier;
 
     Notifier() {
-        Rectangle2D theScreenBounds = Screen.getPrimary().getVisualBounds();
+        final Rectangle2D theScreenBounds = Screen.getPrimary().getVisualBounds();
         Notification.Notifier.setWidth(theScreenBounds.getWidth() / 4);
         notifier = Notification.Notifier.INSTANCE;
     }
 
-    public void showInformation(String aMessage) {
+    public void showInformation(final String aMessage) {
         LOGGER.info(aMessage);
         /*Platform.runLater(() ->
             notifier.notifyInfo("FXDesktopSearch", aMessage)
         );*/
     }
 
-    public void showError(String aMessage, Exception aException) {
+    public void showError(final String aMessage, final Exception aException) {
         LOGGER.error(aMessage, aException);
         Platform.runLater(() ->
             notifier.notifyError("FXDesktopSearch", aMessage)

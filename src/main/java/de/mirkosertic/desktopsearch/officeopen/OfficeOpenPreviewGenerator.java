@@ -41,8 +41,8 @@ public class OfficeOpenPreviewGenerator implements PreviewGenerator, PreviewCons
     }
 
     @Override
-    public boolean supportsFile(File aFile) {
-        for (SupportedDocumentType theType : suppportedDocumentTypes) {
+    public boolean supportsFile(final File aFile) {
+        for (final SupportedDocumentType theType : suppportedDocumentTypes) {
             if (theType.matches(aFile)) {
                 return true;
             }
@@ -51,30 +51,30 @@ public class OfficeOpenPreviewGenerator implements PreviewGenerator, PreviewCons
     }
 
     @Override
-    public Preview createPreviewFor(File aFile) {
-        ZipFile theZipFile;
+    public Preview createPreviewFor(final File aFile) {
+        final ZipFile theZipFile;
         try {
             theZipFile = new ZipFile(aFile);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Error opening "+aFile, e);
             return null;
         }
         try {
-            ZipEntry theThumbnailEntry = theZipFile.getEntry("Thumbnails/thumbnail.png");
+            final ZipEntry theThumbnailEntry = theZipFile.getEntry("Thumbnails/thumbnail.png");
             if (theThumbnailEntry == null) {
                 LOGGER.error("Cannot find thumbnail in "+aFile);
                 return null;
             }
 
-            BufferedImage theImage = ImageIO.read(new BufferedInputStream(theZipFile.getInputStream(theThumbnailEntry)));
+            final BufferedImage theImage = ImageIO.read(new BufferedInputStream(theZipFile.getInputStream(theThumbnailEntry)));
             return new Preview(ImageUtils.rescale(theImage, THUMB_WIDTH, THUMB_HEIGHT, ImageUtils.RescaleMethod.RESIZE_FIT_ONE_DIMENSION));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Error reading thumbnail from "+aFile, e);
             return null;
         } finally {
             try {
                 theZipFile.close();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 // Do nothing
             }
         }

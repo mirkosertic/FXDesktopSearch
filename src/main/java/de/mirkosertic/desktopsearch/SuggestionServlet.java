@@ -14,14 +14,14 @@ class SuggestionServlet extends HttpServlet {
 
     private final Backend backend;
 
-    public SuggestionServlet(Backend aBackend) {
+    public SuggestionServlet(final Backend aBackend) {
         backend = aBackend;
     }
 
     @Override
-    protected void service(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
-        String theTerm = aRequest.getParameter("term");
-        Suggestion[] theTerms = backend.findSuggestionTermsFor(theTerm);
+    protected void service(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
+        final String theTerm = aRequest.getParameter("term");
+        final Suggestion[] theTerms = backend.findSuggestionTermsFor(theTerm);
 
         aResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         aResponse.setHeader("Pragma", "no-cache");
@@ -29,7 +29,7 @@ class SuggestionServlet extends HttpServlet {
         aResponse.setContentType("application/json; charset=UTF-8");
         aResponse.setCharacterEncoding("UTF-8");
 
-        ObjectMapper theMapper = new ObjectMapper();
+        final ObjectMapper theMapper = new ObjectMapper();
         theMapper.writeValue(aResponse.getWriter(), theTerms);
     }
 }

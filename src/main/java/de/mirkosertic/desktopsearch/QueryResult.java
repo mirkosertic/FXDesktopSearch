@@ -24,7 +24,7 @@ public class QueryResult {
     private final long totalDocuments;
     private final String backLink;
 
-    public QueryResult(long elapsedTime, List<QueryResultDocument> documents, List<FacetDimension> aFacetDimensions, long totalDocuments, String aBackLink) {
+    public QueryResult(final long elapsedTime, final List<QueryResultDocument> documents, final List<FacetDimension> aFacetDimensions, final long totalDocuments, final String aBackLink) {
         this.elapsedTime = elapsedTime;
         this.documents = documents;
         this.totalDocuments = totalDocuments;
@@ -44,18 +44,18 @@ public class QueryResult {
         return totalDocuments;
     }
 
-    public String getEscapedFileName(String aFileName) {
+    public String getEscapedFileName(final String aFileName) {
         if (aFileName == null) {
             return null;
         }
         return aFileName.replace("\\","\\\\");
     }
 
-    public String getSimpleFileName(String aFileName) {
+    public String getSimpleFileName(final String aFileName) {
         if (aFileName == null) {
             return null;
         }
-        int p = aFileName.lastIndexOf(SystemUtils.FILE_SEPARATOR);
+        final int p = aFileName.lastIndexOf(SystemUtils.FILE_SEPARATOR);
         if (p>0) {
             return aFileName.substring(p+1);
         }

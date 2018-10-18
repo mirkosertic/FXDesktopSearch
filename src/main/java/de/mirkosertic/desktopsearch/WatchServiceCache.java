@@ -27,8 +27,8 @@ public class WatchServiceCache {
         watchServices = new HashMap<>();
     }
 
-    public synchronized WatchService getWatchServiceFor(Path aPath) throws IOException {
-        FileSystem theFileSystem = aPath.getFileSystem();
+    public synchronized WatchService getWatchServiceFor(final Path aPath) throws IOException {
+        final FileSystem theFileSystem = aPath.getFileSystem();
         WatchService theService = watchServices.get(theFileSystem);
         if (theService == null) {
             theService = theFileSystem.newWatchService();

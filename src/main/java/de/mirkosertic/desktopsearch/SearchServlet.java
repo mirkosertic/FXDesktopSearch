@@ -35,26 +35,26 @@ public class SearchServlet extends HttpServlet {
     private final String basePath;
     private final String serverBase;
 
-    public SearchServlet(Backend aBackend, String aServerBase) {
+    public SearchServlet(final Backend aBackend, final String aServerBase) {
         serverBase = aServerBase;
         backend = aBackend;
         basePath = serverBase + URL;
     }
 
     @Override
-    protected void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
         fillinSearchResult(aRequest, aResponse);
     }
 
     @Override
-    protected void doPost(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
+    protected void doPost(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
         fillinSearchResult(aRequest, aResponse);
     }
 
-    private void fillinSearchResult(HttpServletRequest aRequest, HttpServletResponse aResponse)
+    private void fillinSearchResult(final HttpServletRequest aRequest, final HttpServletResponse aResponse)
             throws ServletException, IOException {
 
-        URLCodec theURLCodec = new URLCodec();
+        final URLCodec theURLCodec = new URLCodec();
 
         String theQueryString = aRequest.getParameter("querystring");
         String theBasePath = basePath;
@@ -63,13 +63,13 @@ public class SearchServlet extends HttpServlet {
             try {
                 theBasePath = theBasePath + "/" + theURLCodec.encode(theQueryString);
                 theBackLink = theBackLink + "/" + theURLCodec.encode(theQueryString);
-            } catch (EncoderException e) {
+            } catch (final EncoderException e) {
                 LOGGER.error("Error encoding query string " + theQueryString, e);
             }
         }
-        Map<String, String> theDrilldownDimensions = new HashMap<>();
+        final Map<String, String> theDrilldownDimensions = new HashMap<>();
 
-        String thePathInfo = aRequest.getPathInfo();
+        final String thePathInfo = aRequest.getPathInfo();
         if (!StringUtils.isEmpty(thePathInfo)) {
             String theWorkingPathInfo = thePathInfo;
 
@@ -77,11 +77,11 @@ public class SearchServlet extends HttpServlet {
             if (theWorkingPathInfo.startsWith("/")) {
                 theWorkingPathInfo = theWorkingPathInfo.substring(1);
             }
-            String[] thePaths = StringUtils.split(theWorkingPathInfo,"/");
+            final String[] thePaths = StringUtils.split(theWorkingPathInfo,"/");
             for (int i=0;i<thePaths.length;i++) {
                 try {
-                    String theDecodedValue = thePaths[i].replace('+',' ');
-                    String theEncodedValue = theURLCodec.encode(theDecodedValue);
+                    final String theDecodedValue = thePaths[i].replace('+',' ');
+                    final String theEncodedValue = theURLCodec.encode(theDecodedValue);
                     theBasePath = theBasePath + "/" + theEncodedValue;
                     if (i<thePaths.length - 1) {
                         theBackLink = theBackLink + "/" + theEncodedValue;
@@ -91,7 +91,7 @@ public class SearchServlet extends HttpServlet {
                     } else {
                         FacetSearchUtils.addToMap(theDecodedValue, theDrilldownDimensions);
                     }
-                } catch (EncoderException e) {
+                } catch (final EncoderException e) {
                     LOGGER.error("Error while decoding drilldown params for " + aRequest.getPathInfo(), e);
                 }
             }
@@ -106,7 +106,7 @@ public class SearchServlet extends HttpServlet {
             aRequest.setAttribute("querystring", theQueryString);
             try {
                 aRequest.setAttribute("queryResult", backend.performQuery(theQueryString, theBackLink, theBasePath, theDrilldownDimensions));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.error("Error running query " + theQueryString, e);
             }
         } else {

@@ -24,13 +24,13 @@ public class SearchMapParams extends SolrParams {
 
     private final Map<String, Object> params;
 
-    public SearchMapParams(Map<String, Object> params) {
+    public SearchMapParams(final Map<String, Object> params) {
         this.params = params;
     }
 
     @Override
-    public String get(String name) {
-        Object o = params.get(name);
+    public String get(final String name) {
+        final Object o = params.get(name);
         if (o == null) {
             return null;
         }
@@ -38,15 +38,15 @@ public class SearchMapParams extends SolrParams {
             return (String)o;
         }
         if (o instanceof String[]) {
-            String[] strings = (String[])((String[])o);
+            final String[] strings = (String[])((String[])o);
             return strings.length == 0 ? null : strings[0];
         }
         return String.valueOf(o);
     }
 
     @Override
-    public String[] getParams(String name) {
-        Object val = params.get(name);
+    public String[] getParams(final String name) {
+        final Object val = params.get(name);
         if (val instanceof String[]) {
             return (String[])((String[])val);
         }

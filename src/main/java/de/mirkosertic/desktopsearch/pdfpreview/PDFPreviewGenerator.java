@@ -43,48 +43,48 @@ public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
     }
 
     @Override
-    public Preview createPreviewFor(File aFile) {
-        try(PDDocument theDocument = PDDocument.load(aFile))  {
-            PDPageTree thePages = theDocument.getPages();
+    public Preview createPreviewFor(final File aFile) {
+        try(final PDDocument theDocument = PDDocument.load(aFile))  {
+            final PDPageTree thePages = theDocument.getPages();
             if (thePages.getCount() == 0) {
                 return null;
             }
-            PDPage theFirstPage = (PDPage) thePages.get(0);
+            final PDPage theFirstPage = (PDPage) thePages.get(0);
 
-            PDRectangle mBox = theFirstPage.getMediaBox();
-            float theWidthPt = mBox.getWidth();
-            int theWidthPx = THUMB_WIDTH; // Math.round(widthPt * scaling);
-            int theHeightPx = THUMB_HEIGHT; // Math.round(heightPt * scaling);
-            float theScaling = THUMB_WIDTH / theWidthPt; // resolution / 72.0F;
+            final PDRectangle mBox = theFirstPage.getMediaBox();
+            final float theWidthPt = mBox.getWidth();
+            final int theWidthPx = THUMB_WIDTH; // Math.round(widthPt * scaling);
+            final int theHeightPx = THUMB_HEIGHT; // Math.round(heightPt * scaling);
+            final float theScaling = THUMB_WIDTH / theWidthPt; // resolution / 72.0F;
 
-            BufferedImage theImage = new BufferedImage(theWidthPx, theHeightPx, BufferedImage.TYPE_INT_RGB);
-            Graphics2D theGraphics = (Graphics2D) theImage.getGraphics();
+            final BufferedImage theImage = new BufferedImage(theWidthPx, theHeightPx, BufferedImage.TYPE_INT_RGB);
+            final Graphics2D theGraphics = (Graphics2D) theImage.getGraphics();
             theGraphics.setBackground(new Color(255, 255, 255, 0));
             theGraphics.clearRect(0, 0, theImage.getWidth(), theImage.getHeight());
 
-            PDFRenderer theRenderer = new PDFRenderer(theDocument);
+            final PDFRenderer theRenderer = new PDFRenderer(theDocument);
             theRenderer.renderPageToGraphics(0, theGraphics, theScaling);
 
-            int rotation = theFirstPage.getRotation();
+            final int rotation = theFirstPage.getRotation();
             if ((rotation == 90) || (rotation == 270)) {
-                int w = theImage.getWidth();
-                int h = theImage.getHeight();
-                BufferedImage rotatedImg = new BufferedImage(w, h, theImage.getType());
-                Graphics2D g = rotatedImg.createGraphics();
+                final int w = theImage.getWidth();
+                final int h = theImage.getHeight();
+                final BufferedImage rotatedImg = new BufferedImage(w, h, theImage.getType());
+                final Graphics2D g = rotatedImg.createGraphics();
                 g.rotate(Math.toRadians(rotation), w / 2, h / 2);
                 g.drawImage(theImage, null, 0, 0);
             }
             theGraphics.dispose();
             return new Preview(theImage);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Error creating preview for " + aFile, e);
             return null;
         }
     }
 
     @Override
-    public boolean supportsFile(File aFile) {
-        for (SupportedDocumentType theType : suppportedDocumentTypes) {
+    public boolean supportsFile(final File aFile) {
+        for (final SupportedDocumentType theType : suppportedDocumentTypes) {
             if (theType.matches(aFile)) {
                 return true;
             }

@@ -39,12 +39,12 @@ public class DirectoryWatcher {
         private WatchEvent.Kind kind;
         private int waitForAction;
 
-        public ActionTimer(WatchEvent.Kind aKind, int aWaitForAction) {
+        public ActionTimer(final WatchEvent.Kind aKind, final int aWaitForAction) {
             kind = aKind;
             waitForAction = aWaitForAction;
         }
 
-        public void reset(WatchEvent.Kind aKind, int aWaitForAction) {
+        public void reset(final WatchEvent.Kind aKind, final int aWaitForAction) {
             kind = aKind;
             waitForAction = aWaitForAction;
         }
@@ -63,14 +63,14 @@ public class DirectoryWatcher {
     private final Configuration.CrawlLocation filesystemLocation;
     private final ExecutorPool executorPool;
 
-    public DirectoryWatcher(WatchServiceCache aWatchServiceCache, Configuration.CrawlLocation aFileSystemLocation, int aWaitForAction, DirectoryListener aDirectoryListener, ExecutorPool aExecutorPool) throws IOException {
+    public DirectoryWatcher(final WatchServiceCache aWatchServiceCache, final Configuration.CrawlLocation aFileSystemLocation, final int aWaitForAction, final DirectoryListener aDirectoryListener, final ExecutorPool aExecutorPool) throws IOException {
         executorPool = aExecutorPool;
         fileTimers = new HashMap<>();
         waitForAction = aWaitForAction;
         directoryListener = aDirectoryListener;
         filesystemLocation = aFileSystemLocation;
 
-        Path thePath = aFileSystemLocation.getDirectory().toPath();
+        final Path thePath = aFileSystemLocation.getDirectory().toPath();
 
         watchService = aWatchServiceCache.getWatchServiceFor(thePath);
         watcherThread = new Thread("WatcherThread-"+thePath) {
@@ -79,14 +79,14 @@ public class DirectoryWatcher {
                 while(!isInterrupted()) {
 
                     try {
-                        WatchKey theKey = watchService.take();
-                        Path theParent = (Path) theKey.watchable();
+                        final WatchKey theKey = watchService.take();
+                        final Path theParent = (Path) theKey.watchable();
                         theKey.pollEvents().stream().forEach(theEvent -> {
                             if (theEvent.kind() == StandardWatchEventKinds.OVERFLOW) {
                                 LOGGER.warn("Overflow for " + theEvent.context() + " count = " + theEvent.count());
                                 // Overflow events are not handled
                             } else {
-                                Path thePath = theParent.resolve((Path) theEvent.context());
+                                final Path thePath = theParent.resolve((Path) theEvent.context());
                                 LOGGER.debug(theEvent.kind() + " for " + theEvent.context() + " count = " + theEvent.count());
 
                                 publishActionFor(thePath, theEvent.kind());
@@ -95,7 +95,7 @@ public class DirectoryWatcher {
                         theKey.reset();
 
                         Thread.sleep(10000);
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         LOGGER.debug("Has been interrupted");
                     }
                 }
@@ -104,9 +104,9 @@ public class DirectoryWatcher {
         actionTimer = new Timer();
     }
 
-    private void publishActionFor(Path aPath, WatchEvent.Kind aKind ) {
+    private void publishActionFor(final Path aPath, final WatchEvent.Kind aKind ) {
         synchronized (fileTimers) {
-            ActionTimer theTimer = fileTimers.get(aPath);
+            final ActionTimer theTimer = fileTimers.get(aPath);
             if (theTimer == null) {
                 fileTimers.put(aPath, new ActionTimer(aKind, waitForAction));
             } else {
@@ -117,7 +117,7 @@ public class DirectoryWatcher {
 
     private void actionCountDown() {
         synchronized (fileTimers) {
-            Set<Path> theKeysToRemove = new HashSet<>();
+            final Set<Path> theKeysToRemove = new HashSet<>();
             fileTimers.entrySet().stream().forEach(theEntry -> {
                 if (theEntry.getValue().runOneCycle()) {
                     theKeysToRemove.add(theEntry.getKey());
@@ -139,7 +139,7 @@ public class DirectoryWatcher {
                             if (theEntry.getValue().kind == StandardWatchEventKinds.ENTRY_MODIFY) {
                                 registerWatcher(theEntry.getKey());
                             }
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
                             throw new RuntimeException(e);
                         }
                     }
@@ -149,14 +149,14 @@ public class DirectoryWatcher {
         }
     }
 
-    private void registerWatcher(Path aDirectory) throws IOException {
+    private void registerWatcher(final Path aDirectory) throws IOException {
         LOGGER.info("New watchable directory detected : " + aDirectory);
         aDirectory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
     }
 
     public DirectoryWatcher startWatching() {
 
-        Thread theRegisterWatchers = new Thread("Registering Watchers") {
+        final Thread theRegisterWatchers = new Thread("Registering Watchers") {
             @Override
             public void run() {
                 try {
@@ -165,12 +165,12 @@ public class DirectoryWatcher {
                             LOGGER.info("Registering watches for " + path);
                             try {
                                 registerWatcher(path);
-                            } catch (IOException e) {
+                            } catch (final IOException e) {
                                 throw new RuntimeException(e);
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     LOGGER.error("Error registering file watcher", e);
                 }
             }
@@ -194,7 +194,7 @@ public class DirectoryWatcher {
 
     public void crawl() throws IOException {
 
-        Path thePath = filesystemLocation.getDirectory().toPath();
+        final Path thePath = filesystemLocation.getDirectory().toPath();
 
         Files.walk(thePath).forEach(aPath -> {
             if (!Files.isDirectory(aPath)) {

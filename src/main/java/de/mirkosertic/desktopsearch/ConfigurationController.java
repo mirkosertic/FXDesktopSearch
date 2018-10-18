@@ -26,10 +26,10 @@ import java.util.UUID;
 
 public class ConfigurationController {
 
-    private static String CATEGORY_COMMON = "Common";
-    private static String CATEGORY_SUGGEST = "Suggestion";
-    private static String CATEGORY_LANGUAGE = "Language analyzers";
-    private static String CATEGORY_FILEFORMATS = "File formats";
+    private static final String CATEGORY_COMMON = "Common";
+    private static final String CATEGORY_SUGGEST = "Suggestion";
+    private static final String CATEGORY_LANGUAGE = "Language analyzers";
+    private static final String CATEGORY_FILEFORMATS = "File formats";
 
     @FXML
     ListView indexedDirectories;
@@ -50,7 +50,7 @@ public class ConfigurationController {
     private Stage stage;
     private Configuration currentConfiguration;
 
-    public void initialize(ConfigurationManager aConfigurationManager, Stage aStage) {
+    public void initialize(final ConfigurationManager aConfigurationManager, final Stage aStage) {
         Objects.requireNonNull(propertySheet);
         Objects.requireNonNull(buttonOk);
 
@@ -72,7 +72,7 @@ public class ConfigurationController {
             }
 
             @Override
-            public void setValue(Object o) {
+            public void setValue(final Object o) {
                 currentConfiguration = currentConfiguration.updateNumberOfSearchResults((Integer) o);
             }
         });
@@ -84,7 +84,7 @@ public class ConfigurationController {
             }
 
             @Override
-            public void setValue(Object o) {
+            public void setValue(final Object o) {
                 currentConfiguration = currentConfiguration.updateIncludeSimilarDocuments((Boolean) o);
             }
         });
@@ -96,7 +96,7 @@ public class ConfigurationController {
             }
 
             @Override
-            public void setValue(Object o) {
+            public void setValue(final Object o) {
                 currentConfiguration = currentConfiguration.updateNumberOfSuggestions((Integer) o);
             }
         });
@@ -108,7 +108,7 @@ public class ConfigurationController {
             }
 
             @Override
-            public void setValue(Object o) {
+            public void setValue(final Object o) {
                 currentConfiguration = currentConfiguration.updateSuggestionWindowBefore((Integer) o);
             }
         });
@@ -120,7 +120,7 @@ public class ConfigurationController {
             }
 
             @Override
-            public void setValue(Object o) {
+            public void setValue(final Object o) {
                 currentConfiguration = currentConfiguration.updateSuggestionWindowAfter((Integer) o);
             }
         });
@@ -132,7 +132,7 @@ public class ConfigurationController {
             }
 
             @Override
-            public void setValue(Object o) {
+            public void setValue(final Object o) {
                 currentConfiguration = currentConfiguration.updateSuggestionSlop((Integer) o);
             }
         });
@@ -144,12 +144,12 @@ public class ConfigurationController {
             }
 
             @Override
-            public void setValue(Object o) {
+            public void setValue(final Object o) {
                 currentConfiguration = currentConfiguration.updateSuggestionsInOrder((Boolean) o);
             }
         });
 
-        for (SupportedLanguage theLanguage : SupportedLanguage.values()) {
+        for (final SupportedLanguage theLanguage : SupportedLanguage.values()) {
 
             propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_LANGUAGE, theLanguage.toLocale().getDisplayName(), BooleanPropertyEditor.class) {
 
@@ -159,13 +159,13 @@ public class ConfigurationController {
                 }
 
                 @Override
-                public void setValue(Object o) {
+                public void setValue(final Object o) {
                     currentConfiguration = currentConfiguration.enableLanguage(theLanguage);
                 }
             });
         }
 
-        for (SupportedDocumentType theDocumentType : SupportedDocumentType.values()) {
+        for (final SupportedDocumentType theDocumentType : SupportedDocumentType.values()) {
 
             propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_FILEFORMATS, theDocumentType.getDisplayName(Locale.getDefault()), BooleanPropertyEditor.class) {
 
@@ -175,7 +175,7 @@ public class ConfigurationController {
                 }
 
                 @Override
-                public void setValue(Object o) {
+                public void setValue(final Object o) {
                     currentConfiguration = currentConfiguration.enableDocumentType(theDocumentType);
                 }
             });
@@ -185,18 +185,18 @@ public class ConfigurationController {
 
     private void removeSelectedLocation() {
 
-        Configuration.CrawlLocation theLocation = (Configuration.CrawlLocation) indexedDirectories.getSelectionModel().getSelectedItem();
+        final Configuration.CrawlLocation theLocation = (Configuration.CrawlLocation) indexedDirectories.getSelectionModel().getSelectedItem();
         indexedDirectories.getItems().remove(theLocation);
 
         currentConfiguration = currentConfiguration.removeLocation(theLocation);
     }
 
     private void addNewLocation() {
-        DirectoryChooser theChooser = new DirectoryChooser();
+        final DirectoryChooser theChooser = new DirectoryChooser();
         theChooser.setTitle("Add new crawl location");
-        File theFile = theChooser.showDialog(stage.getOwner());
+        final File theFile = theChooser.showDialog(stage.getOwner());
         if (theFile != null) {
-            Configuration.CrawlLocation theNewLocation = new Configuration.CrawlLocation(UUID.randomUUID().toString(), theFile);
+            final Configuration.CrawlLocation theNewLocation = new Configuration.CrawlLocation(UUID.randomUUID().toString(), theFile);
             indexedDirectories.getItems().add(theNewLocation);
 
             currentConfiguration = currentConfiguration.addLocation(theNewLocation);

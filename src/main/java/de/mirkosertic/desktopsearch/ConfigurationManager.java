@@ -32,13 +32,13 @@ public class ConfigurationManager {
     private final File configurationFile;
     private final Set<ConfigurationChangeListener> configurationChangeListeners;
 
-    public ConfigurationManager(File aConfigDirectory) {
+    public ConfigurationManager(final File aConfigDirectory) {
         configurationChangeListeners = new HashSet<>();
         configurationFile = new File(aConfigDirectory, "configuration.json");
         if (configurationFile.exists()) {
-            try(FileInputStream theStream = new FileInputStream(configurationFile)) {
+            try(final FileInputStream theStream = new FileInputStream(configurationFile)) {
                 loadConfigurationFrom(theStream);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 initializeWithDefault(aConfigDirectory);
             }
         } else {
@@ -46,15 +46,15 @@ public class ConfigurationManager {
         }
     }
 
-    private void initializeWithDefault(File aConfigDirectory) {
-        try (InputStream theDefaultConfiguration = getClass().getResourceAsStream("/default-configuration.json")) {
+    private void initializeWithDefault(final File aConfigDirectory) {
+        try (final InputStream theDefaultConfiguration = getClass().getResourceAsStream("/default-configuration.json")) {
             if (theDefaultConfiguration != null) {
                 loadConfigurationFrom(theDefaultConfiguration);
             } else {
                 LOGGER.error("No default configuration found");
                 configuration = new Configuration(aConfigDirectory);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Error loading default configuration, initializing with empty one", e);
             configuration = new Configuration(aConfigDirectory);
         }
@@ -64,21 +64,21 @@ public class ConfigurationManager {
         configuration = configuration.enableLanguage(SupportedLanguage.en);
 
         try {
-            SupportedLanguage theAdditionalLanguage = SupportedLanguage.valueOf(Locale.getDefault().getLanguage());
+            final SupportedLanguage theAdditionalLanguage = SupportedLanguage.valueOf(Locale.getDefault().getLanguage());
             configuration = configuration.enableLanguage(theAdditionalLanguage);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // Platform language seems not to be supported
         }
 
         // By default, we also enable all document parsers
-        for (SupportedDocumentType theType : SupportedDocumentType.values()) {
+        for (final SupportedDocumentType theType : SupportedDocumentType.values()) {
             configuration = configuration.enableDocumentType(theType);
         }
 
         writeConfiguration();
     }
 
-    public void addChangeListener(ConfigurationChangeListener aChangeListener) {
+    public void addChangeListener(final ConfigurationChangeListener aChangeListener) {
         configurationChangeListeners.add(aChangeListener);
     }
 
@@ -86,26 +86,26 @@ public class ConfigurationManager {
         return configuration;
     }
 
-    public void updateConfiguration(Configuration aConfiguration) {
+    public void updateConfiguration(final Configuration aConfiguration) {
         configuration = aConfiguration;
         writeConfiguration();
         configurationChangeListeners.stream().forEach(l -> {try {
             l.configurationUpdated(aConfiguration);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Error notifying for configuration change", e);
         }});
     }
 
-    private void loadConfigurationFrom(InputStream aStream) throws IOException {
-        ObjectMapper theMapper = new ObjectMapper();
+    private void loadConfigurationFrom(final InputStream aStream) throws IOException {
+        final ObjectMapper theMapper = new ObjectMapper();
         configuration = theMapper.readValue(aStream, Configuration.class);
     }
 
     private void writeConfiguration() {
-        try (FileOutputStream theStream = new FileOutputStream(configurationFile)) {
-            ObjectMapper theMapper = new ObjectMapper();
+        try (final FileOutputStream theStream = new FileOutputStream(configurationFile)) {
+            final ObjectMapper theMapper = new ObjectMapper();
             theMapper.writeValue(theStream, configuration);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Error writing configuration", e);
         }
     }

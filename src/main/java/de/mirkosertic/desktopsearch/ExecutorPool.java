@@ -24,11 +24,11 @@ class ExecutorPool {
         forkJoinPool = new ForkJoinPool();
     }
 
-    public void execute(Runnable aRunnable) {
+    public void execute(final Runnable aRunnable) {
         forkJoinPool.execute(aRunnable);
     }
 
-    public <T> ForkJoinTask<T> submit(Callable<T> aCallable) {
+    public <T> ForkJoinTask<T> submit(final Callable<T> aCallable) {
         return forkJoinPool.submit(aCallable);
     }
 }

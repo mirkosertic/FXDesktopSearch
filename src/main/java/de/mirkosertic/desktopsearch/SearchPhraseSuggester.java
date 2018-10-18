@@ -59,19 +59,20 @@ class SearchPhraseSuggester {
     private final Analyzer analyzer;
     private final SearchPhraseSuggesterConfiguration configuration;
 
-    public SearchPhraseSuggester(IndexSearcher aIndexSearcher, Analyzer aAnalyzer, SearchPhraseSuggesterConfiguration aConfiguration) {
+    public SearchPhraseSuggester(
+            final IndexSearcher aIndexSearcher, final Analyzer aAnalyzer, final SearchPhraseSuggesterConfiguration aConfiguration) {
         indexSearcher = aIndexSearcher;
         analyzer = aAnalyzer;
         configuration = aConfiguration;
     }
 
-    public List<Suggestion> suggestSearchPhrase(String aFieldName, String aPhrase) throws IOException {
+    public List<Suggestion> suggestSearchPhrase(final String aFieldName, final String aPhrase) throws IOException {
 
         LOGGER.info("Trying to find suggestions for phrase " + aPhrase);
 
-        List<String> theTokens = toTokens(aFieldName, aPhrase);
+        final List<String> theTokens = toTokens(aFieldName, aPhrase);
 
-        List<SpanQuery> theSpanQueries = theTokens.stream().map(s -> {
+        final List<SpanQuery> theSpanQueries = theTokens.stream().map(s -> {
             if (QueryUtils.isWildCard(s)) {
                 WildcardQuery theWildcardQuery = new WildcardQuery(new Term(aFieldName, s));
                 SpanMultiTermQueryWrapper theWrapper = new SpanMultiTermQueryWrapper(theWildcardQuery);
@@ -84,7 +85,7 @@ class SearchPhraseSuggester {
             return new SpanTermQuery(new Term(aFieldName, s));
         }).collect(Collectors.toList());
 
-        Query theQuery;
+        final Query theQuery;
         if (theSpanQueries.size() > 1) {
             theQuery = new SpanNearQuery(theSpanQueries.toArray(new SpanQuery[theSpanQueries.size()]), configuration.getSuggestionSlop(), configuration.isSuggestionInOrder());
         } else {
@@ -94,31 +95,26 @@ class SearchPhraseSuggester {
 
         LOGGER.info("created span query " + theQuery);
 
-        ArrayList<Suggestion> theResult = new ArrayList<>();
+        final ArrayList<Suggestion> theResult = new ArrayList<>();
 
-        Highlighter theHighligher = new Highlighter(new Formatter() {
-            @Override
-            public String highlightTerm(String aSpan, TokenGroup tokenGroup) {
-                return aSpan;
-            }
-        }, new QueryScorer(theQuery));
+        final Highlighter theHighligher = new Highlighter((aSpan, tokenGroup) -> aSpan, new QueryScorer(theQuery));
 
-        TopDocs theDocs = indexSearcher.search(theQuery, configuration.getNumberOfSuggestions(), Sort.RELEVANCE);
+        final TopDocs theDocs = indexSearcher.search(theQuery, configuration.getNumberOfSuggestions(), Sort.RELEVANCE);
         for (int i=0;i<theDocs.scoreDocs.length;i++) {
-            Document theDocument = indexSearcher.getIndexReader().document(theDocs.scoreDocs[i].doc);
-            String theOriginalContent = theDocument.getField(aFieldName).stringValue();
+            final Document theDocument = indexSearcher.getIndexReader().document(theDocs.scoreDocs[i].doc);
+            final String theOriginalContent = theDocument.getField(aFieldName).stringValue();
 
             try {
                 for (String theFragment : theHighligher.getBestFragments(analyzer, aFieldName, theOriginalContent, 1)) {
                     // Erstes Token ermitteln
-                    int p = theFragment.toLowerCase().indexOf(theTokens.get(0).toLowerCase());
+                    final int p = theFragment.toLowerCase().indexOf(theTokens.get(0).toLowerCase());
                     if (p>0) {
                         theFragment = theFragment.substring(p).trim();
                     }
 
                     theResult.add(new Suggestion(highlight(theFragment, theTokens), theFragment));
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.error(e);
             }
         }
@@ -126,28 +122,28 @@ class SearchPhraseSuggester {
         return theResult;
     }
 
-    private String highlight(String aPhrase, List<String> aTokens) {
+    private String highlight(final String aPhrase, final List<String> aTokens) {
         String theResult = aPhrase;
-        Set<String> theTokens = aTokens.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        final Set<String> theTokens = aTokens.stream().map(String::toLowerCase).collect(Collectors.toSet());
 
-        for (String theToken : theTokens) {
-            Pattern thePattern = Pattern.compile("(" + theToken+")", Pattern.CASE_INSENSITIVE);
-            Matcher theMatcher = thePattern.matcher(aPhrase);
-            Set<String> theReplacements = new HashSet<>();
+        for (final String theToken : theTokens) {
+            final Pattern thePattern = Pattern.compile("(" + theToken+")", Pattern.CASE_INSENSITIVE);
+            final Matcher theMatcher = thePattern.matcher(aPhrase);
+            final Set<String> theReplacements = new HashSet<>();
             while(theMatcher.find()) {
                 theReplacements.add(theMatcher.group());
             }
-            for (String theReplacement : theReplacements) {
+            for (final String theReplacement : theReplacements) {
                 theResult = theResult.replace(theReplacement, "<b>"+theReplacement+"</b>");
             }
         }
         return theResult;
     }
 
-    private String analyze(String aFieldName, String aString) throws IOException {
-        TokenStream theTokenStream = analyzer.tokenStream(aFieldName, aString);
+    private String analyze(final String aFieldName, final String aString) throws IOException {
+        final TokenStream theTokenStream = analyzer.tokenStream(aFieldName, aString);
         theTokenStream.reset();
-        CharTermAttribute theCharTerms = theTokenStream.getAttribute(CharTermAttribute.class);
+        final CharTermAttribute theCharTerms = theTokenStream.getAttribute(CharTermAttribute.class);
         try {
             if (theTokenStream.incrementToken()) {
                 return theCharTerms.toString();
@@ -159,10 +155,10 @@ class SearchPhraseSuggester {
         }
     }
 
-    private List<String> toTokens(String aFieldName, String aPhrase) throws IOException {
-        List<String> theTokens = new ArrayList<>();
+    private List<String> toTokens(final String aFieldName, final String aPhrase) throws IOException {
+        final List<String> theTokens = new ArrayList<>();
 
-        String[] theSplitTokens = StringUtils.split(aPhrase," ,:;?!.");
+        final String[] theSplitTokens = StringUtils.split(aPhrase," ,:;?!.");
         for (int i=0;i<theSplitTokens.length;i++) {
             String theToken = theSplitTokens[i];
             // Mutate the last token to a wildcard
@@ -173,7 +169,7 @@ class SearchPhraseSuggester {
                 if (QueryUtils.isWildCard(theToken)) {
                     theTokens.add(theToken);
                 } else {
-                    String theAnalyzed = analyze(aFieldName, theToken);
+                    final String theAnalyzed = analyze(aFieldName, theToken);
                     if (theAnalyzed != null) {
                         theTokens.add(theAnalyzed);
                     }

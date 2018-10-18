@@ -22,7 +22,7 @@ public class Content {
         public final String key;
         public final Object value;
 
-        private KeyValuePair(String key, Object value) {
+        private KeyValuePair(final String key, final Object value) {
             this.key = key;
             this.value = value;
         }
@@ -35,7 +35,8 @@ public class Content {
     private final String fileContent;
     private final SupportedLanguage language;
 
-    public Content(String aFileName, String aFileContent, long aFileSize, long aLastModified, SupportedLanguage aLanguage) {
+    public Content(
+            final String aFileName, final String aFileContent, final long aFileSize, final long aLastModified, final SupportedLanguage aLanguage) {
         fileName = aFileName;
         fileSize = aFileSize;
         lastModified = aLastModified;
@@ -68,7 +69,7 @@ public class Content {
         return metadata.stream();
     }
 
-    public void addMetaData(String aKey, Object aValue) {
+    public void addMetaData(final String aKey, final Object aValue) {
         metadata.add(new KeyValuePair(aKey, aValue));
     }
 }
