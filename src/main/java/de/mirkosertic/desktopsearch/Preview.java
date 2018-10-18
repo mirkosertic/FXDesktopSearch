@@ -18,7 +18,7 @@ public class Preview {
 
     private final BufferedImage image;
 
-    public Preview(BufferedImage aPreviewImage) {
+    public Preview(final BufferedImage aPreviewImage) {
         image = aPreviewImage;
     }
 

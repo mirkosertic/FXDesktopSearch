@@ -108,7 +108,7 @@ public class DesktopSearchController implements Initializable {
                 } else {
                     try {
                         sleep(5000);
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                     }
                 }
             }
@@ -145,7 +145,7 @@ public class DesktopSearchController implements Initializable {
 
     private String searchURL;
 
-    public void configure(DesktopSearch aApplication, Backend aBackend, String aSearchURL, Window aWindow) {
+    public void configure(final DesktopSearch aApplication, final Backend aBackend, final String aSearchURL, final Window aWindow) {
         window = aWindow;
         application = aApplication;
         backend = aBackend;
@@ -155,7 +155,7 @@ public class DesktopSearchController implements Initializable {
         webView.getEngine().setJavaScriptEnabled(true);
         webView.getEngine().getLoadWorker().stateProperty().addListener((ov, t, t1) -> {
             if (t1 == State.SUCCEEDED) {
-                JSObject window1 = (JSObject) webView.getEngine().executeScript("window");
+                final JSObject window1 = (JSObject) webView.getEngine().executeScript("window");
                 window1.setMember("desktop", new DesktopGateway(aApplication));
             }
         });
@@ -165,7 +165,7 @@ public class DesktopSearchController implements Initializable {
 
         if (aApplication.getConfigurationManager().getConfiguration().isCrawlOnStartup()) {
             // Scedule a crawl run 5 seconds after startup...
-            Timer theTimer = new Timer();
+            final Timer theTimer = new Timer();
             theTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -177,7 +177,7 @@ public class DesktopSearchController implements Initializable {
         }
     }
 
-    public void initialize(URL aUrl, ResourceBundle aResourceBundle) {
+    public void initialize(final URL aUrl, final ResourceBundle aResourceBundle) {
         Objects.requireNonNull(menuItemConfigure);
         Objects.requireNonNull(menuItemRecrawl);
         Objects.requireNonNull(menuItemClose);
@@ -210,7 +210,7 @@ public class DesktopSearchController implements Initializable {
             statusText.setText("");
             try {
                 backend.crawlLocations();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.error("Error crawling locations", e);
             }
         }
@@ -218,21 +218,21 @@ public class DesktopSearchController implements Initializable {
 
     void configure() {
         try {
-            Stage stage = new Stage();
+            final Stage stage = new Stage();
             stage.setResizable(false);
             stage.initStyle(StageStyle.UTILITY);
 
-            FXMLLoader theLoader = new FXMLLoader(getClass().getResource("/scenes/configuration.fxml"));
-            Parent theConfigurationRoot = theLoader.load();
+            final FXMLLoader theLoader = new FXMLLoader(getClass().getResource("/scenes/configuration.fxml"));
+            final Parent theConfigurationRoot = theLoader.load();
             stage.setScene(new Scene(theConfigurationRoot));
             stage.setTitle("Configuration");
             stage.initModality(Modality.APPLICATION_MODAL);
 
-            ConfigurationController theConfigController = theLoader.getController();
+            final ConfigurationController theConfigController = theLoader.getController();
             theConfigController.initialize(application.getConfigurationManager(), stage);
             stage.initOwner(window);
             stage.show();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Error running configuration dialog", e);
         }
     }

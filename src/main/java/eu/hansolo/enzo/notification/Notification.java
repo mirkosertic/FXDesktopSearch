@@ -283,22 +283,22 @@ public class Notification {
          * @param NOTIFICATION
          */
         private void showPopup(final Notification NOTIFICATION) {
-            Label title = new Label(NOTIFICATION.TITLE);
+            final Label title = new Label(NOTIFICATION.TITLE);
             title.getStyleClass().add("title");
 
-            ImageView icon = new ImageView(NOTIFICATION.IMAGE);
+            final ImageView icon = new ImageView(NOTIFICATION.IMAGE);
             icon.setFitWidth(ICON_WIDTH);
             icon.setFitHeight(ICON_HEIGHT);
 
-            Label message = new Label(NOTIFICATION.MESSAGE, icon);
+            final Label message = new Label(NOTIFICATION.MESSAGE, icon);
             message.getStyleClass().add("message");
 
-            VBox popupLayout = new VBox();
+            final VBox popupLayout = new VBox();
             popupLayout.setSpacing(10);
             popupLayout.setPadding(new Insets(10, 10, 10, 10));
             popupLayout.getChildren().addAll(title, message);
 
-            StackPane popupContent = new StackPane();
+            final StackPane popupContent = new StackPane();
             popupContent.setPrefSize(width, height);
             popupContent.getStyleClass().add("notification");
             popupContent.getChildren().addAll(popupLayout);
@@ -311,13 +311,13 @@ public class Notification {
             popups.add(POPUP);
 
             // Add a timeline for popup fade out
-            KeyValue fadeOutBegin = new KeyValue(POPUP.opacityProperty(), 1.0);
-            KeyValue fadeOutEnd   = new KeyValue(POPUP.opacityProperty(), 0.0);
+            final KeyValue fadeOutBegin = new KeyValue(POPUP.opacityProperty(), 1.0);
+            final KeyValue fadeOutEnd   = new KeyValue(POPUP.opacityProperty(), 0.0);
 
-            KeyFrame kfBegin = new KeyFrame(Duration.ZERO, fadeOutBegin);
-            KeyFrame kfEnd   = new KeyFrame(Duration.millis(500), fadeOutEnd);
+            final KeyFrame kfBegin = new KeyFrame(Duration.ZERO, fadeOutBegin);
+            final KeyFrame kfEnd   = new KeyFrame(Duration.millis(500), fadeOutEnd);
 
-            Timeline timeline = new Timeline(kfBegin, kfEnd);
+            final Timeline timeline = new Timeline(kfBegin, kfEnd);
             timeline.setDelay(popupLifetime);
             timeline.setOnFinished(actionEvent -> Platform.runLater(() -> {
                 POPUP.hide();

@@ -33,13 +33,13 @@ public class SearchPhraseSuggesterComponent extends SearchComponent {
     public static final String NUMBERSUGGEST_PARAM = "fxsuggest.numbersuggest";
 
     @Override
-    public void prepare(ResponseBuilder aResponseBuilder) throws IOException {
+    public void prepare(final ResponseBuilder aResponseBuilder) throws IOException {
 
     }
 
     @Override
-    public void process(ResponseBuilder aResponseBuilder) throws IOException {
-        SolrParams theRequestParams = aResponseBuilder.req.getParams();
+    public void process(final ResponseBuilder aResponseBuilder) throws IOException {
+        final SolrParams theRequestParams = aResponseBuilder.req.getParams();
         if (!"true".equals(theRequestParams.get(ENABLED_PARAM))) {
             return;
         }
@@ -48,10 +48,10 @@ public class SearchPhraseSuggesterComponent extends SearchComponent {
         final boolean theInOrder = Boolean.valueOf(theRequestParams.get(INORDER_PARAM));
         final int theNumberSuggest = Integer.valueOf(theRequestParams.get(NUMBERSUGGEST_PARAM));
 
-        IndexSearcher theSearcher = aResponseBuilder.req.getSearcher();
-        Analyzer theAnalyzer = aResponseBuilder.req.getSchema().getQueryAnalyzer();
+        final IndexSearcher theSearcher = aResponseBuilder.req.getSearcher();
+        final Analyzer theAnalyzer = aResponseBuilder.req.getSchema().getQueryAnalyzer();
 
-        SearchPhraseSuggester theSuggester = new SearchPhraseSuggester(theSearcher, theAnalyzer,
+        final SearchPhraseSuggester theSuggester = new SearchPhraseSuggester(theSearcher, theAnalyzer,
                 new SearchPhraseSuggester.SearchPhraseSuggesterConfiguration() {
                     @Override
                     public int getSuggestionSlop() {
@@ -69,12 +69,12 @@ public class SearchPhraseSuggesterComponent extends SearchComponent {
                     }
                 });
 
-        NamedList theResponse = new NamedList();
+        final NamedList theResponse = new NamedList();
 
-        List<Suggestion> theResult = theSuggester.suggestSearchPhrase(IndexFields.CONTENT, theRequestParams.get(TOKEN_PARAM));
+        final List<Suggestion> theResult = theSuggester.suggestSearchPhrase(IndexFields.CONTENT, theRequestParams.get(TOKEN_PARAM));
         for (int i=0;i<theResult.size();i++) {
-            Suggestion theSuggestion = theResult.get(i);
-            Map<String, String> theEntry = new HashMap<>();
+            final Suggestion theSuggestion = theResult.get(i);
+            final Map<String, String> theEntry = new HashMap<>();
             theEntry.put("value", theSuggestion.getValue());
             theEntry.put("label", theSuggestion.getLabel());
 

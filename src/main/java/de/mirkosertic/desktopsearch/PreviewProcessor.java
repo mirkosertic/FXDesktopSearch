@@ -25,14 +25,14 @@ class PreviewProcessor {
 
         generators = new HashSet<>();
 
-        ServiceLoader<PreviewGenerator> theGeneratorLoader = ServiceLoader.load(PreviewGenerator.class, getClass().getClassLoader());
-        for (PreviewGenerator aTheGeneratorLoader : theGeneratorLoader) {
+        final ServiceLoader<PreviewGenerator> theGeneratorLoader = ServiceLoader.load(PreviewGenerator.class, getClass().getClassLoader());
+        for (final PreviewGenerator aTheGeneratorLoader : theGeneratorLoader) {
             generators.add(aTheGeneratorLoader);
         }
     }
 
-    public Preview computePreviewFor(File aFile) {
-        for (PreviewGenerator theGenerator : generators) {
+    public Preview computePreviewFor(final File aFile) {
+        for (final PreviewGenerator theGenerator : generators) {
             if (theGenerator.supportsFile(aFile)) {
                 return theGenerator.createPreviewFor(aFile);
             }
@@ -40,8 +40,8 @@ class PreviewProcessor {
         return null;
     }
 
-    public boolean previewAvailableFor(File aFile) {
-        for (PreviewGenerator theGenerator : generators) {
+    public boolean previewAvailableFor(final File aFile) {
+        for (final PreviewGenerator theGenerator : generators) {
             if (theGenerator.supportsFile(aFile)) {
                 return true;
             }

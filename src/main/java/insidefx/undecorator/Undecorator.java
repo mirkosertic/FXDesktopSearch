@@ -40,13 +40,23 @@ import javafx.geometry.Side;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
@@ -132,17 +142,17 @@ public class Undecorator extends StackPane {
         return fullscreenProperty;
     }
 
-    public Undecorator(Stage stage, Region root) {
+    public Undecorator(final Stage stage, final Region root) {
         this(stage, root, "stagedecoration.fxml", StageStyle.UNDECORATED);
     }
 
-    private Undecorator(Stage stag, Region clientArea, String stageDecorationFxml, StageStyle st) {
+    private Undecorator(final Stage stag, final Region clientArea, final String stageDecorationFxml, final StageStyle st) {
         create(stag, clientArea, getClass().getResource(stageDecorationFxml), st);
     }
-    private Undecorator(Stage stag, Region clientArea, URL stageDecorationFxmlAsURL, StageStyle st) {
+    private Undecorator(final Stage stag, final Region clientArea, final URL stageDecorationFxmlAsURL, final StageStyle st) {
         create(stag, clientArea, stageDecorationFxmlAsURL, st);
     }
-    void create(Stage stag, Region clientArea, URL stageDecorationFxmlAsURL, StageStyle st) {
+    void create(final Stage stag, final Region clientArea, final URL stageDecorationFxmlAsURL, final StageStyle st) {
         this.stage = stag;
         this.clientArea = clientArea;
 
@@ -173,11 +183,11 @@ public class Undecorator extends StackPane {
 
         // UI part of the decoration
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(stageDecorationFxmlAsURL);
+            final FXMLLoader fxmlLoader = new FXMLLoader(stageDecorationFxmlAsURL);
 //            fxmlLoader.setController(new StageDecorationController(this));
             fxmlLoader.setController(this);
             stageDecoration = fxmlLoader.load();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.log(Level.SEVERE, "Decorations not found", ex);
         }
         initDecoration();
@@ -292,7 +302,7 @@ public class Undecorator extends StackPane {
      *
      * @param scene
      */
-    public void installAccelerators(Scene scene) {
+    public void installAccelerators(final Scene scene) {
         // Accelerators
         if (stage.isResizable()) {
             scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN, KeyCombination.SHORTCUT_DOWN),
@@ -307,21 +317,21 @@ public class Undecorator extends StackPane {
      * stage
      */
     private void computeAllSizes() {
-        double minWidth = minWidth(getHeight());
+        final double minWidth = minWidth(getHeight());
         setMinWidth(minWidth);
-        double minHeight = minHeight(getWidth());
+        final double minHeight = minHeight(getWidth());
         setMinHeight(minHeight);
 
-        double prefHeight = prefHeight(getWidth());
+        final double prefHeight = prefHeight(getWidth());
         setPrefHeight(prefHeight);
-        double prefWidth = prefWidth(getHeight());
+        final double prefWidth = prefWidth(getHeight());
         setPrefWidth(prefWidth);
 
-        double maxWidth = maxWidth(getHeight());
+        final double maxWidth = maxWidth(getHeight());
         if (maxWidth > 0) {
             setMaxWidth(maxWidth);
         }
-        double maxHeight = maxHeight(getWidth());
+        final double maxHeight = maxHeight(getWidth());
         if (maxHeight > 0) {
             setMaxHeight(maxHeight);
         }
@@ -331,40 +341,40 @@ public class Undecorator extends StackPane {
      */
 
     @Override
-    protected double computePrefWidth(double d) {
+    protected double computePrefWidth(final double d) {
         return clientArea.getPrefWidth() + SHADOW_WIDTH * 2 + RESIZE_PADDING * 2;
     }
 
     @Override
-    protected double computePrefHeight(double d) {
+    protected double computePrefHeight(final double d) {
         return clientArea.getPrefHeight() + SHADOW_WIDTH * 2 + RESIZE_PADDING * 2;
     }
 
     @Override
-    protected double computeMaxHeight(double d) {
+    protected double computeMaxHeight(final double d) {
         return clientArea.getMaxHeight() + SHADOW_WIDTH * 2 + RESIZE_PADDING * 2;
     }
 
     @Override
-    protected double computeMinHeight(double d) {
+    protected double computeMinHeight(final double d) {
         double d2 = super.computeMinHeight(d);
         d2 += SHADOW_WIDTH * 2 + RESIZE_PADDING * 2;
         return d2;
     }
 
     @Override
-    protected double computeMaxWidth(double d) {
+    protected double computeMaxWidth(final double d) {
         return clientArea.getMaxWidth() + SHADOW_WIDTH * 2 + RESIZE_PADDING * 2;
     }
 
     @Override
-    protected double computeMinWidth(double d) {
+    protected double computeMinWidth(final double d) {
         double d2 = super.computeMinWidth(d);
         d2 += SHADOW_WIDTH * 2 + RESIZE_PADDING * 2;
         return d2;
     }
 
-    void setStageStyle(StageStyle st) {
+    void setStageStyle(final StageStyle st) {
         stageStyle = st;
     }
 
@@ -379,7 +389,7 @@ public class Undecorator extends StackPane {
         super.setOpacity(0);
         stage.showingProperty().addListener((ov, t, t1) -> {
             if (t1) {
-                FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), Undecorator.this);
+                final FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), Undecorator.this);
                 fadeTransition.setToValue(1);
                 fadeTransition.play();
             }
@@ -391,7 +401,7 @@ public class Undecorator extends StackPane {
      * application/window is supposed to be closed
      */
     public void setFadeOutTransition() {
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), Undecorator.this);
+        final FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), Undecorator.this);
         fadeTransition.setToValue(0);
         fadeTransition.play();
         fadeTransition.setOnFinished(t -> {
@@ -444,7 +454,7 @@ public class Undecorator extends StackPane {
         }
 
         // Close
-        MenuItem closeMenuItem = new MenuItem(LOC.getString("Close"));
+        final MenuItem closeMenuItem = new MenuItem(LOC.getString("Close"));
         closeMenuItem.setOnAction(e -> switchClose());
         closeMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN));
 
@@ -465,7 +475,7 @@ public class Undecorator extends StackPane {
         // Maximize button
         // If changed via contextual menu
         maximizeProperty().addListener((ov, t, t1) -> {
-            Tooltip tooltip = maximize.getTooltip();
+            final Tooltip tooltip = maximize.getTooltip();
             if (tooltip.getText().equals(LOC.getString("Maximize"))) {
                 tooltip.setText(LOC.getString("Restore"));
                 maximizeMenuItem.setText(LOC.getString("Restore"));
@@ -521,14 +531,14 @@ public class Undecorator extends StackPane {
      * @param stage
      * @param node
      */
-    public void setAsStageDraggable(Stage stage, Node node) {
+    public void setAsStageDraggable(final Stage stage, final Node node) {
         undecoratorController.setAsStageDraggable(stage, node);
     }
 
     /**
      * Switch the visibility of the window's drop shadow
      */
-    void setShadow(boolean shadow) {
+    void setShadow(final boolean shadow) {
         // Already removed?
         if (!shadow && shadowRectangle.getEffect() == null) {
             return;
@@ -552,7 +562,7 @@ public class Undecorator extends StackPane {
      *
      * @param b
      */
-    void setShadowFocused(boolean b) {
+    void setShadowFocused(final boolean b) {
         if (b) {
             shadowRectangle.setEffect(dsFocused);
         } else {
@@ -565,11 +575,11 @@ public class Undecorator extends StackPane {
      */
     @Override
     public void layoutChildren() {
-        Bounds b = super.getLayoutBounds();
-        double w = b.getWidth();
-        double h = b.getHeight();
-        ObservableList<Node> list = super.getChildren();
-        for (Node node : list) {
+        final Bounds b = super.getLayoutBounds();
+        final double w = b.getWidth();
+        final double h = b.getHeight();
+        final ObservableList<Node> list = super.getChildren();
+        for (final Node node : list) {
             if (node == shadowRectangle) {
                 shadowRectangle.setWidth(w - SHADOW_WIDTH * 2);
                 shadowRectangle.setHeight(h - SHADOW_WIDTH * 2);
@@ -608,11 +618,11 @@ public class Undecorator extends StackPane {
         return glassPane;
     }
 
-    public void addGlassPane(Node node) {
+    public void addGlassPane(final Node node) {
         glassPane.getChildren().add(node);
     }
 
-    public void removeGlassPane(Node node) {
+    public void removeGlassPane(final Node node) {
         glassPane.getChildren().remove(node);
     }
 
@@ -640,9 +650,9 @@ public class Undecorator extends StackPane {
         dockFeedback.setCacheHint(CacheHint.SPEED);
         dockFeedback.setEffect(new DropShadow(BlurType.TWO_PASS_BOX, Color.BLACK, 10, 0.2, 3, 3));
         dockFeedback.setMouseTransparent(true);
-        BorderPane borderpane = new BorderPane();
+        final BorderPane borderpane = new BorderPane();
         borderpane.setCenter(dockFeedback);
-        Scene scene = new Scene(borderpane);
+        final Scene scene = new Scene(borderpane);
         scene.setFill(Color.TRANSPARENT);
         dockFeedbackPopup.setScene(scene);
         dockFeedbackPopup.sizeToScene();
@@ -672,7 +682,7 @@ public class Undecorator extends StackPane {
      * @param x
      * @param y
      */
-    public void setDockFeedbackVisible(double x, double y, double width, double height) {
+    public void setDockFeedbackVisible(final double x, final double y, final double width, final double height) {
         dockFeedbackPopup.setX(x);
         dockFeedbackPopup.setY(y);
 
@@ -711,13 +721,13 @@ public class Undecorator extends StackPane {
     }
 
     private static void loadConfig() {
-        Properties prop = new Properties();
+        final Properties prop = new Properties();
 
         try {
             prop.load(Undecorator.class.getClassLoader().getResourceAsStream("skin/undecorator.properties"));
             SHADOW_WIDTH = Integer.parseInt(prop.getProperty("window-shadow-width"));
             RESIZE_PADDING = Integer.parseInt(prop.getProperty("window-resize-padding"));
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Error while loading confguration flie", ex);
         }
         LOC = ResourceBundle.getBundle("insidefx/undecorator/resources/localization", Locale.getDefault());

@@ -38,7 +38,7 @@ class Backend implements ConfigurationChangeListener {
         private final EventType type;
         private final BasicFileAttributes attributes;
 
-        public FileEvent(Configuration.CrawlLocation aCrawlLocation, Path aPath, BasicFileAttributes aFileAttributes, EventType aEventType) {
+        public FileEvent(final Configuration.CrawlLocation aCrawlLocation, final Path aPath, final BasicFileAttributes aFileAttributes, final EventType aEventType) {
             crawlLocation = aCrawlLocation;
             path = aPath;
             type = aEventType;
@@ -51,7 +51,7 @@ class Backend implements ConfigurationChangeListener {
         private final FileEvent fileEvent;
         private final Content content;
 
-        public LuceneCommand(FileEvent aFileEvent, Content aContent) {
+        public LuceneCommand(final FileEvent aFileEvent, final Content aContent) {
             fileEvent = aFileEvent;
             content = aContent;
         }
@@ -70,7 +70,7 @@ class Backend implements ConfigurationChangeListener {
     private Configuration configuration;
     private DirectoryListener directoryListener;
 
-    public Backend(Notifier aNotifier, Configuration aConfiguration, PreviewProcessor aPreviewProcessor) throws IOException {
+    public Backend(final Notifier aNotifier, final Configuration aConfiguration, final PreviewProcessor aPreviewProcessor) throws IOException {
         notifier = aNotifier;
         previewProcessor = aPreviewProcessor;
         locations = new HashMap<>();
@@ -83,42 +83,42 @@ class Backend implements ConfigurationChangeListener {
             directoryListener = new DirectoryListener() {
 
                 @Override
-                public void fileDeleted(Configuration.CrawlLocation aLocation, Path aFile) {
+                public void fileDeleted(final Configuration.CrawlLocation aLocation, final Path aFile) {
                     synchronized (this) {
                         try {
                             if (contentExtractor.supportsFile(aFile.toString())) {
-                                BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                                final BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
                                 sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.DELETED));
                             }
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             LOGGER.error("Error processing file " + aFile, e);
                         }
                     }
                 }
 
                 @Override
-                public void fileCreatedOrModified(Configuration.CrawlLocation aLocation, Path aFile) {
+                public void fileCreatedOrModified(final Configuration.CrawlLocation aLocation, final Path aFile) {
                     synchronized (this) {
                         try {
                             if (contentExtractor.supportsFile(aFile.toString())) {
-                                BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                                final BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
                                 sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
                             }
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             LOGGER.error("Error processing file " + aFile, e);
                         }
                     }
                 }
 
                 @Override
-                public void fileFoundByCrawler(Configuration.CrawlLocation aLocation, Path aFile) {
+                public void fileFoundByCrawler(final Configuration.CrawlLocation aLocation, final Path aFile) {
                     synchronized (this) {
                         try {
                             if (contentExtractor.supportsFile(aFile.toString())) {
-                                BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                                final BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
                                 sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
                             }
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             LOGGER.error("Error processing file " + aFile, e);
                         }
                     }
@@ -132,27 +132,27 @@ class Backend implements ConfigurationChangeListener {
             if (aFileEvent.type == FileEvent.EventType.DELETED) {
                 return true;
             }
-            Path thePath = aFileEvent.path;
-            String theFileName = thePath.toString();
+            final Path thePath = aFileEvent.path;
+            final String theFileName = thePath.toString();
 
             try {
-                UpdateCheckResult theUpdateCheckResult = luceneIndexHandler
+                final UpdateCheckResult theUpdateCheckResult = luceneIndexHandler
                         .checkIfModified(theFileName, aFileEvent.attributes.lastModifiedTime().toMillis());
                 return theUpdateCheckResult == UpdateCheckResult.UPDATED;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw Exceptions.propagate(e);
             }
         });
 
         // Ok, we now map the file events to lucene commands
-        Flux<LuceneCommand> theLuceneFlux = theFileEventFlux.publishOn(Schedulers.newSingle("ContentExtractor")).map(
+        final Flux<LuceneCommand> theLuceneFlux = theFileEventFlux.publishOn(Schedulers.newSingle("ContentExtractor")).map(
                 aFileEvent -> {
                     if (aFileEvent.type == FileEvent.EventType.DELETED) {
                         return new LuceneCommand(aFileEvent, null);
                     }
 
-                    Path thePath = aFileEvent.path;
-                    Content theContent = contentExtractor.extractContentFrom(thePath, aFileEvent.attributes);
+                    final Path thePath = aFileEvent.path;
+                    final Content theContent = contentExtractor.extractContentFrom(thePath, aFileEvent.attributes);
                     return new LuceneCommand(aFileEvent, theContent);
                 });
 
@@ -184,18 +184,18 @@ class Backend implements ConfigurationChangeListener {
             }
         }).subscribe(new BaseSubscriber<>() {
             @Override
-            protected void hookOnSubscribe(Subscription aSubscription) {
+            protected void hookOnSubscribe(final Subscription aSubscription) {
                 request(1);
             }
 
             @Override
-            protected void hookOnNext(LuceneCommand aCommand) {
+            protected void hookOnNext(final LuceneCommand aCommand) {
                 LOGGER.info("Processed command for " + aCommand.fileEvent.path);
                 request(1);
             }
 
             @Override
-            protected void hookOnError(Throwable aThrowable) {
+            protected void hookOnError(final Throwable aThrowable) {
                 LOGGER.error("Flux went into error state", aThrowable);
             }
         });
@@ -204,7 +204,7 @@ class Backend implements ConfigurationChangeListener {
     }
 
     @Override
-    public void configurationUpdated(Configuration aConfiguration) throws IOException {
+    public void configurationUpdated(final Configuration aConfiguration) throws IOException {
 
         setIndexLocation(aConfiguration);
 
@@ -213,26 +213,26 @@ class Backend implements ConfigurationChangeListener {
         locations.clear();
 
         aConfiguration.getCrawlLocations().forEach(e -> {
-            File theDirectory = e.getDirectory();
+            final File theDirectory = e.getDirectory();
             if (theDirectory.exists() && theDirectory.isDirectory()) {
                 try {
                     add(e);
-                } catch (IOException e1) {
+                } catch (final IOException e1) {
                     LOGGER.error("Error setting filesystem location for " + theDirectory, e1);
                 }
             }
         });
     }
 
-    public void setProgressListener(ProgressListener progressListener) {
+    public void setProgressListener(final ProgressListener progressListener) {
         this.progressListener = progressListener;
     }
 
-    private void add(Configuration.CrawlLocation aLocation) throws IOException {
+    private void add(final Configuration.CrawlLocation aLocation) throws IOException {
         locations.put(aLocation, new DirectoryWatcher(watchServiceCache, aLocation, DirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener, executorPool).startWatching());
     }
 
-    private void setIndexLocation(Configuration aConfiguration) throws IOException {
+    private void setIndexLocation(final Configuration aConfiguration) throws IOException {
         if (luceneIndexHandler != null) {
             shutdown();
         }
@@ -243,13 +243,13 @@ class Backend implements ConfigurationChangeListener {
 
         luceneIndexHandler.crawlingStarts();
 
-        Thread theRunner = new Thread(() -> {
+        final Thread theRunner = new Thread(() -> {
 
             LOGGER.info("Startint to crawl");;
             locations.values().forEach(theWatcher -> {
                 try {
                     theWatcher.crawl();
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.error("Error while crawling", e);
                 }
             });
@@ -263,15 +263,15 @@ class Backend implements ConfigurationChangeListener {
         luceneIndexHandler.shutdown();
     }
 
-    public QueryResult performQuery(String aQueryString, String aBacklink, String aBasePath, Map<String, String> aDrilldownDimensions) throws IOException {
+    public QueryResult performQuery(final String aQueryString, final String aBacklink, final String aBasePath, final Map<String, String> aDrilldownDimensions) throws IOException {
         return luceneIndexHandler.performQuery(aQueryString, aBacklink, aBasePath, configuration, aDrilldownDimensions);
     }
 
-    public Suggestion[] findSuggestionTermsFor(String aTerm) throws IOException {
+    public Suggestion[] findSuggestionTermsFor(final String aTerm) throws IOException {
         return luceneIndexHandler.findSuggestionTermsFor(aTerm);
     }
 
-    public File getFileOnDiskForDocument(String aDocumentID) throws IOException {
+    public File getFileOnDiskForDocument(final String aDocumentID) throws IOException {
         return luceneIndexHandler.getFileOnDiskForDocument(aDocumentID);
     }
 }

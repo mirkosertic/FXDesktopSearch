@@ -44,7 +44,7 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
     private final DefaultDocumentFormatRegistry documentFormatRegistry;
 
     private static SocketOpenOfficeConnection createConnection() throws ConnectException {
-        SocketOpenOfficeConnection theConnection = new SocketOpenOfficeConnection(8100);
+        final SocketOpenOfficeConnection theConnection = new SocketOpenOfficeConnection(8100);
         theConnection.connect();
         return theConnection;
     }
@@ -61,30 +61,30 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
 
         documentFormatRegistry = new DefaultDocumentFormatRegistry();
         // DOCX Stuff is missing in the default registry
-        DocumentFormat theDOCXFormat = new DocumentFormat("Microsoft Word", DocumentFamily.TEXT, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx");
+        final DocumentFormat theDOCXFormat = new DocumentFormat("Microsoft Word", DocumentFamily.TEXT, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx");
         theDOCXFormat.setExportFilter(DocumentFamily.TEXT, "MS Word 2007");
         documentFormatRegistry.addDocumentFormat(theDOCXFormat);
         // PPTX Stuff is missing in the default registry
-        DocumentFormat thePPTXFormat = new DocumentFormat("Microsoft Powerpoint", DocumentFamily.PRESENTATION, "application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx");
+        final DocumentFormat thePPTXFormat = new DocumentFormat("Microsoft Powerpoint", DocumentFamily.PRESENTATION, "application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx");
         theDOCXFormat.setExportFilter(DocumentFamily.TEXT, "MS Word 2007");
         documentFormatRegistry.addDocumentFormat(thePPTXFormat);
 
         try {
-            SocketOpenOfficeConnection theConnection = createConnection();
+            final SocketOpenOfficeConnection theConnection = createConnection();
             theConnection.disconnect();
             enabled = true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Error connecting to OpenOffice on port 8100");
             enabled = false;
         }
     }
 
     @Override
-    public boolean supportsFile(File aFile) {
+    public boolean supportsFile(final File aFile) {
         if (!enabled) {
             return false;
         }
-        for (SupportedDocumentType theType : suppportedDocumentTypes) {
+        for (final SupportedDocumentType theType : suppportedDocumentTypes) {
             if (theType.matches(aFile)) {
                 return true;
             }
@@ -93,36 +93,36 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
     }
 
     @Override
-    public Preview createPreviewFor(File aFile) {
+    public Preview createPreviewFor(final File aFile) {
         File theTempFile = null;
         SocketOpenOfficeConnection theConnection = null;
         try {
 
             theConnection = createConnection();
 
-            OpenOfficeDocumentConverter theConverter = new OpenOfficeDocumentConverter(theConnection, documentFormatRegistry);
+            final OpenOfficeDocumentConverter theConverter = new OpenOfficeDocumentConverter(theConnection, documentFormatRegistry);
             // Convert to OfficeOpen file
             theTempFile = File.createTempFile("jodtemp", ".odt");
             theConverter.convert(aFile, theTempFile);
 
             // Now we need to extract the thumbnail from the newly converted file
-            ZipFile theZipFile;
+            final ZipFile theZipFile;
             try {
                 theZipFile = new ZipFile(theTempFile);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("Error opening "+theTempFile, e);
                 return null;
             }
 
-            ZipEntry theThumbnailEntry = theZipFile.getEntry("Thumbnails/thumbnail.png");
+            final ZipEntry theThumbnailEntry = theZipFile.getEntry("Thumbnails/thumbnail.png");
             if (theThumbnailEntry == null) {
                 LOGGER.error("Cannot find thumbnail in "+theTempFile);
                 return null;
             }
 
-            BufferedImage theImage = ImageIO.read(new BufferedInputStream(theZipFile.getInputStream(theThumbnailEntry)));
+            final BufferedImage theImage = ImageIO.read(new BufferedInputStream(theZipFile.getInputStream(theThumbnailEntry)));
             return new Preview(ImageUtils.rescale(theImage, THUMB_WIDTH, THUMB_HEIGHT, ImageUtils.RescaleMethod.RESIZE_FIT_ONE_DIMENSION));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Error converting file " + aFile, e);
             return null;
         } finally {

@@ -37,7 +37,7 @@ import java.net.URL;
 
 public class DesktopSearch extends Application {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         launch(args);
     }
 
@@ -47,20 +47,20 @@ public class DesktopSearch extends Application {
     private ConfigurationManager configurationManager;
 
     @Override
-    public void start(Stage aStage) throws Exception {
+    public void start(final Stage aStage) throws Exception {
 
         // This is our base directory
-        File theBaseDirectory = new File(SystemUtils.getUserHome(), "FreeSearchIndexDir");
+        final File theBaseDirectory = new File(SystemUtils.getUserHome(), "FreeSearchIndexDir");
         theBaseDirectory.mkdirs();
 
         configurationManager = new ConfigurationManager(theBaseDirectory);
 
-        Notifier theNotifier = new Notifier();
+        final Notifier theNotifier = new Notifier();
 
         stage = aStage;
 
         // Create the known preview processors
-        PreviewProcessor thePreviewProcessor = new PreviewProcessor();
+        final PreviewProcessor thePreviewProcessor = new PreviewProcessor();
 
         try {
             // Boot the search backend and set it up for listening to configuration changes
@@ -71,13 +71,13 @@ public class DesktopSearch extends Application {
             embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend, thePreviewProcessor, configurationManager);
 
             embeddedWebServer.start();
-        } catch (BindException|LockReleaseFailedException|LockObtainFailedException e) {
+        } catch (final BindException|LockReleaseFailedException|LockObtainFailedException e) {
             // In this case, there is already an instance of DesktopSearch running
             // Inform the instance to bring it to front end terminate the current process.
-            URL theURL = new URL(FrontendEmbeddedWebServer.getBringToFrontUrl());
+            final URL theURL = new URL(FrontendEmbeddedWebServer.getBringToFrontUrl());
             // Retrieve the content, but it can be safely ignored
             // There must only be the get request
-            Object theContent = theURL.getContent();
+            final Object theContent = theURL.getContent();
 
             // Terminate the JVM. The window of the running instance is visible now.
             System.exit(0);
@@ -90,16 +90,16 @@ public class DesktopSearch extends Application {
         aStage.setMinHeight(480);
         aStage.initStyle(StageStyle.TRANSPARENT);
 
-        FXMLLoader theLoader = new FXMLLoader(getClass().getResource("/scenes/mainscreen.fxml"));
-        AnchorPane theMainScene = theLoader.load();
+        final FXMLLoader theLoader = new FXMLLoader(getClass().getResource("/scenes/mainscreen.fxml"));
+        final AnchorPane theMainScene = theLoader.load();
 
         final DesktopSearchController theController = theLoader.getController();
         theController.configure(this, backend, FrontendEmbeddedWebServer.getSearchUrl(), stage.getOwner());
 
-        Undecorator theUndecorator = new Undecorator(stage, theMainScene);
+        final Undecorator theUndecorator = new Undecorator(stage, theMainScene);
         theUndecorator.getStylesheets().add("/skin/undecorator.css");
 
-        Scene theScene = new Scene(theUndecorator);
+        final Scene theScene = new Scene(theUndecorator);
 
         // Hacky, but works...
         theUndecorator.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
@@ -111,18 +111,18 @@ public class DesktopSearch extends Application {
 
         if (SystemTray.isSupported()) {
             Platform.setImplicitExit(false);
-            SystemTray theTray = SystemTray.getSystemTray();
+            final SystemTray theTray = SystemTray.getSystemTray();
 
             // We need to reformat the icon according to the current tray icon dimensions
             // this depends on the underlying OS
-            java.awt.Image theTrayIconImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/fds_small.png"));
-            int trayIconWidth = new TrayIcon(theTrayIconImage).getSize().width;
-            TrayIcon theTrayIcon = new TrayIcon(theTrayIconImage.getScaledInstance(trayIconWidth, -1, java.awt.Image.SCALE_SMOOTH), "Free Desktop Search");
+            final java.awt.Image theTrayIconImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/fds_small.png"));
+            final int trayIconWidth = new TrayIcon(theTrayIconImage).getSize().width;
+            final TrayIcon theTrayIcon = new TrayIcon(theTrayIconImage.getScaledInstance(trayIconWidth, -1, java.awt.Image.SCALE_SMOOTH), "Free Desktop Search");
             theTrayIcon.setImageAutoSize(true);
             theTrayIcon.setToolTip("FXDesktopSearch");
             theTrayIcon.addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(MouseEvent e) {
+                public void mouseClicked(final MouseEvent e) {
                     if (e.getClickCount() == 1) {
                         Platform.runLater(() -> {
                             if (stage.isIconified()) {

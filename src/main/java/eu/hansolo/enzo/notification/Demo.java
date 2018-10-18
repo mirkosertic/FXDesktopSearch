@@ -55,14 +55,14 @@ public class Demo extends Application {
 
 
     // ******************** Application start *********************************
-    @Override public void start(Stage stage) {
+    @Override public void start(final Stage stage) {
         notifier = Notification.Notifier.INSTANCE;
 
-        StackPane pane = new StackPane();
+        final StackPane pane = new StackPane();
         pane.setPadding(new Insets(10, 10, 10, 10));
         pane.getChildren().addAll(button);
 
-        Scene scene = new Scene(pane);
+        final Scene scene = new Scene(pane);
         stage.setOnCloseRequest(observable -> notifier.stop());
         stage.setScene(scene);
         stage.show();
@@ -71,7 +71,7 @@ public class Demo extends Application {
     @Override public void stop() {
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         launch(args);
     }
 }

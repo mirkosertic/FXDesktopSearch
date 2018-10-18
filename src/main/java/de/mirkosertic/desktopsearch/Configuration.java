@@ -31,7 +31,7 @@ public class Configuration {
             // Needed by Jackson
         }
 
-        public CrawlLocation(String aID, File aDirectory) {
+        public CrawlLocation(final String aID, final File aDirectory) {
             directory = aDirectory;
             id = aID;
         }
@@ -99,7 +99,7 @@ public class Configuration {
         metaDataNameReplacement.put("slide-count", "page-count");
     }
 
-    private Configuration(Configuration aConfiguration) {
+    private Configuration(final Configuration aConfiguration) {
         this();
         numberOfSuggestions = aConfiguration.numberOfSuggestions;
         numberOfSearchResults = aConfiguration.numberOfSearchResults;
@@ -115,7 +115,7 @@ public class Configuration {
         configDirectory = aConfiguration.configDirectory;
     }
 
-    public Configuration(File aConfigDirectory) {
+    public Configuration(final File aConfigDirectory) {
         this();
         configDirectory = aConfigDirectory;
     }
@@ -172,86 +172,86 @@ public class Configuration {
         return crawlOnStartup;
     }
 
-    public Configuration addLocation(CrawlLocation aCrawlLocation) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration addLocation(final CrawlLocation aCrawlLocation) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.crawlLocations.add(aCrawlLocation);
         return theConfiguration;
     }
 
-    public Configuration removeLocation(CrawlLocation aCrawlLocation) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration removeLocation(final CrawlLocation aCrawlLocation) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.crawlLocations.remove(aCrawlLocation);
         return theConfiguration;
     }
 
-    public Configuration updateIncludeSimilarDocuments(boolean aValue) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration updateIncludeSimilarDocuments(final boolean aValue) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.showSimilarDocuments = aValue;
         return theConfiguration;
     }
 
-    public Configuration updateNumberOfSearchResults(int aValue) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration updateNumberOfSearchResults(final int aValue) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.numberOfSearchResults = aValue;
         return theConfiguration;
     }
 
-    public Configuration updateNumberOfSuggestions(int aValue) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration updateNumberOfSuggestions(final int aValue) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.numberOfSuggestions = aValue;
         return theConfiguration;
     }
 
-    public Configuration enableDocumentType(SupportedDocumentType aType) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration enableDocumentType(final SupportedDocumentType aType) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.enabledDocumentTypes.add(aType);
         return theConfiguration;
     }
 
-    public Configuration disableDocumentType(SupportedDocumentType aType) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration disableDocumentType(final SupportedDocumentType aType) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.enabledDocumentTypes.remove(aType);
         return theConfiguration;
     }
 
-    public Configuration enableLanguage(SupportedLanguage aLanguage) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration enableLanguage(final SupportedLanguage aLanguage) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.enabledLanguages.add(aLanguage);
         return theConfiguration;
     }
 
-    public Configuration disableLanguage(SupportedLanguage aLanguage) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration disableLanguage(final SupportedLanguage aLanguage) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.enabledLanguages.remove(aLanguage);
         return theConfiguration;
     }
 
-    public Configuration updateSuggestionWindowBefore(int aValue) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration updateSuggestionWindowBefore(final int aValue) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.suggestionWindowBefore = aValue;
         return theConfiguration;
     }
 
-    public Configuration updateSuggestionWindowAfter(int aValue) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration updateSuggestionWindowAfter(final int aValue) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.suggestionWindowAfter = aValue;
         return theConfiguration;
     }
 
-    public Configuration updateSuggestionSlop(int aValue) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration updateSuggestionSlop(final int aValue) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.suggestionSlop = aValue;
         return theConfiguration;
     }
 
-    public Configuration updateSuggestionsInOrder(boolean aValue) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration updateSuggestionsInOrder(final boolean aValue) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.suggestionInOrder = aValue;
         return theConfiguration;
     }
 
-    public Configuration updateCrawlOnStartup(boolean aValue) {
-        Configuration theConfiguration = new Configuration(this);
+    public Configuration updateCrawlOnStartup(final boolean aValue) {
+        final Configuration theConfiguration = new Configuration(this);
         theConfiguration.crawlOnStartup = aValue;
         return theConfiguration;
     }

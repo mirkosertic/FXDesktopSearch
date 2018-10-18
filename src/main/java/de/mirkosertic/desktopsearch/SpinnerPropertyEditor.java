@@ -20,8 +20,8 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 public class SpinnerPropertyEditor extends AbstractPropertyEditor<Integer, Spinner<Integer>> {
 
-    public SpinnerPropertyEditor(PropertySheet.Item property) {
-        super(property, new Spinner<Integer>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 200)));
+    public SpinnerPropertyEditor(final PropertySheet.Item property) {
+        super(property, new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 200)));
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SpinnerPropertyEditor extends AbstractPropertyEditor<Integer, Spinn
     }
 
     @Override
-    public void setValue(Integer aValue) {
+    public void setValue(final Integer aValue) {
         getEditor().getValueFactory().setValue(aValue);
     }
 }

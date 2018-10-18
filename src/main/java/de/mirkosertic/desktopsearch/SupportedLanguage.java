@@ -50,7 +50,7 @@ public enum SupportedLanguage {
     public static SupportedLanguage getDefault() {
         try {
             return SupportedLanguage.valueOf(Locale.getDefault().getLanguage());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return SupportedLanguage.en;
         }
     }

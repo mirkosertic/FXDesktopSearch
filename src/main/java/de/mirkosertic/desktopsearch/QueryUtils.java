@@ -19,11 +19,11 @@ public final class QueryUtils {
     private QueryUtils() {
     }
 
-    public static boolean isWildCard(String aTerm) {
+    public static boolean isWildCard(final String aTerm) {
         return aTerm.contains(ASTERISK) || aTerm.contains("?");
     }
 
-    public static boolean isFuzzy(String aTerm) {
+    public static boolean isFuzzy(final String aTerm) {
         return aTerm.startsWith("~") && aTerm.length() > 1;
     }
 }

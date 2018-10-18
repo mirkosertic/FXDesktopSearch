@@ -40,13 +40,13 @@ class UndecoratorController {
     private static final int MAXIMIZE_BORDER = 20;  // Allow double click to maximize on top of the Scene
 
     {
-        String os = System.getProperty("os.name").toLowerCase();
+        final String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("mac")) {
             isMacOS = true;
         }
     }
 
-    public UndecoratorController(Undecorator ud) {
+    public UndecoratorController(final Undecorator ud) {
         undecorator = ud;
     }
 
@@ -57,7 +57,7 @@ class UndecoratorController {
     void maximizeOrRestore() {
 
 
-        Stage stage = undecorator.getStage();
+        final Stage stage = undecorator.getStage();
 
         if (maximized) {
             restoreSavedBounds(stage, false);
@@ -65,9 +65,9 @@ class UndecoratorController {
             savedBounds = null;
             maximized = false;
         } else {
-            ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-            Screen screen = screensForRectangle.get(0);
-            Rectangle2D visualBounds = screen.getVisualBounds();
+            final ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+            final Screen screen = screensForRectangle.get(0);
+            final Rectangle2D visualBounds = screen.getVisualBounds();
 
             savedBounds = new BoundingBox(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 
@@ -82,16 +82,16 @@ class UndecoratorController {
     }
 
     public void saveBounds() {
-        Stage stage = undecorator.getStage();
+        final Stage stage = undecorator.getStage();
         savedBounds = new BoundingBox(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
     }
 
     public void saveFullScreenBounds() {
-        Stage stage = undecorator.getStage();
+        final Stage stage = undecorator.getStage();
         savedFullScreenBounds = new BoundingBox(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
     }
 
-    void restoreSavedBounds(Stage stage, boolean fullscreen) {
+    void restoreSavedBounds(final Stage stage, final boolean fullscreen) {
 
         stage.setX(savedBounds.getMinX());
         stage.setY(savedBounds.getMinY());
@@ -100,7 +100,7 @@ class UndecoratorController {
         savedBounds = null;
     }
 
-    public void restoreFullScreenSavedBounds(Stage stage) {
+    public void restoreFullScreenSavedBounds(final Stage stage) {
 
         stage.setX(savedFullScreenBounds.getMinX());
         stage.setY(savedFullScreenBounds.getMinY());
@@ -109,8 +109,8 @@ class UndecoratorController {
         savedFullScreenBounds = null;
     }
 
-    void setFullScreen(boolean value) {
-        Stage stage = undecorator.getStage();
+    void setFullScreen(final boolean value) {
+        final Stage stage = undecorator.getStage();
         stage.setFullScreen(value);
     }
 
@@ -131,7 +131,7 @@ class UndecoratorController {
     }
 
     private void _minimize() {
-        Stage stage = undecorator.getStage();
+        final Stage stage = undecorator.getStage();
         stage.setIconified(true);
     }
 
@@ -143,7 +143,7 @@ class UndecoratorController {
      * @param PADDING
      * @param SHADOW
      */
-    public void setStageResizableWith(final Stage stage, final Node node, int PADDING, int SHADOW) {
+    public void setStageResizableWith(final Stage stage, final Node node, final int PADDING, final int SHADOW) {
 
         RESIZE_PADDING = PADDING;
         SHADOW_WIDTH = SHADOW;
@@ -188,10 +188,10 @@ class UndecoratorController {
 
             newX = mouseEvent.getScreenX();
             newY = mouseEvent.getScreenY();
-            double deltax = newX - initX;
-            double deltay = newY - initY;
+            final double deltax = newX - initX;
+            final double deltay = newY - initY;
 
-            Cursor cursor = node.getCursor();
+            final Cursor cursor = node.getCursor();
             if (Cursor.E_RESIZE.equals(cursor)) {
                 setStageWidth(stage, stage.getWidth() + deltax);
                 mouseEvent.consume();
@@ -246,9 +246,9 @@ class UndecoratorController {
             if (!stage.isResizable()) {
                 return;
             }
-            double x = mouseEvent.getX();
-            double y = mouseEvent.getY();
-            Bounds boundsInParent = node.getBoundsInParent();
+            final double x = mouseEvent.getX();
+            final double y = mouseEvent.getY();
+            final Bounds boundsInParent = node.getBoundsInParent();
             if (isRightEdge(x, y, boundsInParent)) {
                 if (y < RESIZE_PADDING + SHADOW_WIDTH) {
                     setCursor(node, Cursor.NE_RESIZE);
@@ -283,22 +283,22 @@ class UndecoratorController {
      *
      * @param y
      */
-    void setStageY(Stage stage, double y) {
+    void setStageY(final Stage stage, final double y) {
         try {
-            ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+            final ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
             if (screensForRectangle.size() > 0) {
-                Screen screen = screensForRectangle.get(0);
-                Rectangle2D visualBounds = screen.getVisualBounds();
+                final Screen screen = screensForRectangle.get(0);
+                final Rectangle2D visualBounds = screen.getVisualBounds();
                 if (y < visualBounds.getHeight() - 30 && y + SHADOW_WIDTH >= visualBounds.getMinY()) {
                     stage.setY(y);
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Undecorator.LOGGER.log(Level.SEVERE, "setStageY issue", e);
         }
     }
 
-    boolean setStageWidth(Stage stage, double width) {
+    boolean setStageWidth(final Stage stage, final double width) {
         if (width >= stage.getMinWidth()) {
             stage.setWidth(width);
             initX = newX;
@@ -307,7 +307,7 @@ class UndecoratorController {
         return false;
     }
 
-    boolean setStageHeight(Stage stage, double height) {
+    boolean setStageHeight(final Stage stage, final double height) {
         if (height >= stage.getMinHeight()) {
             stage.setHeight(height);
             initY = newY;
@@ -369,10 +369,10 @@ class UndecoratorController {
                 stage.setX(mouseEvent.getScreenX() - stage.getWidth() / 2);
                 stage.setY(mouseEvent.getScreenY() - SHADOW_WIDTH);
             }
-            double newX1 = mouseEvent.getScreenX();
-            double newY1 = mouseEvent.getScreenY();
-            double deltax = newX1 - initX;
-            double deltay = newY1 - initY;
+            final double newX1 = mouseEvent.getScreenX();
+            final double newY1 = mouseEvent.getScreenY();
+            final double deltax = newX1 - initX;
+            final double deltay = newY1 - initY;
             initX = newX1;
             initY = newY1;
             setCursor(node, Cursor.HAND);
@@ -401,26 +401,26 @@ class UndecoratorController {
     /**
      * (Humble) Simulation of Windows behavior on screen's edges Feedbacks
      */
-    void testDock(Stage stage, MouseEvent mouseEvent) {
+    void testDock(final Stage stage, final MouseEvent mouseEvent) {
 
         if (!stage.isResizable()) {
             return;
         }
 
-        int dockSide = getDockSide(mouseEvent);
+        final int dockSide = getDockSide(mouseEvent);
         // Dock Left
         if (dockSide == DOCK_LEFT) {
             if (lastDocked == DOCK_LEFT) {
                 return;
             }
-            ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-            Screen screen = screensForRectangle.get(0);
-            Rectangle2D visualBounds = screen.getVisualBounds();
+            final ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+            final Screen screen = screensForRectangle.get(0);
+            final Rectangle2D visualBounds = screen.getVisualBounds();
             // Dock Left
-            double x = visualBounds.getMinX();
-            double y = visualBounds.getMinY();
-            double width = visualBounds.getWidth() / 2;
-            double height = visualBounds.getHeight();
+            final double x = visualBounds.getMinX();
+            final double y = visualBounds.getMinY();
+            final double width = visualBounds.getWidth() / 2;
+            final double height = visualBounds.getHeight();
 
             undecorator.setDockFeedbackVisible(x, y, width, height);
             lastDocked = DOCK_LEFT;
@@ -429,14 +429,14 @@ class UndecoratorController {
             if (lastDocked == DOCK_RIGHT) {
                 return;
             }
-            ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-            Screen screen = screensForRectangle.get(0);
-            Rectangle2D visualBounds = screen.getVisualBounds();
+            final ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+            final Screen screen = screensForRectangle.get(0);
+            final Rectangle2D visualBounds = screen.getVisualBounds();
             // Dock Right (visualBounds = (javafx.geometry.Rectangle2D) Rectangle2D [minX = 1440.0, minY=300.0, maxX=3360.0, maxY=1500.0, width=1920.0, height=1200.0])
-            double x = visualBounds.getMinX() + visualBounds.getWidth() / 2;
-            double y = visualBounds.getMinY();
-            double width = visualBounds.getWidth() / 2;
-            double height = visualBounds.getHeight();
+            final double x = visualBounds.getMinX() + visualBounds.getWidth() / 2;
+            final double y = visualBounds.getMinY();
+            final double width = visualBounds.getWidth() / 2;
+            final double height = visualBounds.getHeight();
 
             undecorator.setDockFeedbackVisible(x, y, width, height);
             lastDocked = DOCK_RIGHT;
@@ -445,14 +445,14 @@ class UndecoratorController {
             if (lastDocked == DOCK_TOP) {
                 return;
             }
-            ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-            Screen screen = screensForRectangle.get(0);
-            Rectangle2D visualBounds = screen.getVisualBounds();
+            final ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+            final Screen screen = screensForRectangle.get(0);
+            final Rectangle2D visualBounds = screen.getVisualBounds();
             // Dock Left
-            double x = visualBounds.getMinX();
-            double y = visualBounds.getMinY();
-            double width = visualBounds.getWidth();
-            double height = visualBounds.getHeight();
+            final double x = visualBounds.getMinX();
+            final double y = visualBounds.getMinY();
+            final double width = visualBounds.getWidth();
+            final double height = visualBounds.getHeight();
             undecorator.setDockFeedbackVisible(x, y, width, height);
             lastDocked = DOCK_TOP;
         } else {
@@ -467,16 +467,16 @@ class UndecoratorController {
      * @param mouseEvent
      * @return DOCK_LEFT,DOCK_RIGHT,DOCK_TOP
      */
-    int getDockSide(MouseEvent mouseEvent) {
+    int getDockSide(final MouseEvent mouseEvent) {
         double minX = Double.POSITIVE_INFINITY;
         double minY = Double.POSITIVE_INFINITY;
         double maxX = 0;
         double maxY = 0;
 
         // Get "big" screen bounds
-        ObservableList<Screen> screens = Screen.getScreens();
-        for (Screen screen : screens) {
-            Rectangle2D visualBounds = screen.getVisualBounds();
+        final ObservableList<Screen> screens = Screen.getScreens();
+        for (final Screen screen : screens) {
+            final Rectangle2D visualBounds = screen.getVisualBounds();
             minX = Math.min(minX, visualBounds.getMinX());
             minY = Math.min(minY, visualBounds.getMinY());
             maxX = Math.max(maxX, visualBounds.getMaxX());
@@ -496,10 +496,10 @@ class UndecoratorController {
     /**
      * (Humble) Simulation of Windows behavior on screen's edges Actions
      */
-    void dockActions(Stage stage, MouseEvent mouseEvent) {
-        ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-        Screen screen = screensForRectangle.get(0);
-        Rectangle2D visualBounds = screen.getVisualBounds();
+    void dockActions(final Stage stage, final MouseEvent mouseEvent) {
+        final ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+        final Screen screen = screensForRectangle.get(0);
+        final Rectangle2D visualBounds = screen.getVisualBounds();
         // Dock Left
         if (mouseEvent.getScreenX() == visualBounds.getMinX()) {
             savedBounds = new BoundingBox(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
@@ -524,35 +524,35 @@ class UndecoratorController {
 
     }
 
-    boolean isRightEdge(double x, double y, Bounds boundsInParent) {
+    boolean isRightEdge(final double x, final double y, final Bounds boundsInParent) {
         if (x < boundsInParent.getWidth() && x > boundsInParent.getWidth() - RESIZE_PADDING - SHADOW_WIDTH) {
             return true;
         }
         return false;
     }
 
-    boolean isTopEdge(double x, double y, Bounds boundsInParent) {
+    boolean isTopEdge(final double x, final double y, final Bounds boundsInParent) {
         if (y >= 0 && y < RESIZE_PADDING + SHADOW_WIDTH) {
             return true;
         }
         return false;
     }
 
-    boolean isBottomEdge(double x, double y, Bounds boundsInParent) {
+    boolean isBottomEdge(final double x, final double y, final Bounds boundsInParent) {
         if (y < boundsInParent.getHeight() && y > boundsInParent.getHeight() - RESIZE_PADDING - SHADOW_WIDTH) {
             return true;
         }
         return false;
     }
 
-    boolean isLeftEdge(double x, double y, Bounds boundsInParent) {
+    boolean isLeftEdge(final double x, final double y, final Bounds boundsInParent) {
         if (x >= 0 && x < RESIZE_PADDING + SHADOW_WIDTH) {
             return true;
         }
         return false;
     }
 
-    void setCursor(Node n, Cursor c) {
+    void setCursor(final Node n, final Cursor c) {
         n.setCursor(c);
     }
 }

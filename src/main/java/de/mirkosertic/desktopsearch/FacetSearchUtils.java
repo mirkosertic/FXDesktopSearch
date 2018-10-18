@@ -19,12 +19,12 @@ final class FacetSearchUtils {
     private FacetSearchUtils() {
     }
 
-    public static String encode(String aDimension, String aValue) {
+    public static String encode(final String aDimension, final String aValue) {
         return aDimension+"="+aValue;
     }
 
-    public static void addToMap(String aDimensionCriteria, Map<String, String> aDrilldownDimensions) {
-        int p = aDimensionCriteria.indexOf("=");
+    public static void addToMap(final String aDimensionCriteria, final Map<String, String> aDrilldownDimensions) {
+        final int p = aDimensionCriteria.indexOf("=");
         aDrilldownDimensions.put(aDimensionCriteria.substring(0, p), aDimensionCriteria.substring(p + 1));
     }
 }

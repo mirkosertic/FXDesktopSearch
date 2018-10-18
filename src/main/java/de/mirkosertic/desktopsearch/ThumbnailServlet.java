@@ -37,13 +37,13 @@ public class ThumbnailServlet extends HttpServlet {
     private final Backend backend;
     private final PreviewProcessor previewProcessor;
 
-    public ThumbnailServlet(Backend aBackend, PreviewProcessor aProcessor) {
+    public ThumbnailServlet(final Backend aBackend, final PreviewProcessor aProcessor) {
         backend = aBackend;
         previewProcessor = aProcessor;
     }
 
     @Override
-    protected void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
 
         aResponse.setHeader("Cache-Control", "no-cache"); //HTTP 1.1
         aResponse.setHeader("Pragma", "no-cache"); //HTTP 1.0
@@ -56,25 +56,25 @@ public class ThumbnailServlet extends HttpServlet {
         // Strip the first path
         theFilename = theFilename.substring(1);
 
-        int theSlash = theFilename.indexOf("/");
-        String theType = theFilename.substring(0, theSlash);
+        final int theSlash = theFilename.indexOf("/");
+        final String theType = theFilename.substring(0, theSlash);
 
         theFilename = theFilename.substring(theSlash + 1);
 
-        int theDot = theFilename.lastIndexOf('.');
-        String theDocumentID = theFilename.substring(0, theDot);
-        String theFileType = theFilename.substring(theDot + 1);
+        final int theDot = theFilename.lastIndexOf('.');
+        final String theDocumentID = theFilename.substring(0, theDot);
+        final String theFileType = theFilename.substring(theDot + 1);
 
-        File theFileOnDisk = backend.getFileOnDiskForDocument(theDocumentID);
+        final File theFileOnDisk = backend.getFileOnDiskForDocument(theDocumentID);
 
         if (theFileOnDisk != null && theFileOnDisk.exists()) {
 
             LOGGER.info("Found file on disk " + theFileOnDisk);
 
             if (TYPE_ICON.equals(theType)) {
-                Icon theFileIcon = FileSystemView.getFileSystemView().getSystemIcon(theFileOnDisk);
+                final Icon theFileIcon = FileSystemView.getFileSystemView().getSystemIcon(theFileOnDisk);
 
-                BufferedImage theImage = new BufferedImage(theFileIcon.getIconWidth(), theFileIcon.getIconHeight(),
+                final BufferedImage theImage = new BufferedImage(theFileIcon.getIconWidth(), theFileIcon.getIconHeight(),
                         BufferedImage.TYPE_INT_ARGB);
                 theFileIcon.paintIcon(null, theImage.getGraphics(), 0, 0);
 
@@ -82,7 +82,7 @@ public class ThumbnailServlet extends HttpServlet {
             }
 
             if (TYPE_PREVIEW.equals(theType)) {
-                Preview thePreview = previewProcessor.computePreviewFor(theFileOnDisk);
+                final Preview thePreview = previewProcessor.computePreviewFor(theFileOnDisk);
                 if (thePreview != null) {
 
                     ImageIO.write(thePreview.getImage(), theFileType, aResponse.getOutputStream());

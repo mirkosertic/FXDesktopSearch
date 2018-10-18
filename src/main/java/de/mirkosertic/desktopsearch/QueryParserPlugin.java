@@ -24,21 +24,22 @@ import org.apache.solr.search.SyntaxError;
 public class QueryParserPlugin extends QParserPlugin {
 
     @Override
-    public void init(NamedList args) {
+    public void init(final NamedList args) {
         super.init(args);
     }
 
     @Override
-    public QParser createParser(String aQueryString, SolrParams aLocalParams, SolrParams aParams, SolrQueryRequest aRequest) {
+    public QParser createParser(
+            final String aQueryString, final SolrParams aLocalParams, final SolrParams aParams, final SolrQueryRequest aRequest) {
         return new QParser(aQueryString, aLocalParams, aParams, aRequest) {
             @Override
             public Query parse() throws SyntaxError {
-                IndexSchema theSchema = aRequest.getSchema();
-                QueryParser theParser = new QueryParser(theSchema.getQueryAnalyzer());
+                final IndexSchema theSchema = aRequest.getSchema();
+                final QueryParser theParser = new QueryParser(theSchema.getQueryAnalyzer());
                 try {
-                    Query theQuery = theParser.parse(aQueryString, IndexFields.CONTENT);
+                    final Query theQuery = theParser.parse(aQueryString, IndexFields.CONTENT);
                     return theQuery;
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     throw new SyntaxError(e);
                 }
             }

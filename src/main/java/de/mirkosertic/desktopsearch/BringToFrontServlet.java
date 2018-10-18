@@ -27,12 +27,12 @@ public class BringToFrontServlet extends HttpServlet {
 
     private final Stage stage;
 
-    public BringToFrontServlet(Stage aStage) {
+    public BringToFrontServlet(final Stage aStage) {
         stage = aStage;
     }
 
     @Override
-    protected void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
         Platform.runLater(() -> {
             stage.show();
             stage.toFront();

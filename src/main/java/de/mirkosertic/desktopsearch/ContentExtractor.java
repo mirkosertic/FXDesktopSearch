@@ -44,7 +44,7 @@ class ContentExtractor {
     private final Configuration configuration;
     private final LanguageDetector languageDetector;
 
-    public ContentExtractor(Configuration aConfiguration) {
+    public ContentExtractor(final Configuration aConfiguration) {
 
         // TODO: auch korrekt dieses Muster verarbeitrn :  Mon Feb 18 15:55:10 CET 2013
 
@@ -54,22 +54,22 @@ class ContentExtractor {
         tika = new Tika();
         tika.setMaxStringLength(1024 * 1024 * 5);
 
-        OptimaizeLangDetector theDetector = new OptimaizeLangDetector();
+        final OptimaizeLangDetector theDetector = new OptimaizeLangDetector();
         try {
             theDetector.loadModels();
             languageDetector = theDetector;
-        } catch (IOException e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     private String harmonizeMetaDataName(String aName) {
-        int p = aName.indexOf(":");
+        final int p = aName.indexOf(":");
         if (p>0) {
             aName = aName.substring(p+1);
         }
 
-        String theReplacement = configuration.getMetaDataNameReplacement().get(aName);
+        final String theReplacement = configuration.getMetaDataNameReplacement().get(aName);
         if (theReplacement != null) {
             return theReplacement;
         }
@@ -77,17 +77,17 @@ class ContentExtractor {
         return aName;
     }
 
-    public Content extractContentFrom(Path aFile, BasicFileAttributes aBasicFileAttributes) {
+    public Content extractContentFrom(final Path aFile, final BasicFileAttributes aBasicFileAttributes) {
         try {
-            Metadata theMetaData = new Metadata();
+            final Metadata theMetaData = new Metadata();
 
-            String theStringData;
+            final String theStringData;
             // Files under 10 Meg are read into memory as a whole
             if (aBasicFileAttributes.size() < 1024 * 1024 * 4) {
-                byte[] theData = Files.readAllBytes(aFile);
+                final byte[] theData = Files.readAllBytes(aFile);
                 theStringData = tika.parseToString(new ByteArrayInputStream(theData), theMetaData);
             } else {
-                try (InputStream theStream = Files.newInputStream(aFile, StandardOpenOption.READ)) {
+                try (final InputStream theStream = Files.newInputStream(aFile, StandardOpenOption.READ)) {
                     theStringData = tika.parseToString(new BufferedInputStream(theStream), theMetaData)
                             .replace('\n', ' ')
                             .replace('\r', ' ')
@@ -95,34 +95,34 @@ class ContentExtractor {
                 }
             }
 
-            LanguageResult theLanguageResult = languageDetector.detect(theStringData);
+            final LanguageResult theLanguageResult = languageDetector.detect(theStringData);
 
-            FileTime theFileTime = aBasicFileAttributes.lastModifiedTime();
+            final FileTime theFileTime = aBasicFileAttributes.lastModifiedTime();
             SupportedLanguage theLanguage = SupportedLanguage.getDefault();
             try {
                 theLanguage = SupportedLanguage.valueOf(theLanguageResult.getLanguage());
                 if (!configuration.getEnabledLanguages().contains(theLanguage)) {
                     theLanguage = SupportedLanguage.getDefault();
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.info("Language " + theLanguageResult.getLanguage() + " was detected, but is not supported");
             }
-            Content theContent = new Content(aFile.toString(), theStringData, aBasicFileAttributes.size(), theFileTime.toMillis(), theLanguage);
-            for (String theName : theMetaData.names()) {
+            final Content theContent = new Content(aFile.toString(), theStringData, aBasicFileAttributes.size(), theFileTime.toMillis(), theLanguage);
+            for (final String theName : theMetaData.names()) {
 
-                String theMetaDataValue = theMetaData.get(theName);
+                final String theMetaDataValue = theMetaData.get(theName);
 
                 // Try to detect if this is a date
-                Matcher theMatcher = metaDataDatePattern.matcher(theMetaDataValue);
+                final Matcher theMatcher = metaDataDatePattern.matcher(theMetaDataValue);
                 if (theMatcher.find()) {
-                    int theYear = Integer.parseInt(theMatcher.group(1));
-                    int theMonth = Integer.parseInt(theMatcher.group(2));
-                    int theDay = Integer.parseInt(theMatcher.group(3));
-                    int theHour = Integer.parseInt(theMatcher.group(4));
-                    int theMinute = Integer.parseInt(theMatcher.group(5));
-                    int theSecond = Integer.parseInt(theMatcher.group(6));
+                    final int theYear = Integer.parseInt(theMatcher.group(1));
+                    final int theMonth = Integer.parseInt(theMatcher.group(2));
+                    final int theDay = Integer.parseInt(theMatcher.group(3));
+                    final int theHour = Integer.parseInt(theMatcher.group(4));
+                    final int theMinute = Integer.parseInt(theMatcher.group(5));
+                    final int theSecond = Integer.parseInt(theMatcher.group(6));
 
-                    Calendar theCalendar = GregorianCalendar.getInstance(DateUtils.UTC, Locale.US);
+                    final Calendar theCalendar = GregorianCalendar.getInstance(DateUtils.UTC, Locale.US);
                     theCalendar.set(Calendar.YEAR, theYear);
                     theCalendar.set(Calendar.MONTH, theMonth - 1);
                     theCalendar.set(Calendar.DAY_OF_MONTH, theDay);
@@ -137,23 +137,23 @@ class ContentExtractor {
                 }
             }
 
-            String theFileName = aFile.toString();
-            int p = theFileName.lastIndexOf(".");
+            final String theFileName = aFile.toString();
+            final int p = theFileName.lastIndexOf(".");
             if (p > 0) {
-                String theExtension = theFileName.substring(p + 1);
+                final String theExtension = theFileName.substring(p + 1);
                 theContent.addMetaData(IndexFields.EXTENSION, theExtension.toLowerCase());
             }
 
             return theContent;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Error extracting content of " + aFile, e);
         }
 
         return null;
     }
 
-    public boolean supportsFile(String aFilename) {
-        for (SupportedDocumentType theType : configuration.getEnabledDocumentTypes()) {
+    public boolean supportsFile(final String aFilename) {
+        for (final SupportedDocumentType theType : configuration.getEnabledDocumentTypes()) {
             if (theType.supports(aFilename)) {
                 return true;
             }

@@ -18,7 +18,7 @@ public class Facet {
     private final long number;
     private final String link;
 
-    public Facet(String name, long number, String link) {
+    public Facet(final String name, final long number, final String link) {
         this.name = name;
         this.number = number;
         this.link = link;

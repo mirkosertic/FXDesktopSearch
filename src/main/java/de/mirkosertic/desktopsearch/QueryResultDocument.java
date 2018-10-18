@@ -34,7 +34,7 @@ public class QueryResultDocument {
 
     private final boolean previewAvailable;
 
-    public QueryResultDocument(int aDocumentID, String aFileName, String aHighlighterResult, long aLastModified, int aNormalizedScore, String aUniqueID, boolean aPreviewAvailable) {
+    public QueryResultDocument(final int aDocumentID, final String aFileName, final String aHighlighterResult, final long aLastModified, final int aNormalizedScore, final String aUniqueID, final boolean aPreviewAvailable) {
         previewAvailable = aPreviewAvailable;
         fileNames = new ArrayList<>();
         fileNames.add(aFileName);
@@ -50,7 +50,7 @@ public class QueryResultDocument {
         return fileNames;
     }
 
-    public void addFileName(String aFileName) {
+    public void addFileName(final String aFileName) {
         if (!fileNames.contains(aFileName)) {
             fileNames.add(aFileName);
         }
@@ -72,7 +72,7 @@ public class QueryResultDocument {
         return documentID;
     }
 
-    public void addSimilarFile(String aFileName) {
+    public void addSimilarFile(final String aFileName) {
         if (!similarFiles.contains(aFileName)) {
             similarFiles.add(aFileName);
         }

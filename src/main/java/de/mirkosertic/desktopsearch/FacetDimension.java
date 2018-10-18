@@ -19,7 +19,7 @@ public class FacetDimension {
     private final String name;
     private final List<Facet> facets;
 
-    public FacetDimension(String name, List<Facet> facets) {
+    public FacetDimension(final String name, final List<Facet> facets) {
         this.name = name;
         this.facets = facets;
     }

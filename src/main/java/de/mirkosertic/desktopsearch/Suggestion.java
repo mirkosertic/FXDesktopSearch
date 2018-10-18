@@ -21,7 +21,7 @@ public class Suggestion {
         // Used by Jackson
     }
 
-    public Suggestion(String aLabel, String aValue) {
+    public Suggestion(final String aLabel, final String aValue) {
         label = aLabel;
         value = aValue;
     }
