@@ -66,7 +66,7 @@ public class DesktopSearchController implements Initializable {
     @FXML
     MenuItem searchDocumentItem;
 
-    private DesktopSearch application;
+    private DesktopSearchMain application;
 
     private Backend backend;
 
@@ -145,7 +145,7 @@ public class DesktopSearchController implements Initializable {
 
     private String searchURL;
 
-    public void configure(final DesktopSearch aApplication, final Backend aBackend, final String aSearchURL, final Window aWindow) {
+    public void configure(final DesktopSearchMain aApplication, final Backend aBackend, final String aSearchURL, final Window aWindow) {
         window = aWindow;
         application = aApplication;
         backend = aBackend;
