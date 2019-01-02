@@ -44,7 +44,7 @@ Usage
 
 The following start screen is shown after you start the application:
 
-![](https://raw.githubusercontent.com/mirkosertic/FXDesktopSearch/master/documentation/startscreen.png)
+![](documentation/startscreen.png)
 
 After the first launch, you have configure the crawl locations and some other settings. This configuration can be done by clicking on File -> Configure.
 
@@ -53,7 +53,7 @@ Configuration
 
 The configuration screen is triggered by using File -> Configure. The following dialog will appear:
 
-![](https://raw.githubusercontent.com/mirkosertic/FXDesktopSearch/master/documentation/configuration.png)
+![](documentation/configuration.png)
 
 The following options are available:
 
@@ -77,7 +77,7 @@ After you have configured the application, crawling starts automatically a few s
 
 After the crawl is finished, you can start to search by clicking File -> Search document. The following search screen will be shown. Now you can enter a search phrase and click the magnifier icon. A search result as follows will be displayed:
 
-![](https://raw.githubusercontent.com/mirkosertic/FXDesktopSearch/master/documentation/searchresult.png)
+![](documentation/searchresult.png)
 
 You can click on the facets on the left side to further restrict(drilldown) your search result. You can also click on file names so open the files using the assigned application. FXDesktopSearch also detects similar or duplicate files, too! These files are listed in a green color below the filename. There is also some highlighted text to show what was the best matching text snippet of your search.
 
@@ -88,7 +88,7 @@ Search suggestions
 
 While typing a search phrase, FXDesktopSearch tries to suggest search phrases you might also want to consider. The following screenshot shows an example of this functionality:
 
-![](https://raw.githubusercontent.com/mirkosertic/FXDesktopSearch/master/documentation/searchsuggestion.png)
+![](documentation/searchsuggestion.png)
 
 The search suggestion is restricted or modified while you are typing. Please not that at least three characters must be entered per single word of your search phrase to enable search suggestions.
 
