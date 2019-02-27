@@ -21,7 +21,7 @@
 
     <properties>
         <lucene.version>7.5.0</lucene.version>
-        <solr.version>7.5.0</solr.version>
+        <solr.version>7.7.0</solr.version>
         <tika.version>1.20</tika.version>
         <projectrelease.version>2.2.0</projectrelease.version>
         <javafx.version>11.0.2</javafx.version>
