@@ -103,7 +103,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jsp</artifactId>
-            <version>9.2.26.v20180806</version>
+            <version>9.2.27.v20190403</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
