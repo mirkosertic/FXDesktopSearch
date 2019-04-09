@@ -19,7 +19,7 @@ class SuggestionServlet extends HttpServlet {
     }
 
     @Override
-    protected void service(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
+    protected void service(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws IOException {
         final String theTerm = aRequest.getParameter("term");
         final Suggestion[] theTerms = backend.findSuggestionTermsFor(theTerm);
 

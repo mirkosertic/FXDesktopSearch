@@ -24,10 +24,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
-import org.apache.lucene.search.highlight.Formatter;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.highlight.TokenGroup;
 import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
@@ -44,7 +42,7 @@ import java.util.stream.Collectors;
 
 class SearchPhraseSuggester {
 
-    public static interface SearchPhraseSuggesterConfiguration {
+    public interface SearchPhraseSuggesterConfiguration {
 
         int getSuggestionSlop();
 

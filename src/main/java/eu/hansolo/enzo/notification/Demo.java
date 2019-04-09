@@ -48,9 +48,7 @@ public class Demo extends Application {
     // ******************** Initialization ************************************
     @Override public void init() {
         button = new Button("Notify");
-        button.setOnAction(event -> {
-            notifier.notify(NOTIFICATIONS[RND.nextInt(4)]);
-        });
+        button.setOnAction(event -> notifier.notify(NOTIFICATIONS[RND.nextInt(4)]));
     }
 
 

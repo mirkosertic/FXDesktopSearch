@@ -33,7 +33,7 @@ public class SearchPhraseSuggesterComponent extends SearchComponent {
     public static final String NUMBERSUGGEST_PARAM = "fxsuggest.numbersuggest";
 
     @Override
-    public void prepare(final ResponseBuilder aResponseBuilder) throws IOException {
+    public void prepare(final ResponseBuilder aResponseBuilder) {
 
     }
 

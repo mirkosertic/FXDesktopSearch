@@ -31,7 +31,7 @@ public class QueryTokenizerTest {
 
     @Test
     public void testParse1() {
-        QueryTokenizer theTokenizer = new QueryTokenizer("  a b c +d -e ");
+        final QueryTokenizer theTokenizer = new QueryTokenizer("  a b c +d -e ");
         assertEquals(4, theTokenizer.getRequiredTerms().size());
         assertTrue(theTokenizer.getRequiredTerms().contains("a"));
         assertTrue(theTokenizer.getRequiredTerms().contains("b"));
@@ -43,7 +43,7 @@ public class QueryTokenizerTest {
 
     @Test
     public void testParse2() {
-        QueryTokenizer theTokenizer = new QueryTokenizer("test");
+        final QueryTokenizer theTokenizer = new QueryTokenizer("test");
         assertEquals(1, theTokenizer.getRequiredTerms().size());
         assertEquals(0, theTokenizer.getNotRequiredTerms().size());
         assertTrue(theTokenizer.getRequiredTerms().contains("test"));
@@ -51,7 +51,7 @@ public class QueryTokenizerTest {
 
     @Test
     public void testParse3() {
-        QueryTokenizer theTokenizer = new QueryTokenizer("-test");
+        final QueryTokenizer theTokenizer = new QueryTokenizer("-test");
         assertEquals(0, theTokenizer.getRequiredTerms().size());
         assertEquals(1, theTokenizer.getNotRequiredTerms().size());
         assertTrue(theTokenizer.getNotRequiredTerms().contains("test"));
@@ -59,7 +59,7 @@ public class QueryTokenizerTest {
 
     @Test
     public void testParse4() {
-        QueryTokenizer theTokenizer = new QueryTokenizer("++test");
+        final QueryTokenizer theTokenizer = new QueryTokenizer("++test");
         assertEquals(1, theTokenizer.getRequiredTerms().size());
         assertEquals(0, theTokenizer.getNotRequiredTerms().size());
         assertTrue(theTokenizer.getRequiredTerms().contains("+test"));
@@ -67,7 +67,7 @@ public class QueryTokenizerTest {
 
     @Test
     public void testParse5() {
-        QueryTokenizer theTokenizer = new QueryTokenizer("--test");
+        final QueryTokenizer theTokenizer = new QueryTokenizer("--test");
         assertEquals(0, theTokenizer.getRequiredTerms().size());
         assertEquals(1, theTokenizer.getNotRequiredTerms().size());
         assertTrue(theTokenizer.getNotRequiredTerms().contains("-test"));

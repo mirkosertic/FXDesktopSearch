@@ -32,7 +32,7 @@ public class BringToFrontServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws IOException {
         Platform.runLater(() -> {
             stage.show();
             stage.toFront();
