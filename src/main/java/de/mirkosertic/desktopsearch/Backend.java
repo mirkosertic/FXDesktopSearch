@@ -31,7 +31,7 @@ class Backend implements ConfigurationChangeListener {
 
     public static class FileEvent {
         public enum EventType {
-            UPDATED, DELETED;
+            UPDATED, DELETED
         }
         private final Configuration.CrawlLocation crawlLocation;
         private final Path path;
@@ -79,51 +79,49 @@ class Backend implements ConfigurationChangeListener {
         contentExtractor = new ContentExtractor(aConfiguration);
 
         // This is our simple flux
-        Flux<FileEvent> theFileEventFlux = Flux.push(sink -> {
-            directoryListener = new DirectoryListener() {
+        Flux<FileEvent> theFileEventFlux = Flux.push(sink -> directoryListener = new DirectoryListener() {
 
-                @Override
-                public void fileDeleted(final Configuration.CrawlLocation aLocation, final Path aFile) {
-                    synchronized (this) {
-                        try {
-                            if (contentExtractor.supportsFile(aFile.toString())) {
-                                final BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-                                sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.DELETED));
-                            }
-                        } catch (final Exception e) {
-                            LOGGER.error("Error processing file " + aFile, e);
+            @Override
+            public void fileDeleted(final Configuration.CrawlLocation aLocation, final Path aFile) {
+                synchronized (this) {
+                    try {
+                        if (contentExtractor.supportsFile(aFile.toString())) {
+                            final BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.DELETED));
                         }
+                    } catch (final Exception e) {
+                        LOGGER.error("Error processing file " + aFile, e);
                     }
                 }
+            }
 
-                @Override
-                public void fileCreatedOrModified(final Configuration.CrawlLocation aLocation, final Path aFile) {
-                    synchronized (this) {
-                        try {
-                            if (contentExtractor.supportsFile(aFile.toString())) {
-                                final BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-                                sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
-                            }
-                        } catch (final Exception e) {
-                            LOGGER.error("Error processing file " + aFile, e);
+            @Override
+            public void fileCreatedOrModified(final Configuration.CrawlLocation aLocation, final Path aFile) {
+                synchronized (this) {
+                    try {
+                        if (contentExtractor.supportsFile(aFile.toString())) {
+                            final BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
                         }
+                    } catch (final Exception e) {
+                        LOGGER.error("Error processing file " + aFile, e);
                     }
                 }
+            }
 
-                @Override
-                public void fileFoundByCrawler(final Configuration.CrawlLocation aLocation, final Path aFile) {
-                    synchronized (this) {
-                        try {
-                            if (contentExtractor.supportsFile(aFile.toString())) {
-                                final BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-                                sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
-                            }
-                        } catch (final Exception e) {
-                            LOGGER.error("Error processing file " + aFile, e);
+            @Override
+            public void fileFoundByCrawler(final Configuration.CrawlLocation aLocation, final Path aFile) {
+                synchronized (this) {
+                    try {
+                        if (contentExtractor.supportsFile(aFile.toString())) {
+                            final BasicFileAttributes theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
                         }
+                    } catch (final Exception e) {
+                        LOGGER.error("Error processing file " + aFile, e);
                     }
                 }
-            };
+            }
         });
 
         // Filter update events for Files that were not changed
@@ -245,7 +243,7 @@ class Backend implements ConfigurationChangeListener {
 
         final Thread theRunner = new Thread(() -> {
 
-            LOGGER.info("Startint to crawl");;
+            LOGGER.info("Startint to crawl");
             locations.values().forEach(theWatcher -> {
                 try {
                     theWatcher.crawl();

@@ -169,9 +169,7 @@ public class DesktopSearchController implements Initializable {
             theTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    Platform.runLater(() -> {
-                        recrawl();
-                    });
+                    Platform.runLater(() -> recrawl());
                 }
             }, 5000);
         }

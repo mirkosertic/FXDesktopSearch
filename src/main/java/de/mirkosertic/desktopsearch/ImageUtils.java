@@ -19,7 +19,7 @@ import java.awt.image.BufferedImage;
 
 public class ImageUtils {
 
-    public static enum RescaleMethod {
+    public enum RescaleMethod {
         /**
          * Scale input image so that width and height is equal (or smaller) to the output size.
          * The other dimension will be smaller or equal than the output size.

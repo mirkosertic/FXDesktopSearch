@@ -63,7 +63,7 @@ class LuceneIndexHandler {
         solrClient = solrEmbedded.solrClient();
     }
 
-    public void crawlingStarts() throws IOException {
+    public void crawlingStarts() {
     }
 
     public void addToIndex(final String aLocationId, final Content aContent) throws IOException {
@@ -78,8 +78,6 @@ class LuceneIndexHandler {
         theDocument.setField(IndexFields.FILESIZE, Long.toString(aContent.getFileSize()));
         theDocument.setField(IndexFields.LASTMODIFIED, Long.toString(aContent.getLastModified()));
         theDocument.setField(IndexFields.LANGUAGE, theLanguage.name());
-
-        final StringBuilder theContentAsString = new StringBuilder(aContent.getFileContent());
 
         aContent.getMetadata().forEach(theEntry -> {
             if (!StringUtils.isEmpty(theEntry.key)) {
@@ -127,7 +125,7 @@ class LuceneIndexHandler {
             }
         });
 
-        theDocument.setField(IndexFields.CONTENT, theContentAsString.toString());
+        theDocument.setField(IndexFields.CONTENT, aContent.getFileContent());
 
         try {
             solrClient.add(theDocument);
@@ -194,7 +192,7 @@ class LuceneIndexHandler {
         return 0;
     }
 
-    public QueryResult performQuery(final String aQueryString, final String aBacklink, final String aBasePath, final Configuration aConfiguration, final Map<String, String> aDrilldownFields) throws IOException {
+    public QueryResult performQuery(final String aQueryString, final String aBacklink, final String aBasePath, final Configuration aConfiguration, final Map<String, String> aDrilldownFields) {
 
         final Map<String, Object> theParams = new HashMap<>();
         theParams.put("defType", "google");
@@ -240,7 +238,7 @@ class LuceneIndexHandler {
                     final int theNormalizedScore = (int) (
                             ((float) theSolrDocument.getFieldValue("score")) / theQueryResponse.getResults().getMaxScore() * 5);
 
-                    final StringBuffer theHighlight = new StringBuffer();
+                    final StringBuilder theHighlight = new StringBuilder();
                     final Map<String, List<String>> theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
                     if (theHighlightPhrases != null) {
                         final List<String> theContentSpans = theHighlightPhrases.get(IndexFields.CONTENT);
@@ -267,8 +265,7 @@ class LuceneIndexHandler {
                         if (configuration.isShowSimilarDocuments()) {
                             final SolrDocumentList theMoreLikeThisDocuments = theQueryResponse.getMoreLikeThis().get(theFileName);
                             if (theMoreLikeThisDocuments != null) {
-                                for (int j = 0; j < theMoreLikeThisDocuments.size(); j++) {
-                                    final SolrDocument theMLt = theMoreLikeThisDocuments.get(j);
+                                for (final SolrDocument theMLt : theMoreLikeThisDocuments) {
                                     theDocument.addSimilarFile(((String) theMLt.getFieldValue(IndexFields.UNIQUEID)));
                                 }
                             }
@@ -321,7 +318,7 @@ class LuceneIndexHandler {
         }
     }
 
-    public Suggestion[] findSuggestionTermsFor(final String aTerm) throws IOException {
+    public Suggestion[] findSuggestionTermsFor(final String aTerm) {
 
         final Map<String, Object> theParams = new HashMap<>();
         theParams.put("fxsuggest.enabled", "true");
@@ -349,7 +346,7 @@ class LuceneIndexHandler {
         }
     }
 
-    public File getFileOnDiskForDocument(final String aUniqueID) throws IOException {
+    public File getFileOnDiskForDocument(final String aUniqueID) {
         return new File(aUniqueID);
     }
 }

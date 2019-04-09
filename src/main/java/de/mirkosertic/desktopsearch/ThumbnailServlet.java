@@ -43,7 +43,7 @@ public class ThumbnailServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws IOException {
 
         aResponse.setHeader("Cache-Control", "no-cache"); //HTTP 1.1
         aResponse.setHeader("Pragma", "no-cache"); //HTTP 1.0

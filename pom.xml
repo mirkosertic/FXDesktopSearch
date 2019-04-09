@@ -34,8 +34,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>12</source>
+                    <target>12</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -134,11 +134,6 @@
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-langdetect</artifactId>
             <version>${tika.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>23.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>

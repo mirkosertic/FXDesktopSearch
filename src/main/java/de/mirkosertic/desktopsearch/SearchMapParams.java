@@ -38,7 +38,7 @@ public class SearchMapParams extends SolrParams {
             return (String)o;
         }
         if (o instanceof String[]) {
-            final String[] strings = (String[])((String[])o);
+            final String[] strings = (String[])o;
             return strings.length == 0 ? null : strings[0];
         }
         return String.valueOf(o);
@@ -48,7 +48,7 @@ public class SearchMapParams extends SolrParams {
     public String[] getParams(final String name) {
         final Object val = params.get(name);
         if (val instanceof String[]) {
-            return (String[])((String[])val);
+            return (String[])val;
         }
         return val == null ? null : new String[]{String.valueOf(val)};
     }

@@ -88,7 +88,7 @@ public class Notification {
 
 
         // ******************** Constructor ***************************************
-        private Notifier() {
+        Notifier() {
             init();
             initGraphics();
         }
@@ -270,10 +270,15 @@ public class Notification {
          */
         private void preOrder() {
             if (popups.isEmpty()) return;
-            for (int i = 0 ; i < popups.size() ; i++) {
+            for (Popup popup : popups) {
                 switch (popupLocation) {
-                    case TOP_LEFT: case TOP_CENTER: case TOP_RIGHT: popups.get(i).setY(popups.get(i).getY() + height + spacingY); break;
-                    default: popups.get( i ).setY( popups.get( i ).getY() - height - spacingY);
+                    case TOP_LEFT:
+                    case TOP_CENTER:
+                    case TOP_RIGHT:
+                        popup.setY(popup.getY() + height + spacingY);
+                        break;
+                    default:
+                        popup.setY(popup.getY() - height - spacingY);
                 }
             }
         }

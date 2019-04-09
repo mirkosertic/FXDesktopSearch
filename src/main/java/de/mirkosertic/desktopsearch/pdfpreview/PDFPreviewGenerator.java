@@ -49,7 +49,7 @@ public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
             if (thePages.getCount() == 0) {
                 return null;
             }
-            final PDPage theFirstPage = (PDPage) thePages.get(0);
+            final PDPage theFirstPage = thePages.get(0);
 
             final PDRectangle mBox = theFirstPage.getMediaBox();
             final float theWidthPt = mBox.getWidth();
