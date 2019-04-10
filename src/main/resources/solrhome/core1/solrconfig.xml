@@ -6,7 +6,7 @@
          You may also specify a fully qualified Java classname if you
          have your own custom plugins.
       -->
-    <luceneMatchVersion>7.0.0</luceneMatchVersion>
+    <luceneMatchVersion>8.0.0</luceneMatchVersion>
 
     <!-- Data Directory
          Used to specify an alternate directory to hold all index data
