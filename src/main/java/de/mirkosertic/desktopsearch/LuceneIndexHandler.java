@@ -15,6 +15,7 @@ package de.mirkosertic.desktopsearch;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
@@ -56,7 +57,7 @@ class LuceneIndexHandler {
         previewProcessor = aPreviewProcessor;
         configuration = aConfiguration;
 
-        final File theIndexDirectory = new File(aConfiguration.getConfigDirectory(), "index");
+        final var theIndexDirectory = new File(aConfiguration.getConfigDirectory(), "index");
         theIndexDirectory.mkdirs();
 
         solrEmbedded = new SolrEmbedded(new SolrEmbedded.Config(theIndexDirectory));
@@ -68,9 +69,9 @@ class LuceneIndexHandler {
 
     public void addToIndex(final String aLocationId, final Content aContent) throws IOException {
 
-        final SupportedLanguage theLanguage = aContent.getLanguage();
+        final var theLanguage = aContent.getLanguage();
 
-        final SolrInputDocument theDocument = new SolrInputDocument();
+        final var theDocument = new SolrInputDocument();
         theDocument.setField(IndexFields.UNIQUEID, aContent.getFileName());
         theDocument.setField(IndexFields.LOCATIONID, aLocationId);
         theDocument.setField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()));
@@ -81,21 +82,21 @@ class LuceneIndexHandler {
 
         aContent.getMetadata().forEach(theEntry -> {
             if (!StringUtils.isEmpty(theEntry.key)) {
-                final Object theValue = theEntry.value;
+                final var theValue = theEntry.value;
                 if (theValue instanceof String) {
-                    final String theStringValue = (String) theValue;
+                    final var theStringValue = (String) theValue;
                     if (!StringUtils.isEmpty(theStringValue)) {
                         theDocument.setField("attr_" + theEntry.key, theStringValue);
                     }
                 }
                 if (theValue instanceof Date) {
-                    final Date theDateValue = (Date) theValue;
-                    final Calendar theCalendar = GregorianCalendar.getInstance(DateUtils.UTC, Locale.US);
+                    final var theDateValue = (Date) theValue;
+                    final var theCalendar = GregorianCalendar.getInstance(DateUtils.UTC, Locale.US);
                     theCalendar.setTime(theDateValue);
 
                     // Full-Path
                     {
-                        final String thePathInfo = String.format(
+                        final var thePathInfo = String.format(
                                 "%04d/%02d/%02d",
                                 theCalendar.get(Calendar.YEAR),
                                 theCalendar.get(Calendar.MONTH) + 1,
@@ -105,7 +106,7 @@ class LuceneIndexHandler {
                     }
                     // Year
                     {
-                        final String thePathInfo = String.format(
+                        final var thePathInfo = String.format(
                                 "%04d",
                                 theCalendar.get(Calendar.YEAR));
 
@@ -113,7 +114,7 @@ class LuceneIndexHandler {
                     }
                     // Year-month
                     {
-                        final String thePathInfo = String.format(
+                        final var thePathInfo = String.format(
                                 "%04d/%02d",
                                 theCalendar.get(Calendar.YEAR),
                                 theCalendar.get(Calendar.MONTH) + 1);
@@ -156,12 +157,12 @@ class LuceneIndexHandler {
         theParams.put("q", IndexFields.UNIQUEID + ":" + ClientUtils.escapeQueryChars(aFilename));
 
         try {
-            final QueryResponse theQueryResponse = solrClient.query(new SearchMapParams(theParams));
+            final var theQueryResponse = solrClient.query(new SearchMapParams(theParams));
             if (theQueryResponse.getResults() == null || theQueryResponse.getResults().isEmpty()) {
                 // Nothing in Index, hence mark it as updated
                 return UpdateCheckResult.UPDATED;
             }
-            final SolrDocument theDocument = theQueryResponse.getResults().get(0);
+            final var theDocument = theQueryResponse.getResults().get(0);
 
             final long theStoredLastModified = Long.valueOf((String) theDocument.getFieldValue(IndexFields.LASTMODIFIED));
             if (theStoredLastModified != aLastModified) {
@@ -174,7 +175,7 @@ class LuceneIndexHandler {
     }
 
     private String encode(final String aValue) {
-        final URLCodec theURLCodec = new URLCodec();
+        final var theURLCodec = new URLCodec();
         try {
             return theURLCodec.encode(aValue);
         } catch (final EncoderException e) {
@@ -183,9 +184,9 @@ class LuceneIndexHandler {
     }
 
     private long indexSize() throws IOException, SolrServerException {
-        final SolrQuery q = new SolrQuery("*:*");
+        final var q = new SolrQuery("*:*");
         q.setRows(0);  // don't actually request any data
-        final QueryResponse theResponse = solrClient.query(q);
+        final var theResponse = solrClient.query(q);
         if (theResponse.getResults() != null) {
             return theResponse.getResults().getNumFound();
         }
@@ -209,7 +210,7 @@ class LuceneIndexHandler {
 
         if (aDrilldownFields != null) {
             final List<String> theFilters = new ArrayList<>();
-            for (final Map.Entry<String, String> theField : aDrilldownFields.entrySet()) {
+            for (final var theField : aDrilldownFields.entrySet()) {
                 theFilters.add(theField.getKey()+":"+ClientUtils.escapeQueryChars(theField.getValue()));
             }
             if (!theFilters.isEmpty()) {
@@ -224,26 +225,26 @@ class LuceneIndexHandler {
         }
 
         try {
-            final long theStartTime = System.currentTimeMillis();
-            final QueryResponse theQueryResponse = solrClient.query(new SearchMapParams(theParams));
+            final var theStartTime = System.currentTimeMillis();
+            final var theQueryResponse = solrClient.query(new SearchMapParams(theParams));
 
             final List<QueryResultDocument> theDocuments = new ArrayList<>();
             if (theQueryResponse.getResults() != null) {
-                for (int i = 0; i < theQueryResponse.getResults().size(); i++) {
-                    final SolrDocument theSolrDocument = theQueryResponse.getResults().get(i);
+                for (var i = 0; i < theQueryResponse.getResults().size(); i++) {
+                    final var theSolrDocument = theQueryResponse.getResults().get(i);
 
-                    final String theFileName = (String) theSolrDocument.getFieldValue(IndexFields.UNIQUEID);
+                    final var theFileName = (String) theSolrDocument.getFieldValue(IndexFields.UNIQUEID);
                     final long theStoredLastModified = Long.valueOf((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
 
-                    final int theNormalizedScore = (int) (
+                    final var theNormalizedScore = (int) (
                             ((float) theSolrDocument.getFieldValue("score")) / theQueryResponse.getResults().getMaxScore() * 5);
 
-                    final StringBuilder theHighlight = new StringBuilder();
-                    final Map<String, List<String>> theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
+                    final var theHighlight = new StringBuilder();
+                    final var theHighlightPhrases = theQueryResponse.getHighlighting().get(theFileName);
                     if (theHighlightPhrases != null) {
-                        final List<String> theContentSpans = theHighlightPhrases.get(IndexFields.CONTENT);
+                        final var theContentSpans = theHighlightPhrases.get(IndexFields.CONTENT);
                         if (theContentSpans != null) {
-                            for (final String thePhrase : theContentSpans) {
+                            for (final var thePhrase : theContentSpans) {
                                 if (theHighlight.length() > 0) {
                                     theHighlight.append(" ... ");
                                 }
@@ -254,18 +255,18 @@ class LuceneIndexHandler {
                         }
                     }
 
-                    final File theFileOnDisk = new File(theFileName);
+                    final var theFileOnDisk = new File(theFileName);
                     if (theFileOnDisk.exists()) {
 
-                        final boolean thePreviewAvailable = previewProcessor.previewAvailableFor(theFileOnDisk);
+                        final var thePreviewAvailable = previewProcessor.previewAvailableFor(theFileOnDisk);
 
-                        final QueryResultDocument theDocument = new QueryResultDocument(i, theFileName, theHighlight.toString().trim(),
+                        final var theDocument = new QueryResultDocument(i, theFileName, theHighlight.toString().trim(),
                                 theStoredLastModified, theNormalizedScore, theFileName, thePreviewAvailable);
 
                         if (configuration.isShowSimilarDocuments()) {
-                            final SolrDocumentList theMoreLikeThisDocuments = theQueryResponse.getMoreLikeThis().get(theFileName);
+                            final var theMoreLikeThisDocuments = theQueryResponse.getMoreLikeThis().get(theFileName);
                             if (theMoreLikeThisDocuments != null) {
-                                for (final SolrDocument theMLt : theMoreLikeThisDocuments) {
+                                for (final var theMLt : theMoreLikeThisDocuments) {
                                     theDocument.addSimilarFile(((String) theMLt.getFieldValue(IndexFields.UNIQUEID)));
                                 }
                             }
@@ -281,9 +282,9 @@ class LuceneIndexHandler {
                 }
             }
 
-            final long theIndexSize = indexSize();
+            final var theIndexSize = indexSize();
 
-            final long theDuration = System.currentTimeMillis() - theStartTime;
+            final var theDuration = System.currentTimeMillis() - theStartTime;
 
             final List<FacetDimension> theDimensions = new ArrayList<>();
             fillFacet(IndexFields.LANGUAGE, "Language", aBasePath, theQueryResponse, theDimensions, t -> SupportedLanguage.valueOf(t).toLocale().getDisplayName());
@@ -291,7 +292,7 @@ class LuceneIndexHandler {
             fillFacet("attr_last-modified-yea", "Last modified", aBasePath, theQueryResponse, theDimensions, t -> t);
             fillFacet("attr_" + IndexFields.EXTENSION, "File type", aBasePath, theQueryResponse, theDimensions, t -> t);
 
-            return new QueryResult(theDuration, theDocuments, theDimensions, theIndexSize, aBacklink);
+            return new QueryResult(StringEscapeUtils.escapeHtml(aQueryString), theDuration, theDocuments, theDimensions, theIndexSize, aBacklink);
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
@@ -299,13 +300,13 @@ class LuceneIndexHandler {
 
     private void fillFacet(final String aFacetField, final String aFacetDisplayLabel, final String aBacklink, final QueryResponse aQueryResponse, final List<FacetDimension> aDimensions,
             final Function<String, String> aConverter) {
-        final FacetField theFacet = aQueryResponse.getFacetField(aFacetField);
+        final var theFacet = aQueryResponse.getFacetField(aFacetField);
         if (theFacet != null) {
             final List<Facet> theFacets = new ArrayList<>();
-            for (final FacetField.Count theCount : theFacet.getValues()) {
+            for (final var theCount : theFacet.getValues()) {
                 if (theCount.getCount() > 0) {
-                    final String theName = theCount.getName().trim();
-                    if (theName.length() > 0) {
+                    final var theName = theCount.getName().trim();
+                    if (!theName.isEmpty()) {
                         theFacets.add(new Facet(aConverter.apply(theName), theCount.getCount(),
                                 aBacklink + "/" + encode(
                                         FacetSearchUtils.encode(aFacetField, theCount.getName()))));
@@ -328,14 +329,14 @@ class LuceneIndexHandler {
         theParams.put("fxsuggest.numbersuggest", Integer.toString(configuration.getNumberOfSuggestions()));
 
         try {
-            final QueryResponse theQueryResponse = solrClient.query(new SearchMapParams(theParams));
+            final var theQueryResponse = solrClient.query(new SearchMapParams(theParams));
 
-            final NamedList theSuggestions = (NamedList) theQueryResponse.getResponse().get("fxsuggest");
+            final var theSuggestions = (NamedList) theQueryResponse.getResponse().get("fxsuggest");
             final List<Suggestion> theResult = new ArrayList<>();
-            for (int i=0;i<theSuggestions.size();i++) {
-                final Map theEntry = (Map) theSuggestions.get(Integer.toString(i));
-                final String theLabel = (String) theEntry.get("label");
-                final String theValue = (String) theEntry.get("value");
+            for (var i = 0; i<theSuggestions.size(); i++) {
+                final var theEntry = (Map) theSuggestions.get(Integer.toString(i));
+                final var theLabel = (String) theEntry.get("label");
+                final var theValue = (String) theEntry.get("value");
                 theResult.add(new Suggestion(theLabel, theValue));
             }
 

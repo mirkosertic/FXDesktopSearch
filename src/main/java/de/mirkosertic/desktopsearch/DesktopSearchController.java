@@ -15,6 +15,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.application.Platform;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
@@ -22,7 +23,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
@@ -46,15 +46,6 @@ public class DesktopSearchController implements Initializable {
     private static final Logger LOGGER  = Logger.getLogger(DesktopSearchController.class);
 
     @FXML
-    MenuItem menuItemConfigure;
-
-    @FXML
-    MenuItem menuItemRecrawl;
-
-    @FXML
-    MenuItem menuItemClose;
-
-    @FXML
     WebView webView;
 
     @FXML
@@ -62,9 +53,6 @@ public class DesktopSearchController implements Initializable {
 
     @FXML
     TextField statusText;
-
-    @FXML
-    MenuItem searchDocumentItem;
 
     private DesktopSearchMain application;
 
@@ -95,10 +83,7 @@ public class DesktopSearchController implements Initializable {
         @Override
         public void run() {
 
-            Platform.runLater(() -> {
-                statusBar.setVisible(true);
-                menuItemRecrawl.setDisable(true);
-            });
+            Platform.runLater(() -> statusBar.setVisible(true));
 
             while (!isInterrupted()) {
 
@@ -116,7 +101,6 @@ public class DesktopSearchController implements Initializable {
             Platform.runLater(() -> {
                 statusBar.setVisible(false);
                 statusBar.setManaged(false);
-                menuItemRecrawl.setDisable(false);
             });
         }
     }
@@ -130,33 +114,33 @@ public class DesktopSearchController implements Initializable {
             }
         }
 
-        public void newFileFound(final String aFilename) {
+        @Override public void newFileFound(final String aFilename) {
             wakeupThread();
             watcherThread.notifyProgress();
             Platform.runLater(() -> statusText.setText(aFilename));
         }
 
-        public void crawlingFinished() {
+        @Override public void crawlingFinished() {
             Platform.runLater(() -> statusText.setText(""));
         }
     }
 
     private ProgressWatcherThread watcherThread;
 
-    private String searchURL;
+    private DesktopGateway gateway;
 
     public void configure(final DesktopSearchMain aApplication, final Backend aBackend, final String aSearchURL, final Window aWindow) {
+        gateway = new DesktopGateway(aApplication, DesktopSearchController.this);
         window = aWindow;
         application = aApplication;
         backend = aBackend;
-        searchURL = aSearchURL;
         backend.setProgressListener(new FXProgressListener());
         watcherThread = new ProgressWatcherThread();
         webView.getEngine().setJavaScriptEnabled(true);
         webView.getEngine().getLoadWorker().stateProperty().addListener((ov, t, t1) -> {
             if (t1 == State.SUCCEEDED) {
-                final JSObject window1 = (JSObject) webView.getEngine().executeScript("window");
-                window1.setMember("desktop", new DesktopGateway(aApplication));
+                final var windowGlobalJSNamespace = (JSObject) webView.getEngine().executeScript("window");
+                windowGlobalJSNamespace.setMember("desktop", gateway);
             }
         });
         webView.setContextMenuEnabled(false);
@@ -165,7 +149,7 @@ public class DesktopSearchController implements Initializable {
 
         if (aApplication.getConfigurationManager().getConfiguration().isCrawlOnStartup()) {
             // Scedule a crawl run 5 seconds after startup...
-            final Timer theTimer = new Timer();
+            final var theTimer = new Timer();
             theTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -173,54 +157,42 @@ public class DesktopSearchController implements Initializable {
                 }
             }, 5000);
         }
+
+        WebConsoleListener.setDefaultListener(
+                (webView, message, lineNumber, sourceId) -> LOGGER.warn("Console: [" + sourceId + ":" + lineNumber + "] " + message));
     }
 
-    public void initialize(final URL aUrl, final ResourceBundle aResourceBundle) {
-        Objects.requireNonNull(menuItemConfigure);
-        Objects.requireNonNull(menuItemRecrawl);
-        Objects.requireNonNull(menuItemClose);
+    @Override public void initialize(final URL aUrl, final ResourceBundle aResourceBundle) {
         Objects.requireNonNull(webView);
         Objects.requireNonNull(statusBar);
         Objects.requireNonNull(statusText);
-        Objects.requireNonNull(searchDocumentItem);
-
-        menuItemConfigure.setOnAction(actionEvent -> configure());
-        menuItemRecrawl.setOnAction(actionEvent -> recrawl());
-        menuItemClose.setOnAction(actionEvent -> close());
-
-        searchDocumentItem.setOnAction(actionEvent -> webView.getEngine().load(searchURL));
 
         statusBar.setManaged(false);
         statusBar.setVisible(false);
     }
 
-    void close() {
+    public void close() {
         application.shutdown();
     }
 
-    void recrawl() {
-        // Check if there is already a crawl run in progress
-        // this might happen due to the crawl on startup feature
-        if (!menuItemRecrawl.isDisable()) {
-            statusBar.setVisible(true);
-            statusBar.setManaged(true);
-            menuItemRecrawl.setDisable(true);
-            statusText.setText("");
-            try {
-                backend.crawlLocations();
-            } catch (final Exception e) {
-                LOGGER.error("Error crawling locations", e);
-            }
+    public void recrawl() {
+        statusBar.setVisible(true);
+        statusBar.setManaged(true);
+        statusText.setText("");
+        try {
+            backend.crawlLocations();
+        } catch (final Exception e) {
+            LOGGER.error("Error crawling locations", e);
         }
     }
 
-    void configure() {
+    public void configure() {
         try {
-            final Stage stage = new Stage();
+            final var stage = new Stage();
             stage.setResizable(false);
             stage.initStyle(StageStyle.UTILITY);
 
-            final FXMLLoader theLoader = new FXMLLoader(getClass().getResource("/scenes/configuration.fxml"));
+            final var theLoader = new FXMLLoader(getClass().getResource("/scenes/configuration.fxml"));
             final Parent theConfigurationRoot = theLoader.load();
             stage.setScene(new Scene(theConfigurationRoot));
             stage.setTitle("Configuration");
