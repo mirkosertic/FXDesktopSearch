@@ -14,20 +14,6 @@
   <children>
     <VBox prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-        <MenuBar>
-          <menus>
-            <Menu mnemonicParsing="false" text="File">
-              <items>
-                <MenuItem fx:id="menuItemConfigure" mnemonicParsing="false" text="Configure" />
-                <MenuItem fx:id="menuItemRecrawl" mnemonicParsing="false" text="Perform complete crawl" />
-                <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem fx:id="searchDocumentItem" mnemonicParsing="false" text="Search document" />
-                <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem fx:id="menuItemClose" mnemonicParsing="false" text="Close" />
-              </items>
-            </Menu>
-          </menus>
-        </MenuBar>
         <WebView fx:id="webView" prefHeight="532.0" VBox.vgrow="ALWAYS" />
         <VBox fx:id="statusBar" styleClass="progressindicator" VBox.vgrow="NEVER">
           <children>
@@ -41,9 +27,6 @@
       </children>
     </VBox>
   </children>
-  <padding>
-    <Insets top="30.0" />
-  </padding>
   <stylesheets>
     <URL value="@userinterface.css" />
   </stylesheets>

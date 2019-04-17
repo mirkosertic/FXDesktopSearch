@@ -17,13 +17,15 @@ import java.util.List;
 
 public class QueryResult {
 
+    private final String searchTerm;
     private final long elapsedTime;
     private final List<QueryResultDocument> documents;
     private final List<FacetDimension> facetDimensions;
     private final long totalDocuments;
     private final String backLink;
 
-    public QueryResult(final long elapsedTime, final List<QueryResultDocument> documents, final List<FacetDimension> aFacetDimensions, final long totalDocuments, final String aBackLink) {
+    public QueryResult(final String searchTerm, final long elapsedTime, final List<QueryResultDocument> documents, final List<FacetDimension> aFacetDimensions, final long totalDocuments, final String aBackLink) {
+        this.searchTerm = searchTerm;
         this.elapsedTime = elapsedTime;
         this.documents = documents;
         this.totalDocuments = totalDocuments;
@@ -54,7 +56,7 @@ public class QueryResult {
         if (aFileName == null) {
             return null;
         }
-        final int p = aFileName.lastIndexOf(File.separatorChar);
+        final var p = aFileName.lastIndexOf(File.separatorChar);
         if (p>0) {
             return aFileName.substring(p+1);
         }
@@ -68,4 +70,9 @@ public class QueryResult {
     public String getBackLink() {
         return backLink;
     }
+
+    public String getSearchTerm() {
+        return searchTerm;
+    }
 }
+

@@ -13,7 +13,7 @@
 package de.mirkosertic.desktopsearch;
 
 import javafx.application.Application;
-
+import javafx.application.Platform;
 import org.apache.log4j.Logger;
 
 public class DesktopGateway {
@@ -21,12 +21,26 @@ public class DesktopGateway {
     private static final Logger LOGGER  = Logger.getLogger(DesktopGateway.class);
 
     private final Application application;
+    private final DesktopSearchController controller;
 
-    DesktopGateway(final Application aApplication) {
+    DesktopGateway(final Application aApplication, final DesktopSearchController aController) {
         application = aApplication;
+        controller = aController;
     }
 
     public void openFile(final String aFile) {
         application.getHostServices().showDocument(aFile);
+    }
+
+    public void configure() {
+        Platform.runLater(() -> controller.configure());
+    }
+
+    public void completecrawl() {
+        Platform.runLater(() -> controller.recrawl());
+    }
+
+    public void close() {
+        Platform.runLater(() -> controller.close());
     }
 }
