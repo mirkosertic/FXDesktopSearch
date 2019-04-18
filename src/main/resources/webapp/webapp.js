@@ -10,8 +10,29 @@ var desktopsearch = {
     },
     openFile: function(f) {
         desktop.openFile(f);
+    },
+    registerSuggest: function() {
+        document.getElementById("querystring").addEventListener("keyup", function(e) {
+            var value = this.value;
+            if (value.length > 2) {
+                fetch('/suggestion?term=' + encodeURI(value))
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(myJson) {
+                        var datalist = document.getElementById("suggestion");
+                        var str = '';
+                        for (var i = 0;i<myJson.length;i++) {
+                            var s = myJson[i];
+                            str+= '<option>' + s.value;
+                        }
+                        datalist.innerHTML = str;
+                    });
+            }
+        });
     }
 }
+
 
 document.addEventListener("DOMContentLoaded", function() {
     var lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
@@ -19,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var lazyLoad = function() {
         if (active === false) {
-            active = true;
+            active =true;
 
             setTimeout(function() {
                 lazyImages.forEach(function(lazyImage) {
