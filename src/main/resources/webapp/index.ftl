@@ -30,24 +30,30 @@
                     <button type="submit">Search!</button>
                 </nav>
             </#if>
-            <nav role="facet" class="<#if queryResult?has_content><#else> hidden</#if>">
-                <ul>
-                    <li>
-                        <input type="checkbox" id="click">
-                        <label for="click"><a>Languages</a></label>
-                        <div class="menu">
-                            <a>Hello Menu!</a>
-                        </div>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="click2">
-                        <label for="click2"><a>File types</a></label>
-                        <div class="menu">
-                            <a>Hello Menu!</a>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
+
+            <#if queryResult?has_content>
+                <nav role="chips">
+                    <div class="chips">
+                        <#list queryResult.activeFilters as filter>
+                            <a href="${filter.deleteLink}">${filter.name}</a>
+                        </#list>
+                    </div>
+                </nav>
+            </#if>
+
+            <#if queryResult?has_content>
+                <nav role="facet">
+                    <ul>
+                        <#list queryResult.facetDimensions as dimension>
+                            <li>
+                                <input type="checkbox" id="facet_${dimension?index}">
+                                <label for="facet_${dimension?index}"><a>${dimension.name}</a></label>
+                                <div class="menu"><#list dimension.facets as facet><a href="${facet.link}">${facet.name} (${facet.number})</a></#list></div>
+                            </li>
+                        </#list>
+                    </ul>
+                </nav>
+            </#if>
 
             <#if queryResult?has_content>
                 <div class="summarytext">The search was processed in ${queryResult.elapsedTime}ms., searched in ${queryResult.totalDocuments} documents.</div>
@@ -55,7 +61,7 @@
                 <#list queryResult.documents as document>
                     <div class="resultentry">
                         <div class="image">
-                            <img src="loading.gif" data-src="/thumbnail/preview/${document.uniqueID}.png"/>
+                            <img class="lazy" src="loading.gif" data-src="/thumbnail/preview/${document.uniqueID}.png"/>
                         </div>
                         <div class="text">
                             <#list document.fileNames as filename>

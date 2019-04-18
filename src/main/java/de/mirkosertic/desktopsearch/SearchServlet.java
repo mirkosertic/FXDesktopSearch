@@ -12,10 +12,10 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,9 +25,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class SearchServlet extends HttpServlet {
-
-    private static final Logger LOGGER = Logger.getLogger(SearchServlet.class);
 
     public static final String URL = "/search";
 
@@ -54,60 +53,50 @@ public class SearchServlet extends HttpServlet {
     private void fillinSearchResult(final HttpServletRequest aRequest, final HttpServletResponse aResponse)
             throws ServletException, IOException {
 
-        final URLCodec theURLCodec = new URLCodec();
+        final var theURLCodec = new URLCodec();
 
-        String theQueryString = aRequest.getParameter("querystring");
-        String theBasePath = basePath;
-        String theBackLink = basePath;
+        var theQueryString = aRequest.getParameter("querystring");
+        var theBasePath = basePath;
         if (!StringUtils.isEmpty(theQueryString)) {
             try {
                 theBasePath = theBasePath + "/" + theURLCodec.encode(theQueryString);
-                theBackLink = theBackLink + "/" + theURLCodec.encode(theQueryString);
             } catch (final EncoderException e) {
-                LOGGER.error("Error encoding query string " + theQueryString, e);
+                log.error("Error encoding query string {}", theQueryString, e);
             }
         }
         final Map<String, String> theDrilldownDimensions = new HashMap<>();
 
-        final String thePathInfo = aRequest.getPathInfo();
+        final var thePathInfo = aRequest.getPathInfo();
         if (!StringUtils.isEmpty(thePathInfo)) {
-            String theWorkingPathInfo = thePathInfo;
+            var theWorkingPathInfo = thePathInfo;
 
             // First component is the query string
             if (theWorkingPathInfo.startsWith("/")) {
                 theWorkingPathInfo = theWorkingPathInfo.substring(1);
             }
-            final String[] thePaths = StringUtils.split(theWorkingPathInfo,"/");
-            for (int i=0;i<thePaths.length;i++) {
+            final var thePaths = StringUtils.split(theWorkingPathInfo,"/");
+            for (var i = 0; i<thePaths.length; i++) {
                 try {
-                    final String theDecodedValue = thePaths[i].replace('+',' ');
-                    final String theEncodedValue = theURLCodec.encode(theDecodedValue);
+                    final var theDecodedValue = thePaths[i].replace('+',' ');
+                    final var theEncodedValue = theURLCodec.encode(theDecodedValue);
                     theBasePath = theBasePath + "/" + theEncodedValue;
-                    if (i<thePaths.length - 1) {
-                        theBackLink = theBackLink + "/" + theEncodedValue;
-                    }
                     if (i == 0) {
                         theQueryString = theDecodedValue;
                     } else {
                         FacetSearchUtils.addToMap(theDecodedValue, theDrilldownDimensions);
                     }
                 } catch (final EncoderException e) {
-                    LOGGER.error("Error while decoding drilldown params for " + aRequest.getPathInfo(), e);
+                    log.error("Error while decoding drilldown params for {}", aRequest.getPathInfo(), e);
                 }
             }
-            if (basePath.equals(theBackLink)) {
-                theBackLink = null;
-            }
-        } else {
-            theBackLink = null;
         }
 
         if (!StringUtils.isEmpty(theQueryString)) {
             aRequest.setAttribute("querystring", theQueryString);
             try {
-                aRequest.setAttribute("queryResult", backend.performQuery(theQueryString, theBackLink, theBasePath, theDrilldownDimensions));
+                aRequest.setAttribute("queryResult", backend.performQuery(theQueryString, theBasePath, theDrilldownDimensions));
             } catch (final Exception e) {
-                LOGGER.error("Error running query " + theQueryString, e);
+                log.error("Error running query {}", theQueryString, e);
             }
         } else {
             aRequest.setAttribute("querystring", "");

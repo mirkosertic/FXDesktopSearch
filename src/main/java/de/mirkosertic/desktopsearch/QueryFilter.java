@@ -12,34 +12,21 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import lombok.extern.slf4j.Slf4j;
+public class QueryFilter {
 
-@Slf4j
-public class DesktopGateway {
+    private final String name;
+    private final String deleteLink;
 
-    private final Application application;
-    private final DesktopSearchController controller;
-
-    DesktopGateway(final Application aApplication, final DesktopSearchController aController) {
-        application = aApplication;
-        controller = aController;
+    public QueryFilter(final String name, final String deleteLink) {
+        this.name = name;
+        this.deleteLink = deleteLink;
     }
 
-    public void openFile(final String aFile) {
-        application.getHostServices().showDocument(aFile);
+    public String getName() {
+        return name;
     }
 
-    public void configure() {
-        Platform.runLater(() -> controller.configure());
-    }
-
-    public void completecrawl() {
-        Platform.runLater(() -> controller.recrawl());
-    }
-
-    public void close() {
-        Platform.runLater(() -> controller.close());
+    public String getDeleteLink() {
+        return deleteLink;
     }
 }

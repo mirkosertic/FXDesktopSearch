@@ -17,7 +17,7 @@ import de.mirkosertic.desktopsearch.PreviewConstants;
 import de.mirkosertic.desktopsearch.PreviewGenerator;
 import de.mirkosertic.desktopsearch.SupportedDocumentType;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
@@ -31,9 +31,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
-
-    private static final Logger LOGGER = Logger.getLogger(PDFPreviewGenerator.class);
 
     private final Set<SupportedDocumentType> suppportedDocumentTypes;
 
@@ -44,47 +43,47 @@ public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
 
     @Override
     public Preview createPreviewFor(final File aFile) {
-        try(final PDDocument theDocument = PDDocument.load(aFile))  {
-            final PDPageTree thePages = theDocument.getPages();
+        try(final var theDocument = PDDocument.load(aFile))  {
+            final var thePages = theDocument.getPages();
             if (thePages.getCount() == 0) {
                 return null;
             }
-            final PDPage theFirstPage = thePages.get(0);
+            final var theFirstPage = thePages.get(0);
 
-            final PDRectangle mBox = theFirstPage.getMediaBox();
-            final float theWidthPt = mBox.getWidth();
-            final int theWidthPx = THUMB_WIDTH; // Math.round(widthPt * scaling);
-            final int theHeightPx = THUMB_HEIGHT; // Math.round(heightPt * scaling);
-            final float theScaling = THUMB_WIDTH / theWidthPt; // resolution / 72.0F;
+            final var mBox = theFirstPage.getMediaBox();
+            final var theWidthPt = mBox.getWidth();
+            final var theWidthPx = THUMB_WIDTH; // Math.round(widthPt * scaling);
+            final var theHeightPx = THUMB_HEIGHT; // Math.round(heightPt * scaling);
+            final var theScaling = THUMB_WIDTH / theWidthPt; // resolution / 72.0F;
 
-            final BufferedImage theImage = new BufferedImage(theWidthPx, theHeightPx, BufferedImage.TYPE_INT_RGB);
-            final Graphics2D theGraphics = (Graphics2D) theImage.getGraphics();
+            final var theImage = new BufferedImage(theWidthPx, theHeightPx, BufferedImage.TYPE_INT_RGB);
+            final var theGraphics = (Graphics2D) theImage.getGraphics();
             theGraphics.setBackground(new Color(255, 255, 255, 0));
             theGraphics.clearRect(0, 0, theImage.getWidth(), theImage.getHeight());
 
-            final PDFRenderer theRenderer = new PDFRenderer(theDocument);
+            final var theRenderer = new PDFRenderer(theDocument);
             theRenderer.renderPageToGraphics(0, theGraphics, theScaling);
 
-            final int rotation = theFirstPage.getRotation();
+            final var rotation = theFirstPage.getRotation();
             if ((rotation == 90) || (rotation == 270)) {
-                final int w = theImage.getWidth();
-                final int h = theImage.getHeight();
-                final BufferedImage rotatedImg = new BufferedImage(w, h, theImage.getType());
-                final Graphics2D g = rotatedImg.createGraphics();
+                final var w = theImage.getWidth();
+                final var h = theImage.getHeight();
+                final var rotatedImg = new BufferedImage(w, h, theImage.getType());
+                final var g = rotatedImg.createGraphics();
                 g.rotate(Math.toRadians(rotation), w / 2, h / 2);
                 g.drawImage(theImage, null, 0, 0);
             }
             theGraphics.dispose();
             return new Preview(theImage);
         } catch (final Exception e) {
-            LOGGER.error("Error creating preview for " + aFile, e);
+            log.error("Error creating preview for {}", aFile, e);
             return null;
         }
     }
 
     @Override
     public boolean supportsFile(final File aFile) {
-        for (final SupportedDocumentType theType : suppportedDocumentTypes) {
+        for (final var theType : suppportedDocumentTypes) {
             if (theType.matches(aFile)) {
                 return true;
             }

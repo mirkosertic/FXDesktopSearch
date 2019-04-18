@@ -12,8 +12,8 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -40,6 +40,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 class SearchPhraseSuggester {
 
     public interface SearchPhraseSuggesterConfiguration {
@@ -50,8 +51,6 @@ class SearchPhraseSuggester {
 
         int getNumberOfSuggestions();
     }
-
-    private static final Logger LOGGER = Logger.getLogger(SearchPhraseSuggester.class);
 
     private final IndexSearcher indexSearcher;
     private final Analyzer analyzer;
@@ -66,14 +65,14 @@ class SearchPhraseSuggester {
 
     public List<Suggestion> suggestSearchPhrase(final String aFieldName, final String aPhrase) throws IOException {
 
-        LOGGER.info("Trying to find suggestions for phrase " + aPhrase);
+        log.info("Trying to find suggestions for phrase {}", aPhrase);
 
-        final List<String> theTokens = toTokens(aFieldName, aPhrase);
+        final var theTokens = toTokens(aFieldName, aPhrase);
 
-        final List<SpanQuery> theSpanQueries = theTokens.stream().map(s -> {
+        final var theSpanQueries = theTokens.stream().map(s -> {
             if (QueryUtils.isWildCard(s)) {
-                WildcardQuery theWildcardQuery = new WildcardQuery(new Term(aFieldName, s));
-                SpanMultiTermQueryWrapper theWrapper = new SpanMultiTermQueryWrapper(theWildcardQuery);
+                var theWildcardQuery = new WildcardQuery(new Term(aFieldName, s));
+                var theWrapper = new SpanMultiTermQueryWrapper(theWildcardQuery);
                 try {
                     return theWrapper.getRewriteMethod().rewrite(indexSearcher.getIndexReader(), theWildcardQuery);
                 } catch (IOException e) {
@@ -91,21 +90,21 @@ class SearchPhraseSuggester {
         }
 
 
-        LOGGER.info("created span query " + theQuery);
+        log.info("created span query {}", theQuery);
 
-        final ArrayList<Suggestion> theResult = new ArrayList<>();
+        final var theResult = new ArrayList<Suggestion>();
 
-        final Highlighter theHighligher = new Highlighter((aSpan, tokenGroup) -> aSpan, new QueryScorer(theQuery));
+        final var theHighligher = new Highlighter((aSpan, tokenGroup) -> aSpan, new QueryScorer(theQuery));
 
         final TopDocs theDocs = indexSearcher.search(theQuery, configuration.getNumberOfSuggestions(), Sort.RELEVANCE);
-        for (int i=0;i<theDocs.scoreDocs.length;i++) {
-            final Document theDocument = indexSearcher.getIndexReader().document(theDocs.scoreDocs[i].doc);
-            final String theOriginalContent = theDocument.getField(aFieldName).stringValue();
+        for (var i = 0; i<theDocs.scoreDocs.length; i++) {
+            final var theDocument = indexSearcher.getIndexReader().document(theDocs.scoreDocs[i].doc);
+            final var theOriginalContent = theDocument.getField(aFieldName).stringValue();
 
             try {
-                for (String theFragment : theHighligher.getBestFragments(analyzer, aFieldName, theOriginalContent, 1)) {
+                for (var theFragment : theHighligher.getBestFragments(analyzer, aFieldName, theOriginalContent, 1)) {
                     // Erstes Token ermitteln
-                    final int p = theFragment.toLowerCase().indexOf(theTokens.get(0).toLowerCase());
+                    final var p = theFragment.toLowerCase().indexOf(theTokens.get(0).toLowerCase());
                     if (p>0) {
                         theFragment = theFragment.substring(p).trim();
                     }
@@ -113,7 +112,7 @@ class SearchPhraseSuggester {
                     theResult.add(new Suggestion(highlight(theFragment, theTokens), theFragment));
                 }
             } catch (final Exception e) {
-                LOGGER.error(e);
+                log.error(e.getMessage(), e);
             }
         }
 
@@ -121,17 +120,17 @@ class SearchPhraseSuggester {
     }
 
     private String highlight(final String aPhrase, final List<String> aTokens) {
-        String theResult = aPhrase;
-        final Set<String> theTokens = aTokens.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        var theResult = aPhrase;
+        final var theTokens = aTokens.stream().map(String::toLowerCase).collect(Collectors.toSet());
 
-        for (final String theToken : theTokens) {
-            final Pattern thePattern = Pattern.compile("(" + theToken+")", Pattern.CASE_INSENSITIVE);
-            final Matcher theMatcher = thePattern.matcher(aPhrase);
+        for (final var theToken : theTokens) {
+            final var thePattern = Pattern.compile("(" + theToken+")", Pattern.CASE_INSENSITIVE);
+            final var theMatcher = thePattern.matcher(aPhrase);
             final Set<String> theReplacements = new HashSet<>();
             while(theMatcher.find()) {
                 theReplacements.add(theMatcher.group());
             }
-            for (final String theReplacement : theReplacements) {
+            for (final var theReplacement : theReplacements) {
                 theResult = theResult.replace(theReplacement, "<b>"+theReplacement+"</b>");
             }
         }
@@ -139,9 +138,9 @@ class SearchPhraseSuggester {
     }
 
     private String analyze(final String aFieldName, final String aString) throws IOException {
-        final TokenStream theTokenStream = analyzer.tokenStream(aFieldName, aString);
+        final var theTokenStream = analyzer.tokenStream(aFieldName, aString);
         theTokenStream.reset();
-        final CharTermAttribute theCharTerms = theTokenStream.getAttribute(CharTermAttribute.class);
+        final var theCharTerms = theTokenStream.getAttribute(CharTermAttribute.class);
         try {
             if (theTokenStream.incrementToken()) {
                 return theCharTerms.toString();
@@ -156,9 +155,9 @@ class SearchPhraseSuggester {
     private List<String> toTokens(final String aFieldName, final String aPhrase) throws IOException {
         final List<String> theTokens = new ArrayList<>();
 
-        final String[] theSplitTokens = StringUtils.split(aPhrase," ,:;?!.");
-        for (int i=0;i<theSplitTokens.length;i++) {
-            String theToken = theSplitTokens[i];
+        final var theSplitTokens = StringUtils.split(aPhrase," ,:;?!.");
+        for (var i = 0; i<theSplitTokens.length; i++) {
+            var theToken = theSplitTokens[i];
             // Mutate the last token to a wildcard
             if (theToken.length() > 2 && i == theSplitTokens.length - 1 && !QueryUtils.isWildCard(theToken)) {
                 theToken = theToken + QueryUtils.ASTERISK;
@@ -167,7 +166,7 @@ class SearchPhraseSuggester {
                 if (QueryUtils.isWildCard(theToken)) {
                     theTokens.add(theToken);
                 } else {
-                    final String theAnalyzed = analyze(aFieldName, theToken);
+                    final var theAnalyzed = analyze(aFieldName, theToken);
                     if (theAnalyzed != null) {
                         theTokens.add(theAnalyzed);
                     }

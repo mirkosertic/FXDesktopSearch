@@ -12,7 +12,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
@@ -24,9 +24,8 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+@Slf4j
 public class ConfigurationManager {
-
-    private static final Logger LOGGER = Logger.getLogger(ConfigurationManager.class);
 
     private Configuration configuration;
     private final File configurationFile;
@@ -36,7 +35,7 @@ public class ConfigurationManager {
         configurationChangeListeners = new HashSet<>();
         configurationFile = new File(aConfigDirectory, "configuration.json");
         if (configurationFile.exists()) {
-            try(final FileInputStream theStream = new FileInputStream(configurationFile)) {
+            try(final var theStream = new FileInputStream(configurationFile)) {
                 loadConfigurationFrom(theStream);
             } catch (final Exception e) {
                 initializeWithDefault(aConfigDirectory);
@@ -47,15 +46,15 @@ public class ConfigurationManager {
     }
 
     private void initializeWithDefault(final File aConfigDirectory) {
-        try (final InputStream theDefaultConfiguration = getClass().getResourceAsStream("/default-configuration.json")) {
+        try (final var theDefaultConfiguration = getClass().getResourceAsStream("/default-configuration.json")) {
             if (theDefaultConfiguration != null) {
                 loadConfigurationFrom(theDefaultConfiguration);
             } else {
-                LOGGER.error("No default configuration found");
+                log.error("No default configuration found");
                 configuration = new Configuration(aConfigDirectory);
             }
         } catch (final Exception e) {
-            LOGGER.error("Error loading default configuration, initializing with empty one", e);
+            log.error("Error loading default configuration, initializing with empty one", e);
             configuration = new Configuration(aConfigDirectory);
         }
 
@@ -64,14 +63,14 @@ public class ConfigurationManager {
         configuration = configuration.enableLanguage(SupportedLanguage.en);
 
         try {
-            final SupportedLanguage theAdditionalLanguage = SupportedLanguage.valueOf(Locale.getDefault().getLanguage());
+            final var theAdditionalLanguage = SupportedLanguage.valueOf(Locale.getDefault().getLanguage());
             configuration = configuration.enableLanguage(theAdditionalLanguage);
         } catch (final Exception e) {
             // Platform language seems not to be supported
         }
 
         // By default, we also enable all document parsers
-        for (final SupportedDocumentType theType : SupportedDocumentType.values()) {
+        for (final var theType : SupportedDocumentType.values()) {
             configuration = configuration.enableDocumentType(theType);
         }
 
@@ -92,21 +91,21 @@ public class ConfigurationManager {
         configurationChangeListeners.stream().forEach(l -> {try {
             l.configurationUpdated(aConfiguration);
         } catch (final Exception e) {
-            LOGGER.error("Error notifying for configuration change", e);
+            log.error("Error notifying for configuration change", e);
         }});
     }
 
     private void loadConfigurationFrom(final InputStream aStream) throws IOException {
-        final ObjectMapper theMapper = new ObjectMapper();
+        final var theMapper = new ObjectMapper();
         configuration = theMapper.readValue(aStream, Configuration.class);
     }
 
     private void writeConfiguration() {
-        try (final FileOutputStream theStream = new FileOutputStream(configurationFile)) {
-            final ObjectMapper theMapper = new ObjectMapper();
+        try (final var theStream = new FileOutputStream(configurationFile)) {
+            final var theMapper = new ObjectMapper();
             theMapper.writeValue(theStream, configuration);
         } catch (final Exception e) {
-            LOGGER.error("Error writing configuration", e);
+            log.error("Error writing configuration", e);
         }
     }
 }

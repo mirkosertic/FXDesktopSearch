@@ -12,26 +12,26 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.NamedList;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,12 +42,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
+@Slf4j
 class LuceneIndexHandler {
-
-    private static final Logger LOGGER = Logger.getLogger(LuceneIndexHandler.class);
 
     private static final int NUMBER_OF_FRAGMENTS = 5;
 
+    private final Map<String, String> facetFieldToTitle;
     private final Configuration configuration;
     private final PreviewProcessor previewProcessor;
     private final SolrEmbedded solrEmbedded;
@@ -56,12 +56,26 @@ class LuceneIndexHandler {
     public LuceneIndexHandler(final Configuration aConfiguration, final PreviewProcessor aPreviewProcessor) throws IOException {
         previewProcessor = aPreviewProcessor;
         configuration = aConfiguration;
+        facetFieldToTitle = new HashMap<>();
+        facetFieldToTitle.put(IndexFields.LANGUAGE, "Language");
+        facetFieldToTitle.put("attr_author", "Author");
+        facetFieldToTitle.put("attr_last-modified-year", "Last modified");
+        facetFieldToTitle.put("attr_" + IndexFields.EXTENSION, "File type");
 
         final var theIndexDirectory = new File(aConfiguration.getConfigDirectory(), "index");
         theIndexDirectory.mkdirs();
 
         solrEmbedded = new SolrEmbedded(new SolrEmbedded.Config(theIndexDirectory));
         solrClient = solrEmbedded.solrClient();
+    }
+
+    private String[] facetFields() {
+        final var result = new String[facetFieldToTitle.size()];
+        var i=0;
+        for (final var field : facetFieldToTitle.keySet()) {
+            result[i++] = field;
+        }
+        return result;
     }
 
     public void crawlingStarts() {
@@ -147,7 +161,7 @@ class LuceneIndexHandler {
         try {
             solrEmbedded.shutdown();
         } catch (final Exception e) {
-            LOGGER.error("Error while closing IndexWriter", e);
+            log.error("Error while closing IndexWriter", e);
         }
     }
 
@@ -193,25 +207,28 @@ class LuceneIndexHandler {
         return 0;
     }
 
-    public QueryResult performQuery(final String aQueryString, final String aBacklink, final String aBasePath, final Configuration aConfiguration, final Map<String, String> aDrilldownFields) {
+    public QueryResult performQuery(final String aQueryString, final String aBasePath, final Configuration aConfiguration, final Map<String, String> aDrilldownFields) {
 
         final Map<String, Object> theParams = new HashMap<>();
         theParams.put("defType", "google");
         theParams.put("q", aQueryString);
         theParams.put("fl", "*,score");
-        theParams.put("rows", "" + configuration.getNumberOfSearchResults());
+        theParams.put("rows", Integer.toString(configuration.getNumberOfSearchResults()));
         theParams.put("facet", "true");
-        theParams.put("facet.field", new String[] {IndexFields.LANGUAGE, "attr_author", "attr_last-modified-year", "attr_" + IndexFields.EXTENSION});
+        theParams.put("facet.field", facetFields());
         theParams.put("hl", "true");
         theParams.put("hl.method", "unified");
         theParams.put("hl.fl", IndexFields.CONTENT);
-        theParams.put("hl.snippets", "" + NUMBER_OF_FRAGMENTS);
+        theParams.put("hl.snippets", Integer.toString(NUMBER_OF_FRAGMENTS));
         theParams.put("hl.fragsize", "100");
+
+        final List<QueryFilter> activeFilters = new ArrayList<>();
 
         if (aDrilldownFields != null) {
             final List<String> theFilters = new ArrayList<>();
             for (final var theField : aDrilldownFields.entrySet()) {
                 theFilters.add(theField.getKey()+":"+ClientUtils.escapeQueryChars(theField.getValue()));
+                activeFilters.add(new QueryFilter(facetFieldToTitle.get(theField.getKey()) + " : " + theField.getValue(), filterFacet(aBasePath, theField.getKey())));
             }
             if (!theFilters.isEmpty()) {
                 theParams.put("fq", theFilters.toArray(new String[theFilters.size()]));
@@ -251,7 +268,7 @@ class LuceneIndexHandler {
                                 theHighlight.append(thePhrase.trim());
                             }
                         } else {
-                            LOGGER.warn("No highligting for " + theFileName);
+                            log.warn("No highligting for {}", theFileName);
                         }
                     }
 
@@ -287,18 +304,39 @@ class LuceneIndexHandler {
             final var theDuration = System.currentTimeMillis() - theStartTime;
 
             final List<FacetDimension> theDimensions = new ArrayList<>();
-            fillFacet(IndexFields.LANGUAGE, "Language", aBasePath, theQueryResponse, theDimensions, t -> SupportedLanguage.valueOf(t).toLocale().getDisplayName());
-            fillFacet("attr_author", "Author", aBasePath, theQueryResponse, theDimensions, t -> t);
-            fillFacet("attr_last-modified-yea", "Last modified", aBasePath, theQueryResponse, theDimensions, t -> t);
-            fillFacet("attr_" + IndexFields.EXTENSION, "File type", aBasePath, theQueryResponse, theDimensions, t -> t);
+            fillFacet(IndexFields.LANGUAGE, aBasePath, theQueryResponse, theDimensions, t -> SupportedLanguage.valueOf(t).toLocale().getDisplayName());
+            fillFacet("attr_author", aBasePath, theQueryResponse, theDimensions, t -> t);
+            fillFacet("attr_last-modified-year", aBasePath, theQueryResponse, theDimensions, t -> t);
+            fillFacet("attr_" + IndexFields.EXTENSION, aBasePath, theQueryResponse, theDimensions, t -> t);
 
-            return new QueryResult(StringEscapeUtils.escapeHtml(aQueryString), theDuration, theDocuments, theDimensions, theIndexSize, aBacklink);
+            return new QueryResult(StringEscapeUtils.escapeHtml(aQueryString), theDuration, theDocuments, theDimensions, theIndexSize, Lists.reverse(activeFilters));
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void fillFacet(final String aFacetField, final String aFacetDisplayLabel, final String aBacklink, final QueryResponse aQueryResponse, final List<FacetDimension> aDimensions,
+    private String filterFacet(final String aPath, final String aFieldName) {
+        try {
+            final var url = new URL(aPath);
+            final var thePaths = StringUtils.split(url.getPath(), "/");
+            final var theResult = new StringBuilder();
+            theResult.append(thePaths[1]);
+            if (thePaths.length > 2) {
+                for (var i = 2; i < thePaths.length; i++) {
+                    final var theFilter = thePaths[i];
+                    if (!theFilter.startsWith(aFieldName + "%3D")) {
+                        theResult.append("/");
+                        theResult.append(theFilter);
+                    }
+                }
+            }
+            return new URL(url.getProtocol(), url.getHost(), url.getPort(), "/search/" + theResult.toString()).toString();
+        } catch (final MalformedURLException e) {
+            throw new IllegalStateException("Cannot happen", e);
+        }
+    }
+
+    private void fillFacet(final String aFacetField, final String aBacklink, final QueryResponse aQueryResponse, final List<FacetDimension> aDimensions,
             final Function<String, String> aConverter) {
         final var theFacet = aQueryResponse.getFacetField(aFacetField);
         if (theFacet != null) {
@@ -313,8 +351,9 @@ class LuceneIndexHandler {
                     }
                 }
             }
-            if (!theFacets.isEmpty()) {
-                aDimensions.add(new FacetDimension(aFacetDisplayLabel, theFacets));
+            // Facetting only makes sense if there is more than one facet
+            if (theFacets.size() > 1) {
+                aDimensions.add(new FacetDimension(facetFieldToTitle.get(aFacetField), theFacets));
             }
         }
     }
