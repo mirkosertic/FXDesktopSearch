@@ -25,7 +25,8 @@
                 <nav class="search">
                     <a href="/search"><img src="logo.png"/></a>
                     <div>
-                        <input id="querystring" name="querystring" placeholder="Enter searchphrase here..." value="${queryResult.searchTerm}">
+                        <input list="suggestion" id="querystring" name="querystring" placeholder="Enter searchphrase here..." value="${queryResult.searchTerm}">
+                        <datalist id="suggestion"></datalist>
                     </div>
                     <button type="submit">Search!</button>
                 </nav>
@@ -90,7 +91,8 @@
                     </div>
                     <div class="search">
                         <div>
-                            <input id="querystring" name="querystring" placeholder="Enter searchphrase here...">
+                            <input list="suggestion" id="querystring" name="querystring" placeholder="Enter searchphrase here...">
+                            <datalist id="suggestion"></datalist>
                         </div>
                         <button type="submit">Search!</button>
                     </div>
@@ -105,5 +107,8 @@
                 </div>
             </#if>
         </form>
+        <script>
+            desktopsearch.registerSuggest();
+        </script>
     </body>
 </html>
