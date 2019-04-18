@@ -1,14 +1,17 @@
-/**
- * FreeDesktopSearch - A Search Engine for your Desktop
- * Copyright (C) 2013 Mirko Sertic
+/*
+ * FXDesktopSearch Copyright 2013 Mirko Sertic
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package de.mirkosertic.desktopsearch;
 
@@ -113,6 +116,7 @@ public class Configuration {
         enabledDocumentTypes = new HashSet<>(aConfiguration.enabledDocumentTypes);
         metaDataNameReplacement = new HashMap<>(aConfiguration.metaDataNameReplacement);
         configDirectory = aConfiguration.configDirectory;
+        crawlOnStartup = aConfiguration.crawlOnStartup;
     }
 
     public Configuration(final File aConfigDirectory) {
@@ -173,85 +177,85 @@ public class Configuration {
     }
 
     public Configuration addLocation(final CrawlLocation aCrawlLocation) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.crawlLocations.add(aCrawlLocation);
         return theConfiguration;
     }
 
     public Configuration removeLocation(final CrawlLocation aCrawlLocation) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.crawlLocations.remove(aCrawlLocation);
         return theConfiguration;
     }
 
     public Configuration updateIncludeSimilarDocuments(final boolean aValue) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.showSimilarDocuments = aValue;
         return theConfiguration;
     }
 
     public Configuration updateNumberOfSearchResults(final int aValue) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.numberOfSearchResults = aValue;
         return theConfiguration;
     }
 
     public Configuration updateNumberOfSuggestions(final int aValue) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.numberOfSuggestions = aValue;
         return theConfiguration;
     }
 
     public Configuration enableDocumentType(final SupportedDocumentType aType) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.enabledDocumentTypes.add(aType);
         return theConfiguration;
     }
 
     public Configuration disableDocumentType(final SupportedDocumentType aType) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.enabledDocumentTypes.remove(aType);
         return theConfiguration;
     }
 
     public Configuration enableLanguage(final SupportedLanguage aLanguage) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.enabledLanguages.add(aLanguage);
         return theConfiguration;
     }
 
     public Configuration disableLanguage(final SupportedLanguage aLanguage) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.enabledLanguages.remove(aLanguage);
         return theConfiguration;
     }
 
     public Configuration updateSuggestionWindowBefore(final int aValue) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.suggestionWindowBefore = aValue;
         return theConfiguration;
     }
 
     public Configuration updateSuggestionWindowAfter(final int aValue) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.suggestionWindowAfter = aValue;
         return theConfiguration;
     }
 
     public Configuration updateSuggestionSlop(final int aValue) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.suggestionSlop = aValue;
         return theConfiguration;
     }
 
     public Configuration updateSuggestionsInOrder(final boolean aValue) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.suggestionInOrder = aValue;
         return theConfiguration;
     }
 
     public Configuration updateCrawlOnStartup(final boolean aValue) {
-        final Configuration theConfiguration = new Configuration(this);
+        final var theConfiguration = new Configuration(this);
         theConfiguration.crawlOnStartup = aValue;
         return theConfiguration;
     }

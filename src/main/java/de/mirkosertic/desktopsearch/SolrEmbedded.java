@@ -1,14 +1,17 @@
-/**
- * FreeDesktopSearch - A Search Engine for your Desktop
- * Copyright (C) 2017 Mirko Sertic
+/*
+ * FXDesktopSearch Copyright 2013 Mirko Sertic
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package de.mirkosertic.desktopsearch;
 
@@ -37,15 +40,15 @@ public class SolrEmbedded {
 
     public SolrEmbedded(final Config config) throws IOException {
         // Copy all required files
-        final File solrHome = config.solrHome;
+        final var solrHome = config.solrHome;
         solrHome.mkdirs();
 
         copyResourceToFile("/solrhome/solr.xml", new File(solrHome, "solr.xml"));
 
-        final File core1 = new File(solrHome, "core1");
-        final File core1conf = new File(core1, "conf");
-        final File core1data = new File(core1, "data");
-        final File core1lang = new File(core1, "lang");
+        final var core1 = new File(solrHome, "core1");
+        final var core1conf = new File(core1, "conf");
+        final var core1data = new File(core1, "data");
+        final var core1lang = new File(core1, "lang");
 
         core1conf.mkdirs();
         core1data.mkdirs();
@@ -84,7 +87,7 @@ public class SolrEmbedded {
     }
 
     private static void copyResourceToFile(final String aResource, final File aTargetFile) throws IOException {
-        try (final FileOutputStream theFos = new FileOutputStream(aTargetFile)) {
+        try (final var theFos = new FileOutputStream(aTargetFile)) {
             IOUtils.copy(SolrEmbedded.class.getResourceAsStream(aResource), theFos);
         }
     }

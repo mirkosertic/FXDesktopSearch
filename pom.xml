@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.mirkosertic</groupId>
-    <artifactId>DesktopSearch</artifactId>
-    <version>2.3.0</version>
+    <groupId>de.mirkosertic.desktopsearch</groupId>
+    <artifactId>FXDesktopSearch</artifactId>
+    <version>3.0.0</version>
 
     <name>FXDesktopSearch</name>
     <organization>
-        <name>Project FXDesktopSearch</name>
+        <name>FXDesktopSearch</name>
         <url>https://github.com/mirkosertic/FXDesktopSearch</url>
     </organization>
 
@@ -23,8 +23,9 @@
         <lucene.version>8.0.0</lucene.version>
         <solr.version>8.0.0</solr.version>
         <tika.version>1.20</tika.version>
-        <projectrelease.version>2.2.0</projectrelease.version>
+        <projectrelease.version>3.0.0</projectrelease.version>
         <javafx.version>12</javafx.version>
+        <jpackage.directory>/home/sertic/Development/Software/jdk-13/bin</jpackage.directory>
     </properties>
 
     <build>
@@ -64,6 +65,7 @@
                                     </excludes>
                                 </filter>
                             </filters>
+                            <outputFile>${project.build.directory}/jpackage-app/FXDesktopSearch.jar</outputFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -201,15 +203,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.26</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.13</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.8</version>
         </dependency>
 
         <dependency>
@@ -240,7 +236,12 @@
 
     <profiles>
         <profile>
-            <id>fxrelease</id>
+            <id>fxrelease-windows</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                </os>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -256,32 +257,47 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <executable>${env.JAVA_HOME}/bin/javapackager</executable>
+                            <executable>${env.JPACKAGE_HOME}/bin/jpackage</executable>
                             <arguments>
-                                <argument>-deploy</argument>
-                                <argument>-native</argument>
-                                <argument>all</argument>
-                                <argument>-name</argument>
+                                <argument>create-installer</argument>
+
+                                <argument>-o</argument>
+                                <argument>${project.build.directory}</argument>
+
+                                <argument>-n</argument>
                                 <argument>FXDesktopSearch</argument>
-                                <argument>-title</argument>
-                                <argument>FXDesktopSearch</argument>
-                                <argument>-vendor</argument>
-                                <argument>Mirko Sertic</argument>
-                                <argument>-Bidentifier=de.mirkosertic.fxdesktopsearch</argument>
-                                <argument>-BjvmOptions=-Xmx1024m</argument>
-                                <argument>-BappVersion=${projectrelease.version}</argument>
-                                <argument>-BmainJar=FXDesktopSearch.jar</argument>
-                                <argument>-appclass</argument>
+
+                                <argument>--resource-dir</argument>
+                                <argument>${project.basedir}/src/main/deploy/jpackage</argument>
+
+                                <argument>--icon</argument>
+                                <argument>${project.basedir}/src/main/deploy/jpackage/FXDesktopSearch.png</argument>
+
+                                <argument>-i</argument>
+                                <argument>${project.build.directory}/jpackage-app</argument>
+
+                                <argument>--main-class</argument>
                                 <argument>de.mirkosertic.desktopsearch.DesktopSearch</argument>
-                                <argument>-srcdir</argument>
-                                <argument>${project.build.directory}</argument>
-                                <argument>-srcfiles</argument>
+
+                                <argument>--main-jar</argument>
                                 <argument>FXDesktopSearch.jar</argument>
-                                <argument>-outdir</argument>
-                                <argument>${project.build.directory}</argument>
-                                <argument>-outfile</argument>
-                                <argument>FXDesktopSearchApp</argument>
-                                <argument>-v</argument>
+
+                                <argument>--app-version</argument>
+                                <argument>${projectrelease.version}</argument>
+
+                                <argument>--license-file </argument>
+                                <argument>${project.basedir}/LICENSE</argument>
+
+                                <argument>--temp-root</argument>
+                                <argument>${project.build.directory}/jpackage</argument>
+
+                                <argument>--runtime-image</argument>
+                                <argument>/home/sertic/Development/Software/jdk-12</argument>
+
+                                <argument>@${project.basedir}/src/main/deploy/jpackage/common.options</argument>
+                                <argument>@${project.basedir}/src/main/deploy/jpackage/linux.options</argument>
+
+                                <argument>--verbose</argument>
                             </arguments>
                         </configuration>
                     </plugin>

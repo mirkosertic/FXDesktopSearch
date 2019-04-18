@@ -1,14 +1,17 @@
 /*
- * FreeDesktopSearch - A Search Engine for your Desktop
- * Copyright (C) 2013 Mirko Sertic
+ * FXDesktopSearch Copyright 2013 Mirko Sertic
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package de.mirkosertic.desktopsearch;
 
@@ -19,7 +22,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.controlsfx.control.PropertySheet;
 
-import java.io.File;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
@@ -74,6 +76,18 @@ public class ConfigurationController {
             @Override
             public void setValue(final Object o) {
                 currentConfiguration = currentConfiguration.updateNumberOfSearchResults((Integer) o);
+            }
+        });
+        propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Crawl on startup", BooleanPropertyEditor.class) {
+
+            @Override
+            public Object getValue() {
+                return currentConfiguration.isCrawlOnStartup();
+            }
+
+            @Override
+            public void setValue(final Object o) {
+                currentConfiguration = currentConfiguration.updateCrawlOnStartup((Boolean) o);
             }
         });
         propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Show similar documents", BooleanPropertyEditor.class) {
@@ -149,7 +163,7 @@ public class ConfigurationController {
             }
         });
 
-        for (final SupportedLanguage theLanguage : SupportedLanguage.values()) {
+        for (final var theLanguage : SupportedLanguage.values()) {
 
             propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_LANGUAGE, theLanguage.toLocale().getDisplayName(), BooleanPropertyEditor.class) {
 
@@ -165,7 +179,7 @@ public class ConfigurationController {
             });
         }
 
-        for (final SupportedDocumentType theDocumentType : SupportedDocumentType.values()) {
+        for (final var theDocumentType : SupportedDocumentType.values()) {
 
             propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_FILEFORMATS, theDocumentType.getDisplayName(Locale.getDefault()), BooleanPropertyEditor.class) {
 
@@ -185,18 +199,18 @@ public class ConfigurationController {
 
     private void removeSelectedLocation() {
 
-        final Configuration.CrawlLocation theLocation = (Configuration.CrawlLocation) indexedDirectories.getSelectionModel().getSelectedItem();
+        final var theLocation = (Configuration.CrawlLocation) indexedDirectories.getSelectionModel().getSelectedItem();
         indexedDirectories.getItems().remove(theLocation);
 
         currentConfiguration = currentConfiguration.removeLocation(theLocation);
     }
 
     private void addNewLocation() {
-        final DirectoryChooser theChooser = new DirectoryChooser();
+        final var theChooser = new DirectoryChooser();
         theChooser.setTitle("Add new crawl location");
-        final File theFile = theChooser.showDialog(stage.getOwner());
+        final var theFile = theChooser.showDialog(stage.getOwner());
         if (theFile != null) {
-            final Configuration.CrawlLocation theNewLocation = new Configuration.CrawlLocation(UUID.randomUUID().toString(), theFile);
+            final var theNewLocation = new Configuration.CrawlLocation(UUID.randomUUID().toString(), theFile);
             indexedDirectories.getItems().add(theNewLocation);
 
             currentConfiguration = currentConfiguration.addLocation(theNewLocation);
