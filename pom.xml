@@ -236,7 +236,7 @@
 
     <profiles>
         <profile>
-            <id>fxrelease-windows</id>
+            <id>fxrelease-linux</id>
             <activation>
                 <os>
                     <family>linux</family>
@@ -292,10 +292,79 @@
                                 <argument>${project.build.directory}/jpackage</argument>
 
                                 <argument>--runtime-image</argument>
-                                <argument>/home/sertic/Development/Software/jdk-12</argument>
+                                <argument>${env.JAVA_HOME}</argument>
 
                                 <argument>@${project.basedir}/src/main/deploy/jpackage/common.options</argument>
                                 <argument>@${project.basedir}/src/main/deploy/jpackage/linux.options</argument>
+
+                                <argument>--verbose</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>fxrelease-windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>${env.JPACKAGE_HOME}/bin/jpackage</executable>
+                            <arguments>
+                                <argument>create-installer</argument>
+
+                                <argument>-o</argument>
+                                <argument>${project.build.directory}</argument>
+
+                                <argument>-n</argument>
+                                <argument>FXDesktopSearch</argument>
+
+                                <argument>--resource-dir</argument>
+                                <argument>${project.basedir}/src/main/deploy/jpackage</argument>
+
+                                <argument>--icon</argument>
+                                <argument>${project.basedir}/src/main/deploy/jpackage/FXDesktopSearch.ico</argument>
+
+                                <argument>-i</argument>
+                                <argument>${project.build.directory}/jpackage-app</argument>
+
+                                <argument>--main-class</argument>
+                                <argument>de.mirkosertic.desktopsearch.DesktopSearch</argument>
+
+                                <argument>--main-jar</argument>
+                                <argument>FXDesktopSearch.jar</argument>
+
+                                <argument>--app-version</argument>
+                                <argument>${projectrelease.version}</argument>
+
+                                <argument>--license-file </argument>
+                                <argument>${project.basedir}/LICENSE</argument>
+
+                                <argument>--temp-root</argument>
+                                <argument>${project.build.directory}/jpackage</argument>
+
+                                <argument>--runtime-image</argument>
+                                <argument>${env.JAVA_HOME}</argument>
+
+                                <argument>@${project.basedir}/src/main/deploy/jpackage/common.options</argument>
+                                <argument>@${project.basedir}/src/main/deploy/jpackage/windows.options</argument>
 
                                 <argument>--verbose</argument>
                             </arguments>
