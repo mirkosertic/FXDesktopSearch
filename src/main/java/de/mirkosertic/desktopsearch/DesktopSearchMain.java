@@ -27,9 +27,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.LockReleaseFailedException;
 
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -51,7 +49,7 @@ public class DesktopSearchMain extends Application {
     public void start(final Stage aStage) throws Exception {
 
         // This is our base directory
-        final var theBaseDirectory = new File(SystemUtils.getUserHome(), "FreeSearchIndexDir");
+        final var theBaseDirectory = new File(SystemUtils.getUserHome(), "FXDesktopSearch");
         theBaseDirectory.mkdirs();
 
         configurationManager = new ConfigurationManager(theBaseDirectory);
