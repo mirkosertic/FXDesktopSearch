@@ -15,7 +15,6 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.application.Platform;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
@@ -30,8 +29,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import lombok.extern.slf4j.Slf4j;
 import netscape.javascript.JSObject;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,9 +40,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Slf4j
 public class DesktopSearchController implements Initializable {
-
-    private static final Logger LOGGER  = Logger.getLogger(DesktopSearchController.class);
 
     @FXML
     WebView webView;
@@ -157,9 +155,6 @@ public class DesktopSearchController implements Initializable {
                 }
             }, 5000);
         }
-
-        WebConsoleListener.setDefaultListener(
-                (webView, message, lineNumber, sourceId) -> LOGGER.warn("Console: [" + sourceId + ":" + lineNumber + "] " + message));
     }
 
     @Override public void initialize(final URL aUrl, final ResourceBundle aResourceBundle) {
@@ -182,7 +177,7 @@ public class DesktopSearchController implements Initializable {
         try {
             backend.crawlLocations();
         } catch (final Exception e) {
-            LOGGER.error("Error crawling locations", e);
+            log.error("Error crawling locations", e);
         }
     }
 
@@ -203,7 +198,7 @@ public class DesktopSearchController implements Initializable {
             stage.initOwner(window);
             stage.show();
         } catch (final IOException e) {
-            LOGGER.error("Error running configuration dialog", e);
+            log.error("Error running configuration dialog", e);
         }
     }
 }

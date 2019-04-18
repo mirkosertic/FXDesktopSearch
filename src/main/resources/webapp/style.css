@@ -48,6 +48,28 @@ body {
   background-color: #20638f;
 }
 
+nav[role=chips] {
+  padding-top: 1.5rem;
+}
+nav[role=chips] .chips a {
+  background: url("remove.svg");
+  background-size: 1.6rem 1.6rem;
+  background-repeat: no-repeat;
+  border: 1px solid #e67e22;
+  background-color: #e67e22;
+  color: white;
+  border-radius: 0.3rem;
+  padding-left: 1.5rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  padding-right: 0.3rem;
+  display: inline-block;
+}
+nav[role=chips] .chips a:hover {
+  border: 1px solid #f0b37e;
+  background-color: #f0b37e;
+}
+
 nav[role=facet] {
   padding-top: 1rem;
   display: flex;
@@ -76,8 +98,20 @@ nav[role=facet] ul li ul li {
 }
 nav[role=facet] div.menu {
   display: none;
-  background-color: #0074D9;
-  color: white;
+  border-top: 0.2rem solid #2980b9;
+  border-left: 1px solid #2980b9;
+  border-right: 1px solid #2980b9;
+  border-bottom: 1px solid #2980b9;
+  color: black;
+  white-space: pre;
+  background-color: white;
+}
+nav[role=facet] div.menu a {
+  display: block;
+  padding: 0.5rem;
+}
+nav[role=facet] div.menu a:hover {
+  color: #2980b9;
 }
 nav[role=facet] input[type=checkbox]:checked ~ div.menu {
   display: inline-block;
@@ -230,12 +264,15 @@ aside .close:before {
   line-height: 1.33;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
 }
 .resultentry .image {
   width: 160px;
   max-width: 160px;
   text-align: center;
+}
+.resultentry img {
+  max-width: 160px;
 }
 .resultentry .text {
   flex-grow: 1;
@@ -247,11 +284,13 @@ aside .close:before {
   padding-bottom: 0.2rem;
   text-decoration: none;
   display: block;
+  cursor: pointer;
 }
 .resultentry .text .filename {
   display: block;
   text-decoration: none;
   color: #006621;
+  cursor: pointer;
 }
 .resultentry .text .entrytext {
   color: #545454;
@@ -278,10 +317,6 @@ aside .close:before {
   background-size: cover;
   height: 1rem;
   display: inline-block;
-}
-
-.hidden {
-  display: none !important;
 }
 
 .welcome {

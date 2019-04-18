@@ -12,7 +12,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,9 +28,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+@Slf4j
 public class DirectoryWatcher {
-
-    private static final Logger LOGGER = Logger.getLogger(DirectoryWatcher.class);
 
     public static final int DEFAULT_WAIT_FOR_ACTION = 5;
 
@@ -70,7 +69,7 @@ public class DirectoryWatcher {
         directoryListener = aDirectoryListener;
         filesystemLocation = aFileSystemLocation;
 
-        final Path thePath = aFileSystemLocation.getDirectory().toPath();
+        final var thePath = aFileSystemLocation.getDirectory().toPath();
 
         watchService = aWatchServiceCache.getWatchServiceFor(thePath);
         watcherThread = new Thread("WatcherThread-"+thePath) {
@@ -79,15 +78,15 @@ public class DirectoryWatcher {
                 while(!isInterrupted()) {
 
                     try {
-                        final WatchKey theKey = watchService.take();
-                        final Path theParent = (Path) theKey.watchable();
+                        final var theKey = watchService.take();
+                        final var theParent = (Path) theKey.watchable();
                         theKey.pollEvents().stream().forEach(theEvent -> {
                             if (theEvent.kind() == StandardWatchEventKinds.OVERFLOW) {
-                                LOGGER.warn("Overflow for " + theEvent.context() + " count = " + theEvent.count());
+                                log.warn("Overflow for {} count = {}", theEvent.context(), theEvent.count());
                                 // Overflow events are not handled
                             } else {
-                                final Path thePath = theParent.resolve((Path) theEvent.context());
-                                LOGGER.debug(theEvent.kind() + " for " + theEvent.context() + " count = " + theEvent.count());
+                                final var thePath = theParent.resolve((Path) theEvent.context());
+                                log.debug("{} for {} count = {}", theEvent.kind(), theEvent.context(), theEvent.count());
 
                                 publishActionFor(thePath, theEvent.kind());
                             }
@@ -96,7 +95,7 @@ public class DirectoryWatcher {
 
                         Thread.sleep(10000);
                     } catch (final InterruptedException e) {
-                        LOGGER.debug("Has been interrupted");
+                        log.debug("Has been interrupted");
                     }
                 }
             }
@@ -106,7 +105,7 @@ public class DirectoryWatcher {
 
     private void publishActionFor(final Path aPath, final WatchEvent.Kind aKind ) {
         synchronized (fileTimers) {
-            final ActionTimer theTimer = fileTimers.get(aPath);
+            final var theTimer = fileTimers.get(aPath);
             if (theTimer == null) {
                 fileTimers.put(aPath, new ActionTimer(aKind, waitForAction));
             } else {
@@ -150,7 +149,7 @@ public class DirectoryWatcher {
     }
 
     private void registerWatcher(final Path aDirectory) throws IOException {
-        LOGGER.info("New watchable directory detected : " + aDirectory);
+        log.info("New watchable directory detected : {}", aDirectory);
         aDirectory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
     }
 
@@ -162,7 +161,7 @@ public class DirectoryWatcher {
                 try {
                     Files.walk(filesystemLocation.getDirectory().toPath()).forEach(path -> {
                         if (Files.isDirectory(path)) {
-                            LOGGER.info("Registering watches for " + path);
+                            log.info("Registering watches for {}", path);
                             try {
                                 registerWatcher(path);
                             } catch (final IOException e) {
@@ -171,7 +170,7 @@ public class DirectoryWatcher {
                         }
                     });
                 } catch (final IOException e) {
-                    LOGGER.error("Error registering file watcher", e);
+                    log.error("Error registering file watcher", e);
                 }
             }
         };
@@ -194,7 +193,7 @@ public class DirectoryWatcher {
 
     public void crawl() throws IOException {
 
-        final Path thePath = filesystemLocation.getDirectory().toPath();
+        final var thePath = filesystemLocation.getDirectory().toPath();
 
         Files.walk(thePath).forEach(aPath -> {
             if (!Files.isDirectory(aPath)) {

@@ -17,7 +17,7 @@ import de.mirkosertic.desktopsearch.Preview;
 import de.mirkosertic.desktopsearch.PreviewConstants;
 import de.mirkosertic.desktopsearch.PreviewGenerator;
 import de.mirkosertic.desktopsearch.SupportedDocumentType;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -29,9 +29,8 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+@Slf4j
 public class OfficeOpenPreviewGenerator implements PreviewGenerator, PreviewConstants {
-
-    private static final Logger LOGGER = Logger.getLogger(OfficeOpenPreviewGenerator.class);
 
     private final Set<SupportedDocumentType> suppportedDocumentTypes;
 
@@ -42,7 +41,7 @@ public class OfficeOpenPreviewGenerator implements PreviewGenerator, PreviewCons
 
     @Override
     public boolean supportsFile(final File aFile) {
-        for (final SupportedDocumentType theType : suppportedDocumentTypes) {
+        for (final var theType : suppportedDocumentTypes) {
             if (theType.matches(aFile)) {
                 return true;
             }
@@ -56,20 +55,20 @@ public class OfficeOpenPreviewGenerator implements PreviewGenerator, PreviewCons
         try {
             theZipFile = new ZipFile(aFile);
         } catch (final IOException e) {
-            LOGGER.error("Error opening "+aFile, e);
+            log.error("Error opening {}", aFile, e);
             return null;
         }
         try {
-            final ZipEntry theThumbnailEntry = theZipFile.getEntry("Thumbnails/thumbnail.png");
+            final var theThumbnailEntry = theZipFile.getEntry("Thumbnails/thumbnail.png");
             if (theThumbnailEntry == null) {
-                LOGGER.error("Cannot find thumbnail in "+aFile);
+                log.error("Cannot find thumbnail in {}", aFile);
                 return null;
             }
 
-            final BufferedImage theImage = ImageIO.read(new BufferedInputStream(theZipFile.getInputStream(theThumbnailEntry)));
+            final var theImage = ImageIO.read(new BufferedInputStream(theZipFile.getInputStream(theThumbnailEntry)));
             return new Preview(ImageUtils.rescale(theImage, THUMB_WIDTH, THUMB_HEIGHT, ImageUtils.RescaleMethod.RESIZE_FIT_ONE_DIMENSION));
         } catch (final IOException e) {
-            LOGGER.error("Error reading thumbnail from "+aFile, e);
+            log.error("Error reading thumbnail from {}", aFile, e);
             return null;
         } finally {
             try {
