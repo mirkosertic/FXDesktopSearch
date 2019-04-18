@@ -1,17 +1,17 @@
-/**
- * FreeDesktopSearch - A Search Engine for your Desktop
- * Copyright (C) 2013 Mirko Sertic
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
- * warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with this program; if not, see
- * <http://www.gnu.org/licenses/>.
+/*
+ * FXDesktopSearch Copyright 2013 Mirko Sertic
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package de.mirkosertic.desktopsearch;
 
@@ -45,8 +45,8 @@ class QueryParser {
     }
 
     private String toToken(final String aToken, final String aSearchField) throws IOException {
-        try (final TokenStream theStream = analyzer.tokenStream(aSearchField, aToken)) {
-            final CharTermAttribute theAttribute = theStream.getAttribute(CharTermAttribute.class);
+        try (final var theStream = analyzer.tokenStream(aSearchField, aToken)) {
+            final var theAttribute = theStream.getAttribute(CharTermAttribute.class);
             theStream.reset();
             if (theStream.incrementToken()) {
                 return theAttribute.toString();
@@ -58,13 +58,13 @@ class QueryParser {
     private void addToBooleanQuery(
             final List<String> aTermList, final String aFieldName, final BooleanQuery.Builder aQuery, final BooleanClause.Occur aOccour)
             throws IOException {
-        for (final String theTerm : aTermList) {
+        for (final var theTerm : aTermList) {
             if (QueryUtils.isWildCard(theTerm)) {
                 aQuery.add(new WildcardQuery(new Term(aFieldName, theTerm)), aOccour);
             } else if (QueryUtils.isFuzzy(theTerm)) {
                 aQuery.add(new FuzzyQuery(new Term(aFieldName, theTerm)), aOccour);
             } else {
-                final String theTokenizedTerm = toToken(theTerm, aFieldName);
+                final var theTokenizedTerm = toToken(theTerm, aFieldName);
                 if (!StringUtils.isEmpty(theTokenizedTerm)) {
                     aQuery.add(new TermQuery(new Term(aFieldName, theTokenizedTerm)), aOccour);
                 }
@@ -75,23 +75,23 @@ class QueryParser {
 
     public Query parse(final String aQuery, final String aSearchField) throws IOException {
 
-        final QueryTokenizer theTokenizer = new QueryTokenizer(aQuery);
+        final var theTokenizer = new QueryTokenizer(aQuery);
 
         // Now we have the terms, lets construct the query
 
-        final BooleanQuery.Builder theResult = new BooleanQuery.Builder();
+        final var theResult = new BooleanQuery.Builder();
 
         if (!theTokenizer.getRequiredTerms().isEmpty()) {
 
             final List<SpanQuery> theSpans = new ArrayList<>();
-            for (final String theTerm : theTokenizer.getRequiredTerms()) {
+            for (final var theTerm : theTokenizer.getRequiredTerms()) {
                 if (QueryUtils.isWildCard(theTerm)) {
                     theSpans.add(new SpanMultiTermQueryWrapper<>(new WildcardQuery(new Term(aSearchField, theTerm))));
                 } else if (QueryUtils.isFuzzy(theTerm)) {
                     theSpans.add(new SpanMultiTermQueryWrapper<>(new FuzzyQuery(new Term(aSearchField, theTerm))));
                 } else {
                     // Ok, we need to check of the token would be removed due to stopwords and so on
-                    final String theTokenizedTerm = toToken(theTerm, aSearchField);
+                    final var theTokenizedTerm = toToken(theTerm, aSearchField);
                     if (!StringUtils.isEmpty(theTokenizedTerm)) {
                         theSpans.add(new SpanTermQuery(new Term(aSearchField, theTokenizedTerm)));
                     }
@@ -105,8 +105,8 @@ class QueryParser {
 
                 // We expect a maximum edit distance of 10 between the searched terms in any order
                 // This seems to be the most useful value
-                final int theMaxEditDistance = 10;
-                for (int theSlop = 0; theSlop < theMaxEditDistance; theSlop++) {
+                final var theMaxEditDistance = 10;
+                for (var theSlop = 0; theSlop < theMaxEditDistance; theSlop++) {
                     final SpanQuery theNearQuery = new SpanNearQuery(theSpans.toArray(new SpanQuery[theSpans.size()]), theSlop, false);
                     theResult.add(new BoostQuery(theNearQuery, 50 + theMaxEditDistance - theSlop), BooleanClause.Occur.SHOULD);
                 }

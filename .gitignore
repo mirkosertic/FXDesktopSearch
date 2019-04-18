@@ -1,2 +1,9 @@
 .gitconfig
 .idea/**
+.settings/**
+*.iml
+target/*
+dependency-reduced-pom.xml
+.project
+.classpath
+.factorypath
