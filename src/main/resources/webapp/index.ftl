@@ -24,9 +24,10 @@
             <#if queryResult?has_content>
                 <nav class="search">
                     <a href="/search"><img src="logo.png"/></a>
-                    <div>
-                        <input list="suggestion" id="querystring" name="querystring" placeholder="Enter searchphrase here..." value="${queryResult.searchTerm}">
-                        <datalist id="suggestion"></datalist>
+                    <div class="search-input-wrapper">
+                        <input value="${queryResult.searchTerm}" autocomplete="off" id="querystring" name="querystring" placeholder="Enter searchphrase here...">
+                        <div id="suggestion" class="hidden">
+                        </div>
                     </div>
                     <button type="submit">Search!</button>
                 </nav>
@@ -90,9 +91,10 @@
                         <img src="logo.png"/>
                     </div>
                     <div class="search">
-                        <div>
-                            <input list="suggestion" id="querystring" name="querystring" placeholder="Enter searchphrase here...">
-                            <datalist id="suggestion"></datalist>
+                        <div class="search-input-wrapper">
+                            <input autocomplete="off" id="querystring" name="querystring" placeholder="Enter searchphrase here...">
+                            <div id="suggestion" class="hidden">
+                            </div>
                         </div>
                         <button type="submit">Search!</button>
                     </div>

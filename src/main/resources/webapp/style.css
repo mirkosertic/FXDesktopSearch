@@ -1,3 +1,11 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 body {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -14,7 +22,9 @@ body {
   padding-top: 0.1rem;
   padding-right: 0.5rem;
 }
-.search div {
+.search .search-input-wrapper {
+  display: inline-block;
+  position: relative;
   padding-left: 0.2rem;
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
@@ -22,7 +32,7 @@ body {
   border-radius: 1rem 0rem 0rem 1rem;
   flex-grow: 1;
 }
-.search input {
+.search .search-input-wrapper input {
   padding-left: 0.8rem;
   padding-top: 0.8rem;
   padding-bottom: 0.8rem;
@@ -31,11 +41,28 @@ body {
   background-color: transparent;
   border: none;
 }
-.search input:hover {
+.search .search-input-wrapper input:hover {
   border: none;
 }
-.search input:focus {
+.search .search-input-wrapper input:focus {
   border: none;
+}
+.search .search-input-wrapper #suggestion {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border: 1px solid #2980b9;
+  background-color: white;
+}
+.search .search-input-wrapper #suggestion a {
+  display: block;
+  text-decoration: none;
+  border: none;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  text-align: left;
 }
 .search button {
   border: 1px solid #2980b9;
@@ -237,8 +264,8 @@ aside .close:before {
 }
 
 #drawer:checked + #drawer-toggle {
-  width: calc(100% - 23%);
-  height: calc(100% - 3%);
+  width: calc(100% - 20%);
+  height: 100%;
   background: rgba(255, 255, 255, 0.8);
   left: calc(100% - 80%);
 }
@@ -333,6 +360,10 @@ aside .close:before {
   padding-right: 8rem;
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
+}
+
+.hidden {
+  display: none;
 }
 
 /*# sourceMappingURL=style.css.map */
