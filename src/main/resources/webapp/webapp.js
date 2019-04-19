@@ -21,12 +21,23 @@ var desktopsearch = {
                     })
                     .then(function(myJson) {
                         var datalist = document.getElementById("suggestion");
-                        var str = '';
-                        for (var i = 0;i<myJson.length;i++) {
-                            var s = myJson[i];
-                            str+= '<option>' + s.value;
+                        while (datalist.firstChild) {
+                            datalist.removeChild(datalist.firstChild);
                         }
-                        datalist.innerHTML = str;
+
+                        if (myJson.length > 0) {
+                            for (var i = 0; i < myJson.length; i++) {
+                                var s = myJson[i];
+
+                                var a = document.createElement('a');
+                                a.innerHTML = s.label;
+                                a.href = "/search/" + s.value;
+                                datalist.appendChild(a);
+                            }
+                            datalist.classList.remove("hidden")
+                        } else {
+                            datalist.classList.add("hidden")
+                        }
                     });
             }
         });

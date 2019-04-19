@@ -4,7 +4,7 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <File name="FileLog" fileName="${user.home}/FXDesktopSearch/FXDesktopSearch.log">
+        <File name="FileLog" fileName="${sys:user.home}/FXDesktopSearch/FXDesktopSearch.log">
             <PatternLayout>
                 <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
             </PatternLayout>

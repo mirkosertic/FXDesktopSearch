@@ -7,6 +7,14 @@ $drawer-item-color: #bdc3c7;
 $drawer-item-color-highlight: #ecf0f1;
 $chip-color: #e67e22;
 
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 body {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -22,28 +30,49 @@ body {
     padding-top: 0.1rem;
     padding-right: 0.5rem;
   }
-  div {
+  .search-input-wrapper {
+    display: inline-block;
+    position: relative;
     padding-left: 0.2rem;
     padding-top: 0.2rem;
     padding-bottom: 0.2rem;
     border: 1px solid $primary-color;
     border-radius: 1rem 0rem 0rem 1rem;
     flex-grow: 1;
-  }
-  input {
-    padding-left: 0.8rem;
-    padding-top: 0.8rem;
-    padding-bottom: 0.8rem;
-    margin-left: 1rem;
-    width: 100%;
-    background-color: transparent;
-    border: none;
-  }
-  input:hover {
-    border: none;
-  }
-  input:focus {
-    border: none;
+
+    input {
+      padding-left: 0.8rem;
+      padding-top: 0.8rem;
+      padding-bottom: 0.8rem;
+      margin-left: 1rem;
+      width: 100%;
+      background-color: transparent;
+      border: none;
+    }
+    input:hover {
+      border: none;
+    }
+    input:focus {
+      border: none;
+    }
+
+    #suggestion {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      border: 1px solid $primary-color;
+      background-color: white;
+      a {
+        display: block;
+        text-decoration: none;
+        border: none;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        text-align: left;
+      }
+    }
   }
   button {
     border: 1px solid $primary-color;
@@ -52,6 +81,7 @@ body {
     background-color: $primary-color;
     color: #ffffff;
   }
+
   button:hover {
     background-color: darken($primary-color, 10%)
   }
@@ -257,8 +287,8 @@ aside {
 }
 
 #drawer:checked+#drawer-toggle {
-  width: calc(100% - 23%);
-  height: calc(100% - 3%);
+  width: calc(100% - 20%);
+  height: 100%;
   background: rgba(255, 255, 255, 0.8);
   left: calc(100% - 80%);
 }
@@ -366,4 +396,8 @@ aside {
       padding-bottom: 0.2rem;
     }
   }
+}
+
+.hidden {
+  display: none;
 }
