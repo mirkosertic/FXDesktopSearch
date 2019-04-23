@@ -9,6 +9,7 @@ before_install:
   - wget https://download.java.net/java/early_access/jpackage/49/openjdk-13-jpackage+49_linux-x64_bin.tar.gz
   - tar xzf OpenJDK12U-jdk_x64_linux_hotspot_12.0.1_12.tar.gz
   - tar xzf openjdk-13-jpackage+49_linux-x64_bin.tar.gz
+  - ls -la
   - export JAVA_HOME=~/jdk-12.0.1+12
   - export JPACKAGE_HOME=~/jdk-13
   - export PATH=$JAVA_HOME/bin:$PATH
