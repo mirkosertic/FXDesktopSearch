@@ -15,4 +15,5 @@ before_install:
   - export PATH=$JAVA_HOME/bin:$PATH
   - echo "MAVEN_OPTS='-Xmx3072m -XX:MaxPermSize=512m'" > ~/.mavenrc
   - "env"
+  - sudo apt-get install -y fakeroot rpm
 
