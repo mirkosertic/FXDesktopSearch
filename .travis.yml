@@ -11,7 +11,7 @@ before_install:
   - tar xzf openjdk-13-jpackage+49_linux-x64_bin.tar.gz
   - export JAVA_HOME=~/jdk-12.0.1+12
   - export JPACKAGE_HOME=~/jdk-13
-  - export PATH:$JAVA_HOME/bin:$PATH
+  - export PATH=$JAVA_HOME/bin:$PATH
   - echo "MAVEN_OPTS='-Xmx3072m -XX:MaxPermSize=512m'" > ~/.mavenrc
   - "env"
 
