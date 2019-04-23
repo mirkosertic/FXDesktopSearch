@@ -1,0 +1,16 @@
+language: java
+jdk:
+  - openjdk8
+env:
+  global:
+    - "MAVEN_OPTS=-Xmx3072m -XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled -XX:-UseGCOverheadLimit"
+before_install:
+  - wget https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12.0.1%2B12/OpenJDK12U-jdk_x64_linux_hotspot_12.0.1_12.tar.gz
+  - wget https://download.java.net/java/early_access/jpackage/49/openjdk-13-jpackage+49_linux-x64_bin.tar.gz
+  - tar xzf OpenJDK12U-jdk_x64_linux_hotspot_12.0.1_12.tar.gz
+  - tar xzf openjdk-13-jpackage+49_linux-x64_bin.tar.gz
+  - export JAVA_HOME=~/jdk-12.0.1+12
+  - export JPACKAGE_HOME=~/jdk-13
+  - export PATH:$JAVA_HOME/bin:$PATH
+  - echo "MAVEN_OPTS='-Xmx3072m -XX:MaxPermSize=512m'" > ~/.mavenrc
+  - "env"

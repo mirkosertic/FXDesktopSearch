@@ -28,6 +28,8 @@ Windows
 
 Installation on Windows systems is quite easy. Download the .exe installer and execute it with administrator permissions. This will install FXDesktopSearch and the required Java runtime on your machine.
 
+Starting with Windows 10, you can also install FXDesktopSearch from Microsoft App Store.
+
 Linux
 -----
 
