@@ -48,12 +48,12 @@ The following start screen is shown after you start the application:
 
 ![](documentation/startscreen.png)
 
-After the first launch, you have configure the crawl locations and some other settings. This configuration can be done by clicking on File -> Configure.
+After the first launch, you have configure the crawl locations and some other settings. This configuration can be done by clicking on Hamburger Menu -> Configure.
 
 Configuration
 -------------
 
-The configuration screen is triggered by using File -> Configure. The following dialog will appear:
+The configuration screen is triggered by using Hamburger Menu -> Configure. The following dialog will appear:
 
 ![](documentation/configuration.png)
 
@@ -75,13 +75,13 @@ Language analyzers                             | Advanced: enable or disable lan
 Doing some search
 -----------------
 
-After you have configured the application, crawling starts automatically a few seconds after application start. When crawling is completed, the index can be updated by clicking on File -> Perform complete crawl (this option will be grayed out while crawling). Now FXDesktopSearch will scan the configured paths and add the file to the index. You can see the indexing progress in the status bar of the application.
+After you have configured the application, crawling starts automatically a few seconds after application start. When crawling is completed, the index can be updated by clicking on Hamburger Menu -> Perform complete crawl (this option will be grayed out while crawling). Now FXDesktopSearch will scan the configured paths and add the file to the index. You can see the indexing progress in the status bar of the application.
 
-After the crawl is finished, you can start to search by clicking File -> Search document. The following search screen will be shown. Now you can enter a search phrase and click the magnifier icon. A search result as follows will be displayed:
+After the crawl is finished, you can start to search documents. The following search screen will be shown. Now you can enter a search phrase and click the magnifier icon. A search result as follows will be displayed:
 
 ![](documentation/searchresult.png)
 
-You can click on the facets on the left side to further restrict(drilldown) your search result. You can also click on file names so open the files using the assigned application. FXDesktopSearch also detects similar or duplicate files, too! These files are listed in a green color below the filename. There is also some highlighted text to show what was the best matching text snippet of your search.
+You can click on the facets on the top of the search result to further restrict(drilldown) your search result. You can also click on file names to open the files using the assigned application. FXDesktopSearch also detects similar or duplicate files, too! These files are listed in a green color below the filename. There is also some highlighted text to show what was the best matching text snippet of your search.
 
 FXDesktopSearch gives for every found document a star rating. Five stars mean this is a very good match. Zero stars mean that the match was not very good, but there was still a match.
 
