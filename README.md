@@ -12,12 +12,9 @@ FXDesktopSearch can crawl the local and remote filesystems. It also watches alre
 Download
 --------
 
-The latest FXDesktopSearch packages can be downloaded here:
+Releases are available [at GitHub](https://github.com/mirkosertic/FXDesktopSearch/releases) or
 
-Operating system                  | Link                                                
-----------------------------------|-----------------------------------------------------
-Microsoft Windows 64bit           | [Google Drive Windows Releases](https://drive.google.com/folderview?id=0BxZHTEICpbwAVExxR2UxWDd4ZzQ&usp=sharing#list)
-Linux RPM 64 bit                  | [Google Drive Unix Releases](https://drive.google.com/folderview?id=0BxZHTEICpbwASE1Zc1VMZGxUelU&usp=sharing#list)                                                     
+[![](documentation/MSStore.png)](https://www.microsoft.com/en-us/p/fxdesktopsearch/9p0m8n1b3dsp)
 
 
 Installation
