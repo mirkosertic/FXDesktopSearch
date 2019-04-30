@@ -239,13 +239,13 @@ class Backend implements ConfigurationChangeListener {
         luceneIndexHandler = new LuceneIndexHandler(aConfiguration, previewProcessor);
     }
 
-    public void crawlLocations() throws IOException {
+    public void crawlLocations() {
 
         luceneIndexHandler.crawlingStarts();
 
         final var theRunner = new Thread(() -> {
 
-            log.info("Startint to crawl");
+            log.info("Starting to crawl");
             locations.values().forEach(theWatcher -> {
                 try {
                     theWatcher.crawl();
@@ -263,15 +263,15 @@ class Backend implements ConfigurationChangeListener {
         luceneIndexHandler.shutdown();
     }
 
-    public QueryResult performQuery(final String aQueryString, final String aBasePath, final Map<String, String> aDrilldownDimensions) throws IOException {
+    public QueryResult performQuery(final String aQueryString, final String aBasePath, final Map<String, String> aDrilldownDimensions) {
         return luceneIndexHandler.performQuery(aQueryString, aBasePath, configuration, aDrilldownDimensions);
     }
 
-    public Suggestion[] findSuggestionTermsFor(final String aTerm) throws IOException {
+    public Suggestion[] findSuggestionTermsFor(final String aTerm) {
         return luceneIndexHandler.findSuggestionTermsFor(aTerm);
     }
 
-    public File getFileOnDiskForDocument(final String aDocumentID) throws IOException {
+    public File getFileOnDiskForDocument(final String aDocumentID) {
         return luceneIndexHandler.getFileOnDiskForDocument(aDocumentID);
     }
 }

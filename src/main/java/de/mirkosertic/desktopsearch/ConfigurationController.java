@@ -102,6 +102,30 @@ public class ConfigurationController {
                 currentConfiguration = currentConfiguration.updateIncludeSimilarDocuments((Boolean) o);
             }
         });
+        propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Use Natural Language Processing", BooleanPropertyEditor.class) {
+
+            @Override
+            public Object getValue() {
+                return currentConfiguration.isNaturalLanguageProcessing();
+            }
+
+            @Override
+            public void setValue(final Object o) {
+                currentConfiguration = currentConfiguration.updateNaturalLanguageProcessing((Boolean) o);
+            }
+        });
+        propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_COMMON, "Max number of facet entries", SpinnerPropertyEditor.class) {
+
+            @Override
+            public Object getValue() {
+                return currentConfiguration.getFacetCount();
+            }
+
+            @Override
+            public void setValue(final Object o) {
+                currentConfiguration = currentConfiguration.updateFacetCount((Integer) o);
+            }
+        });
         propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_SUGGEST, "Max number of suggestions", SpinnerPropertyEditor.class) {
 
             @Override

@@ -66,6 +66,8 @@ public class Configuration {
     private Set<SupportedDocumentType> enabledDocumentTypes;
     private Map<String, String> metaDataNameReplacement;
     private File configDirectory;
+    private boolean naturalLanguageProcessing;
+    private int facetCount;
 
     private Configuration() {
         // Needed by Jackson
@@ -100,6 +102,8 @@ public class Configuration {
         metaDataNameReplacement.put("character count", "character-count");
         metaDataNameReplacement.put("npages", "page-count");
         metaDataNameReplacement.put("slide-count", "page-count");
+        naturalLanguageProcessing = true;
+        facetCount = 10;
     }
 
     private Configuration(final Configuration aConfiguration) {
@@ -117,11 +121,17 @@ public class Configuration {
         metaDataNameReplacement = new HashMap<>(aConfiguration.metaDataNameReplacement);
         configDirectory = aConfiguration.configDirectory;
         crawlOnStartup = aConfiguration.crawlOnStartup;
+        naturalLanguageProcessing = aConfiguration.naturalLanguageProcessing;
+        facetCount = aConfiguration.facetCount;
     }
 
     public Configuration(final File aConfigDirectory) {
         this();
         configDirectory = aConfigDirectory;
+    }
+
+    public int getFacetCount() {
+        return facetCount;
     }
 
     public int getNumberOfSearchResults() {
@@ -176,6 +186,10 @@ public class Configuration {
         return crawlOnStartup;
     }
 
+    public boolean isNaturalLanguageProcessing() {
+        return naturalLanguageProcessing;
+    }
+
     public Configuration addLocation(final CrawlLocation aCrawlLocation) {
         final var theConfiguration = new Configuration(this);
         theConfiguration.crawlLocations.add(aCrawlLocation);
@@ -194,9 +208,21 @@ public class Configuration {
         return theConfiguration;
     }
 
+    public Configuration updateNaturalLanguageProcessing(final boolean aValue) {
+        final var theConfiguration = new Configuration(this);
+        theConfiguration.naturalLanguageProcessing = aValue;
+        return theConfiguration;
+    }
+
     public Configuration updateNumberOfSearchResults(final int aValue) {
         final var theConfiguration = new Configuration(this);
         theConfiguration.numberOfSearchResults = aValue;
+        return theConfiguration;
+    }
+
+    public Configuration updateFacetCount(final int aValue) {
+        final var theConfiguration = new Configuration(this);
+        theConfiguration.facetCount = aValue;
         return theConfiguration;
     }
 

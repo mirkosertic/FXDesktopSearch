@@ -64,6 +64,9 @@ class LuceneIndexHandler {
         facetFieldToTitle.put("attr_author", "Author");
         facetFieldToTitle.put("attr_last-modified-year", "Last modified");
         facetFieldToTitle.put("attr_" + IndexFields.EXTENSION, "File type");
+        facetFieldToTitle.put("attr_entity_LOCATION", "Location");
+        facetFieldToTitle.put("attr_entity_PERSON", "Person");
+        facetFieldToTitle.put("attr_entity_ORGANIZATION", "Organization");
 
         final var theIndexDirectory = new File(aConfiguration.getConfigDirectory(), "index");
         theIndexDirectory.mkdirs();
@@ -105,6 +108,10 @@ class LuceneIndexHandler {
                     if (!StringUtils.isEmpty(theStringValue)) {
                         theDocument.setField("attr_" + theEntry.key, theStringValue);
                     }
+                }
+                if (theValue instanceof List) {
+                    final var theList = (List) theValue;
+                    theDocument.setField("attr_" + theEntry.key, theList);
                 }
                 if (theValue instanceof Date) {
                     final var theDateValue = (Date) theValue;
@@ -219,6 +226,7 @@ class LuceneIndexHandler {
         theParams.put("rows", Integer.toString(configuration.getNumberOfSearchResults()));
         theParams.put("facet", "true");
         theParams.put("facet.field", facetFields());
+        theParams.put("facet.limit", Integer.toString(configuration.getFacetCount()));
         theParams.put("hl", "true");
         theParams.put("hl.method", "unified");
         theParams.put("hl.fl", IndexFields.CONTENT);
@@ -311,6 +319,9 @@ class LuceneIndexHandler {
             fillFacet("attr_author", aBasePath, theQueryResponse, theDimensions, t -> t);
             fillFacet("attr_last-modified-year", aBasePath, theQueryResponse, theDimensions, t -> t);
             fillFacet("attr_" + IndexFields.EXTENSION, aBasePath, theQueryResponse, theDimensions, t -> t);
+            fillFacet("attr_entity_LOCATION", aBasePath, theQueryResponse, theDimensions, t -> t);
+            fillFacet("attr_entity_PERSON", aBasePath, theQueryResponse, theDimensions, t -> t);
+            fillFacet("attr_entity_ORGANIZATION", aBasePath, theQueryResponse, theDimensions, t -> t);
 
             return new QueryResult(StringEscapeUtils.escapeHtml(aQueryString), theDuration, theDocuments, theDimensions, theIndexSize, Lists.reverse(activeFilters));
         } catch (final Exception e) {
