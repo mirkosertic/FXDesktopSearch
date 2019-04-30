@@ -19,22 +19,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.apache.tika.langdetect.OptimaizeLangDetector;
 import org.apache.tika.language.detect.LanguageDetector;
-import org.apache.tika.language.detect.LanguageResult;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -145,6 +141,15 @@ class ContentExtractor {
                 theContent.addMetaData(IndexFields.EXTENSION, theExtension.toLowerCase());
             }
 
+            if (configuration.isNaturalLanguageProcessing()) {
+                // Run natural language processing
+                try {
+                    final NLP nlp = NLP.forLanguage(theLanguage);
+                    nlp.addMetaDataTo(theStringData, theContent);
+                } catch (final Exception e) {
+                    log.warn("Error on NLP, document will still be indexed", e);
+                }
+            }
             return theContent;
         } catch (final Exception e) {
             log.error("Error extracting content of {}", aFile, e);

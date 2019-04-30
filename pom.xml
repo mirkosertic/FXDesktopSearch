@@ -25,6 +25,7 @@
         <tika.version>1.20</tika.version>
         <projectrelease.version>3.0.0</projectrelease.version>
         <javafx.version>12.0.1</javafx.version>
+        <corenlp.version>3.9.2</corenlp.version>
     </properties>
 
     <build>
@@ -232,6 +233,27 @@
             <version>1.18.6</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>${corenlp.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>${corenlp.version}</version>
+            <classifier>models</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>${corenlp.version}</version>
+            <classifier>models-german</classifier>
+        </dependency>
+
     </dependencies>
 
     <profiles>
