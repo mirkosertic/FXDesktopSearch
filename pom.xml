@@ -53,6 +53,33 @@
                 <version>3.1.1</version>
                 <executions>
                     <execution>
+                        <id>corenlp</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>edu.stanford.nlp</groupId>
+                                    <artifactId>stanford-corenlp</artifactId>
+                                    <version>${corenlp.version}</version>
+                                    <classifier>models-german</classifier>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                    <includes>StanfordCoreNLP-german.properties,edu/stanford/nlp/models/pos-tagger/german/german-hgc.tagger,edu/stanford/nlp/models/ner/german.conll.germeval2014.hgc_175m_600.crf.ser.gz</includes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>edu.stanford.nlp</groupId>
+                                    <artifactId>stanford-corenlp</artifactId>
+                                    <version>${corenlp.version}</version>
+                                    <classifier>models</classifier>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                    <includes>StanfordCoreNLP.properties,edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger,edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy</id>
                         <phase>package</phase>
                         <goals>
@@ -238,20 +265,6 @@
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
             <version>${corenlp.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>${corenlp.version}</version>
-            <classifier>models</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>${corenlp.version}</version>
-            <classifier>models-german</classifier>
         </dependency>
 
     </dependencies>
