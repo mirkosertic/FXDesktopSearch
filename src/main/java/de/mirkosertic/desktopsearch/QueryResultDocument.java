@@ -21,7 +21,9 @@ import java.util.List;
 
 public class QueryResultDocument {
 
-    private final List<String> fileNames;
+    private final String title;
+
+    private final String fileName;
 
     private final String highlightedSearchResult;
 
@@ -37,10 +39,10 @@ public class QueryResultDocument {
 
     private final boolean previewAvailable;
 
-    public QueryResultDocument(final int aDocumentID, final String aFileName, final String aHighlighterResult, final long aLastModified, final int aNormalizedScore, final String aUniqueID, final boolean aPreviewAvailable) {
+    public QueryResultDocument(final int aDocumentID, final String aTitle, final String aFileName, final String aHighlighterResult, final long aLastModified, final int aNormalizedScore, final String aUniqueID, final boolean aPreviewAvailable) {
         previewAvailable = aPreviewAvailable;
-        fileNames = new ArrayList<>();
-        fileNames.add(aFileName);
+        title = aTitle;
+        fileName = aFileName;
         highlightedSearchResult = aHighlighterResult;
         lastModified = aLastModified;
         documentID = aDocumentID;
@@ -49,14 +51,12 @@ public class QueryResultDocument {
         uniqueID = aUniqueID;
     }
 
-    public List<String> getFileNames() {
-        return fileNames;
+    public String getTitle() {
+        return title;
     }
 
-    public void addFileName(final String aFileName) {
-        if (!fileNames.contains(aFileName)) {
-            fileNames.add(aFileName);
-        }
+    public String getFileName() {
+        return fileName;
     }
 
     public String getHighlightedSearchResult() {
