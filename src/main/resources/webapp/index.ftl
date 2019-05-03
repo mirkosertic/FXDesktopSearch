@@ -66,9 +66,7 @@
                             <img class="lazy" src="loading.gif" data-src="/thumbnail/preview/${document.uniqueID}.png"/>
                         </div>
                         <div class="text">
-                            <#list document.fileNames as filename>
-                                <a class="entrytitle" onclick="desktopsearch.openFile('${queryResult.getEscapedFileName(filename)}')">${filename}</a>
-                            </#list>
+                            <a class="entrytitle" onclick="desktopsearch.openFile('${queryResult.getEscapedFileName(document.fileName)}')">${document.title}</a>
                             <#list document.similarFiles as similarFile>
                                 <a class="filename" onclick="desktopsearch.openFile('${queryResult.getEscapedFileName(similarFile)}')">${queryResult.getSimpleFileName(similarFile)}</a>
                             </#list>

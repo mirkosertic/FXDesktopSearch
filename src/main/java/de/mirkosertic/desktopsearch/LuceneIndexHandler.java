@@ -27,22 +27,17 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.NamedList;
+import org.apache.tika.metadata.*;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Slf4j
@@ -217,6 +212,28 @@ class LuceneIndexHandler {
         return 0;
     }
 
+    private String getOrDefault(SolrDocument document, String aFieldname, String aDefault) {
+        Object theValue = document.get(aFieldname);
+        if (theValue == null) {
+            return aDefault;
+        }
+        if (theValue instanceof String) {
+            return (String) theValue;
+        }
+        if (theValue instanceof List) {
+            List theList = (List) theValue;
+            if (theList.isEmpty()) {
+                return aDefault;
+            }
+            Object theFirst = theList.get(0);
+            if (theFirst instanceof String) {
+                return (String) theFirst;
+            }
+            return aDefault;
+        }
+        return aDefault;
+    }
+
     public QueryResult performQuery(final String aQueryString, final String aBasePath, final Configuration aConfiguration, final Map<String, String> aDrilldownFields) {
 
         final Map<String, Object> theParams = new HashMap<>();
@@ -288,7 +305,31 @@ class LuceneIndexHandler {
 
                         final var thePreviewAvailable = previewProcessor.previewAvailableFor(theFileOnDisk);
 
-                        final var theDocument = new QueryResultDocument(i, theFileName, theHighlight.toString().trim(),
+                        // Try to extract the title from the metadata
+                        var theTitle = theFileName;
+                        if (aConfiguration.isUseTitleAsFilename()) {
+                            theTitle = getOrDefault(theSolrDocument, "attr_" + Metadata.TITLE, "");
+                            if (theTitle == null || theTitle.trim().length() == 0) {
+                                theTitle = getOrDefault(theSolrDocument, "attr_" + PDF.DOC_INFO_TITLE.getName(), "");
+                            }
+                            if (theTitle == null || theTitle.trim().length() == 0) {
+                                theTitle = getOrDefault(theSolrDocument, "attr_title", "");
+                            }
+                            if (theTitle == null || theTitle.trim().length() == 0) {
+                                theTitle = getOrDefault(theSolrDocument,"attr_" + TikaCoreProperties.TITLE.getName(), "");
+                            }
+                            if (theTitle == null || theTitle.trim().length() == 0) {
+                                theTitle = getOrDefault(theSolrDocument,"attr_" + DublinCore.TITLE.getName(), "");
+                            }
+                            if (theTitle == null || theTitle.trim().length() == 0) {
+                                theTitle = getOrDefault(theSolrDocument, "attr_" + OfficeOpenXMLCore.SUBJECT.getName(), "");
+                            }
+                            if (theTitle == null || theTitle.trim().length() == 0) {
+                                theTitle = theFileName;
+                            }
+                        }
+
+                        final var theDocument = new QueryResultDocument(i, theTitle, theFileName, theHighlight.toString().trim(),
                                 theStoredLastModified, theNormalizedScore, theFileName, thePreviewAvailable);
 
                         if (configuration.isShowSimilarDocuments()) {

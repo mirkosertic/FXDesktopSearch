@@ -68,6 +68,7 @@ public class Configuration {
     private File configDirectory;
     private boolean naturalLanguageProcessing;
     private int facetCount;
+    private boolean useTitleAsFilename;
 
     private Configuration() {
         // Needed by Jackson
@@ -104,6 +105,7 @@ public class Configuration {
         metaDataNameReplacement.put("slide-count", "page-count");
         naturalLanguageProcessing = true;
         facetCount = 10;
+        useTitleAsFilename = true;
     }
 
     private Configuration(final Configuration aConfiguration) {
@@ -123,6 +125,7 @@ public class Configuration {
         crawlOnStartup = aConfiguration.crawlOnStartup;
         naturalLanguageProcessing = aConfiguration.naturalLanguageProcessing;
         facetCount = aConfiguration.facetCount;
+        useTitleAsFilename = aConfiguration.useTitleAsFilename;
     }
 
     public Configuration(final File aConfigDirectory) {
@@ -190,6 +193,10 @@ public class Configuration {
         return naturalLanguageProcessing;
     }
 
+    public boolean isUseTitleAsFilename() {
+        return useTitleAsFilename;
+    }
+
     public Configuration addLocation(final CrawlLocation aCrawlLocation) {
         final var theConfiguration = new Configuration(this);
         theConfiguration.crawlLocations.add(aCrawlLocation);
@@ -211,6 +218,12 @@ public class Configuration {
     public Configuration updateNaturalLanguageProcessing(final boolean aValue) {
         final var theConfiguration = new Configuration(this);
         theConfiguration.naturalLanguageProcessing = aValue;
+        return theConfiguration;
+    }
+
+    public Configuration updateUseTitleAsFilename(final boolean aValue) {
+        final var theConfiguration = new Configuration(this);
+        theConfiguration.useTitleAsFilename = aValue;
         return theConfiguration;
     }
 

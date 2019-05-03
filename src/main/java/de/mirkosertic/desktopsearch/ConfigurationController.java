@@ -102,6 +102,18 @@ public class ConfigurationController {
                 currentConfiguration = currentConfiguration.updateIncludeSimilarDocuments((Boolean) o);
             }
         });
+        propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Use title from metadata as filename", BooleanPropertyEditor.class) {
+
+            @Override
+            public Object getValue() {
+                return currentConfiguration.isUseTitleAsFilename();
+            }
+
+            @Override
+            public void setValue(final Object o) {
+                currentConfiguration = currentConfiguration.updateUseTitleAsFilename((Boolean) o);
+            }
+        });
         propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Use Natural Language Processing", BooleanPropertyEditor.class) {
 
             @Override
