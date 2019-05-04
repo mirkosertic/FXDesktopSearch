@@ -18,18 +18,8 @@ package de.mirkosertic.desktopsearch;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.nio.file.*;
+import java.util.*;
 
 @Slf4j
 public class DirectoryWatcher {
@@ -58,15 +48,14 @@ public class DirectoryWatcher {
 
     private final WatchService watchService;
     private final Thread watcherThread;
+    private final Thread monitorThread;
     private final Map<Path, ActionTimer> fileTimers;
     private final int waitForAction;
     private final Timer actionTimer;
     private final DirectoryListener directoryListener;
     private final Configuration.CrawlLocation filesystemLocation;
-    private final ExecutorPool executorPool;
 
-    public DirectoryWatcher(final WatchServiceCache aWatchServiceCache, final Configuration.CrawlLocation aFileSystemLocation, final int aWaitForAction, final DirectoryListener aDirectoryListener, final ExecutorPool aExecutorPool) throws IOException {
-        executorPool = aExecutorPool;
+    public DirectoryWatcher(final WatchServiceCache aWatchServiceCache, final Configuration.CrawlLocation aFileSystemLocation, final int aWaitForAction, final DirectoryListener aDirectoryListener) throws IOException {
         fileTimers = new HashMap<>();
         waitForAction = aWaitForAction;
         directoryListener = aDirectoryListener;
@@ -103,6 +92,25 @@ public class DirectoryWatcher {
                 }
             }
         };
+        monitorThread = new Thread("Index-Monitor") {
+            @Override
+            public void run() {
+                while (!isInterrupted()) {
+                    try {
+                        synchronized (fileTimers) {
+                            final var size = fileTimers.size();
+                            if (size > 0) {
+                                log.info("Currently {} files in index queue...", size);
+                            }
+                        }
+                        Thread.sleep(1000);
+                    } catch (final InterruptedException e) {
+                        log.debug("Waiting interrupted", e);
+                    }
+                }
+            }
+        };
+
         actionTimer = new Timer();
     }
 
@@ -180,6 +188,7 @@ public class DirectoryWatcher {
         theRegisterWatchers.start();
 
         watcherThread.start();
+        monitorThread.start();
         actionTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -192,6 +201,7 @@ public class DirectoryWatcher {
     public void stopWatching() {
         actionTimer.cancel();
         watcherThread.interrupt();
+        monitorThread.interrupt();
     }
 
     public void crawl() throws IOException {
@@ -200,7 +210,7 @@ public class DirectoryWatcher {
 
         Files.walk(thePath).forEach(aPath -> {
             if (!Files.isDirectory(aPath)) {
-                executorPool.execute(() -> directoryListener.fileFoundByCrawler(filesystemLocation, aPath));
+                publishActionFor(aPath, StandardWatchEventKinds.ENTRY_MODIFY);
             }
         });
     }

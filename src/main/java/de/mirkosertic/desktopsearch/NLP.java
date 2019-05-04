@@ -112,6 +112,7 @@ public abstract class NLP {
                     props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
                     props.setProperty("ner.useSUTime", "false");
                     props.setProperty("ner.applyFineGrained", "false");
+                    props.setProperty("ner.maxSentenceLength", "200");
                     return new StanfordCoreNLP(props);
                 }), cachedBlacklist(aLanguage));
             case de:
@@ -123,6 +124,7 @@ public abstract class NLP {
                         props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
                         props.setProperty("ner.useSUTime", "false");
                         props.setProperty("ner.applyFineGrained", "false");
+                        props.setProperty("ner.maxSentenceLength", "200");
                         return new StanfordCoreNLP(props);
                     } catch (final IOException e) {
                         throw new RuntimeException(e);

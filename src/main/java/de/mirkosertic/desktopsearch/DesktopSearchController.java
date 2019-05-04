@@ -112,10 +112,10 @@ public class DesktopSearchController implements Initializable {
             }
         }
 
-        @Override public void newFileFound(final String aFilename) {
+        @Override public void infotext(final String aInfoText) {
             wakeupThread();
             watcherThread.notifyProgress();
-            Platform.runLater(() -> statusText.setText(aFilename));
+            Platform.runLater(() -> statusText.setText(aInfoText));
         }
 
         @Override public void crawlingFinished() {

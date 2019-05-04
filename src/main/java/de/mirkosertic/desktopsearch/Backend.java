@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,23 +66,23 @@ class Backend implements ConfigurationChangeListener {
     private final ContentExtractor contentExtractor;
     private ProgressListener progressListener;
     private final Map<Configuration.CrawlLocation, DirectoryWatcher> locations;
-    private final ExecutorPool executorPool;
     private final Notifier notifier;
     private final WatchServiceCache watchServiceCache;
     private final PreviewProcessor previewProcessor;
     private Configuration configuration;
     private DirectoryListener directoryListener;
+    private final Statistics statistics;
+    private Thread progressInfo;
 
     public Backend(final Notifier aNotifier, final Configuration aConfiguration, final PreviewProcessor aPreviewProcessor) throws IOException {
         notifier = aNotifier;
         previewProcessor = aPreviewProcessor;
         locations = new HashMap<>();
-        executorPool = new ExecutorPool();
         watchServiceCache = new WatchServiceCache();
         contentExtractor = new ContentExtractor(aConfiguration);
-
+        statistics = new Statistics();
         // This is our simple flux
-        Flux<FileEvent> theFileEventFlux = Flux.push(sink -> directoryListener = new DirectoryListener() {
+        final Flux<FileEvent> theFileEventFlux = Flux.push(sink -> directoryListener = new DirectoryListener() {
 
             @Override
             public void fileDeleted(final Configuration.CrawlLocation aLocation, final Path aFile) {
@@ -89,6 +90,9 @@ class Backend implements ConfigurationChangeListener {
                     try {
                         if (contentExtractor.supportsFile(aFile.toString())) {
                             final var theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+
+                            statistics.newDeletedFileJob();
+
                             sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.DELETED));
                         }
                     } catch (final Exception e) {
@@ -103,20 +107,9 @@ class Backend implements ConfigurationChangeListener {
                     try {
                         if (contentExtractor.supportsFile(aFile.toString())) {
                             final var theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
-                        }
-                    } catch (final Exception e) {
-                        log.error("Error processing file {}", aFile, e);
-                    }
-                }
-            }
 
-            @Override
-            public void fileFoundByCrawler(final Configuration.CrawlLocation aLocation, final Path aFile) {
-                synchronized (this) {
-                    try {
-                        if (contentExtractor.supportsFile(aFile.toString())) {
-                            final var theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                            statistics.newModifiedFileJob();
+
                             sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
                         }
                     } catch (final Exception e) {
@@ -127,7 +120,7 @@ class Backend implements ConfigurationChangeListener {
         });
 
         // Filter update events for Files that were not changed
-        theFileEventFlux = theFileEventFlux.filter(aFileEvent -> {
+        final var theCheckFlux = theFileEventFlux.parallel(Math.max(1, Runtime.getRuntime().availableProcessors() / 2)).runOn(Schedulers.parallel()).filter(aFileEvent -> {
             // Always keep delete file events
             if (aFileEvent.type == FileEvent.EventType.DELETED) {
                 return true;
@@ -138,14 +131,19 @@ class Backend implements ConfigurationChangeListener {
             try {
                 final var theUpdateCheckResult = luceneIndexHandler
                         .checkIfModified(theFileName, aFileEvent.attributes.lastModifiedTime().toMillis());
-                return theUpdateCheckResult == UpdateCheckResult.UPDATED;
+
+                final boolean result = theUpdateCheckResult == UpdateCheckResult.UPDATED;
+                if (!result) {
+                    statistics.jobSkipped();
+                }
+                return result;
             } catch (final Exception e) {
                 throw Exceptions.propagate(e);
             }
         });
 
         // Ok, we now map the file events to lucene commands
-        final var theLuceneFlux = theFileEventFlux.publishOn(Schedulers.newSingle("ContentExtractor")).map(
+        final var theLuceneFlux = theCheckFlux.map(
                 aFileEvent -> {
                     if (aFileEvent.type == FileEvent.EventType.DELETED) {
                         return new LuceneCommand(aFileEvent, null);
@@ -157,14 +155,13 @@ class Backend implements ConfigurationChangeListener {
                 });
 
         // Ok, finally we add everything to the index
-        theLuceneFlux.publishOn(Schedulers.newSingle("LuceneUpdater")).doOnNext(aCommand -> {
+        theLuceneFlux.doOnNext(aCommand -> {
             if (aCommand.fileEvent.type == FileEvent.EventType.DELETED) {
                 try {
                     luceneIndexHandler.removeFromIndex(aCommand.fileEvent.path.toString());
 
                     aNotifier.showInformation("Deleted " + aCommand.fileEvent.path.getFileName());
 
-                    progressListener.newFileFound(aCommand.fileEvent.path.toString());
                 } catch (Exception e) {
                     aNotifier.showError("Error removing " + aCommand.fileEvent.path.getFileName(), e);
                 }
@@ -175,22 +172,21 @@ class Backend implements ConfigurationChangeListener {
 
                         notifier.showInformation("Reindexed " + aCommand.fileEvent.path.getFileName());
 
-                        progressListener.newFileFound(aCommand.fileEvent.path.toString());
-
                     } catch (Exception e) {
                         aNotifier.showError("Error re-inxeding " + aCommand.fileEvent.path.getFileName(), e);
                     }
                 }
             }
-        }).subscribe(new BaseSubscriber<>() {
+        }).sequential().subscribe(new BaseSubscriber<>() {
             @Override
             protected void hookOnSubscribe(final Subscription aSubscription) {
-                request(1);
+                request(Runtime.getRuntime().availableProcessors());
             }
 
             @Override
             protected void hookOnNext(final LuceneCommand aCommand) {
                 log.info("Processed command for {}", aCommand.fileEvent.path);
+                statistics.jobFinished();
                 request(1);
             }
 
@@ -224,12 +220,59 @@ class Backend implements ConfigurationChangeListener {
         });
     }
 
-    public void setProgressListener(final ProgressListener progressListener) {
-        this.progressListener = progressListener;
+    public void setProgressListener(final ProgressListener aProgressListener) {
+        progressListener = aProgressListener;
+
+        progressInfo = new Thread("ProgressInfo") {
+            @Override
+            public void run() {
+
+                long lastRemaining = -1;
+                final var format = NumberFormat.getIntegerInstance();
+                var lastMessage = "";
+
+                while (!isInterrupted()) {
+
+                    final long totalJobs = statistics.totalJobs();
+                    final long completedJobs = statistics.completedJobs();
+
+                    final long remaining = Math.max(totalJobs - completedJobs, 0);
+
+                    if (remaining > 0) {
+                        if (lastRemaining == -1) {
+                            lastMessage = remaining + " Files are still in the indexing queue.";
+                            progressListener.infotext(lastMessage);
+                        } else {
+                            final var thruput = lastRemaining - remaining;
+                            if (thruput > 0) {
+                                final double eta = ((double) remaining) / thruput;
+                                lastMessage = remaining + " Files are still in the indexing queue, " + format.format(eta) + " seconds remaining (ETA).";
+                                progressListener.infotext(lastMessage);
+                            } else {
+                                if (lastMessage.length() > 0) {
+                                    progressListener.infotext(lastMessage);
+                                }
+                            }
+                        }
+                    } else {
+                        lastMessage = "";
+                    }
+
+                    lastRemaining = remaining;
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (final InterruptedException e) {
+
+                    }
+                }
+            }
+        };
+        progressInfo.start();
     }
 
     private void add(final Configuration.CrawlLocation aLocation) throws IOException {
-        locations.put(aLocation, new DirectoryWatcher(watchServiceCache, aLocation, DirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener, executorPool).startWatching());
+        locations.put(aLocation, new DirectoryWatcher(watchServiceCache, aLocation, DirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener).startWatching());
     }
 
     private void setIndexLocation(final Configuration aConfiguration) throws IOException {
@@ -260,6 +303,9 @@ class Backend implements ConfigurationChangeListener {
     }
 
     public void shutdown() {
+        if (progressInfo != null) {
+            progressInfo.interrupt();
+        }
         luceneIndexHandler.shutdown();
     }
 
