@@ -21,6 +21,4 @@ interface DirectoryListener {
     void fileDeleted(Configuration.CrawlLocation aLocation, Path aFile);
 
     void fileCreatedOrModified(Configuration.CrawlLocation aLocation, Path aFile);
-
-    void fileFoundByCrawler(Configuration.CrawlLocation aLocation, Path aFile);
 }
