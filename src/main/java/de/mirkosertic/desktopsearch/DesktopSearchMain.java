@@ -23,17 +23,16 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.lucene.store.LockObtainFailedException;
-import org.apache.lucene.store.LockReleaseFailedException;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.net.BindException;
 import java.net.URL;
 
+@Slf4j
 public class DesktopSearchMain extends Application {
 
     public static void main(final String[] args) {
@@ -58,20 +57,8 @@ public class DesktopSearchMain extends Application {
 
         stage = aStage;
 
-        // Create the known preview processors
-        final var thePreviewProcessor = new PreviewProcessor();
-
+        // Try to bring to front an existing instance
         try {
-            // Boot the search backend and set it up for listening to configuration changes
-            backend = new Backend(theNotifier, configurationManager.getConfiguration(), thePreviewProcessor);
-            configurationManager.addChangeListener(backend);
-
-            // Boot embedded JSP container
-            embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend, thePreviewProcessor);
-
-            embeddedWebServer.start();
-        } catch (final BindException|LockReleaseFailedException|LockObtainFailedException e) {
-            // In this case, there is already an instance of DesktopSearch running
             // Inform the instance to bring it to front end terminate the current process.
             final var theURL = new URL(FrontendEmbeddedWebServer.getBringToFrontUrl());
             // Retrieve the content, but it can be safely ignored
@@ -80,7 +67,21 @@ public class DesktopSearchMain extends Application {
 
             // Terminate the JVM. The window of the running instance is visible now.
             System.exit(0);
+        } catch (Exception e)  {
+            log.info("Failed to brint to front en existing instance. We assume we need to create a new one.");
         }
+
+        // Create the known preview processors
+        final var thePreviewProcessor = new PreviewProcessor();
+
+        // Boot the search backend and set it up for listening to configuration changes
+        backend = new Backend(theNotifier, configurationManager.getConfiguration(), thePreviewProcessor);
+        configurationManager.addChangeListener(backend);
+
+        // Boot embedded JSP container
+        embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend, thePreviewProcessor);
+
+        embeddedWebServer.start();
 
         aStage.setTitle("FXDesktopSearch");
         aStage.setWidth(800);
