@@ -68,7 +68,7 @@ public class DesktopSearchMain extends Application {
             // Terminate the JVM. The window of the running instance is visible now.
             System.exit(0);
         } catch (Exception e)  {
-            log.info("Failed to brint to front en existing instance. We assume we need to create a new one.");
+            log.info("Failed to bring to front en existing instance. We assume we need to create a new one.");
         }
 
         // Create the known preview processors
