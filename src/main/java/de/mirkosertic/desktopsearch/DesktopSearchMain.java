@@ -49,7 +49,9 @@ public class DesktopSearchMain extends Application {
 
         // This is our base directory
         final var theBaseDirectory = new File(SystemUtils.getUserHome(), "FXDesktopSearch");
-        theBaseDirectory.mkdirs();
+        if (!theBaseDirectory.mkdirs()) {
+            log.info("Directory {} could not be created. Maybe there is already a configuration?", theBaseDirectory);
+        }
 
         configurationManager = new ConfigurationManager(theBaseDirectory);
 
@@ -67,9 +69,12 @@ public class DesktopSearchMain extends Application {
 
             // Terminate the JVM. The window of the running instance is visible now.
             System.exit(0);
-        } catch (Exception e)  {
+        } catch (final Exception e)  {
             log.info("Failed to bring to front en existing instance. We assume we need to create a new one.");
         }
+
+        final var theSplash = new SplashScreen(DesktopSearchMain.class.getResource("/webapp/logo.png"));
+        theSplash.setVisible(true);
 
         // Create the known preview processors
         final var thePreviewProcessor = new PreviewProcessor();
@@ -134,6 +139,8 @@ public class DesktopSearchMain extends Application {
 
             aStage.setOnCloseRequest(aEvent -> shutdown());
         }
+
+        theSplash.setVisible(false);
 
         aStage.setMaximized(true);
         aStage.show();
