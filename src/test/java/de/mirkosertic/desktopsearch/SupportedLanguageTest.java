@@ -15,51 +15,16 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import org.junit.Test;
+
 import java.util.Locale;
 
-public enum SupportedLanguage {
-    ar,
-    bg,
-    br,
-    ca,
-    ckb,
-    cz,
-    da,
-    de,
-    el,
-    en,
-    es,
-    eu,
-    fa,
-    fi,
-    fr,
-    ga,
-    gl,
-    hi,
-    hu,
-    hy,
-    id,
-    it,
-    lv,
-    nl,
-    no,
-    pt,
-    ro,
-    ru,
-    sv,
-    ta,
-    th,
-    tr,;
+import static org.junit.Assert.assertEquals;
 
-    public static SupportedLanguage getDefault() {
-        try {
-            return SupportedLanguage.valueOf(Locale.getDefault().getLanguage());
-        } catch (final Exception e) {
-            return SupportedLanguage.en;
-        }
-    }
+public class SupportedLanguageTest {
 
-    public Locale toLocale() {
-        return new Locale(name());
+    @Test
+    public void tamilTest() {
+        assertEquals("Tamil", SupportedLanguage.ta.toLocale().getDisplayName(Locale.ENGLISH));
     }
 }
