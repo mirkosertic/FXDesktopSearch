@@ -20,7 +20,7 @@
     </scm>
 
     <properties>
-        <lucene.version>8.0.0</lucene.version>
+        <lucene.version>8.1.0</lucene.version>
         <solr.version>8.1.0</solr.version>
         <tika.version>1.20</tika.version>
         <projectrelease.version>3.2.1</projectrelease.version>
