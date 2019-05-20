@@ -20,8 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -30,14 +30,25 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.NamedList;
-import org.apache.tika.metadata.*;
+import org.apache.tika.metadata.DublinCore;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.OfficeOpenXMLCore;
+import org.apache.tika.metadata.PDF;
+import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 
 @Slf4j
@@ -364,7 +375,7 @@ class LuceneIndexHandler {
             fillFacet("attr_entity_PERSON", aBasePath, theQueryResponse, theDimensions, t -> t);
             fillFacet("attr_entity_ORGANIZATION", aBasePath, theQueryResponse, theDimensions, t -> t);
 
-            return new QueryResult(StringEscapeUtils.escapeHtml(aQueryString), theDuration, theDocuments, theDimensions, theIndexSize, Lists.reverse(activeFilters));
+            return new QueryResult(StringEscapeUtils.escapeHtml4(aQueryString), theDuration, theDocuments, theDimensions, theIndexSize, Lists.reverse(activeFilters));
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
