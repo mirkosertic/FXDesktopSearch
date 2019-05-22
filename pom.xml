@@ -4,7 +4,7 @@
 
     <groupId>de.mirkosertic.desktopsearch</groupId>
     <artifactId>FXDesktopSearch</artifactId>
-    <version>3.2.1</version>
+    <version>3.3.0</version>
 
     <name>FXDesktopSearch</name>
     <organization>
@@ -22,7 +22,7 @@
     <properties>
         <solr.version>8.1.0</solr.version>
         <tika.version>1.21</tika.version>
-        <projectrelease.version>3.2.1</projectrelease.version>
+        <projectrelease.version>3.3.0</projectrelease.version>
         <javafx.version>12.0.1</javafx.version>
         <corenlp.version>3.9.2</corenlp.version>
     </properties>
