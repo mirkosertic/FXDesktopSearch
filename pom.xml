@@ -274,7 +274,8 @@
                         <configuration>
                             <executable>${env.JPACKAGE_HOME}/bin/jpackage</executable>
                             <arguments>
-                                <argument>create-installer</argument>
+                                <argument>--package-type</argument>
+                                <argument>rpm</argument>
 
                                 <argument>-o</argument>
                                 <argument>${project.build.directory}</argument>
@@ -284,9 +285,6 @@
 
                                 <argument>--resource-dir</argument>
                                 <argument>${project.basedir}/src/main/deploy/jpackage</argument>
-
-                                <argument>--icon</argument>
-                                <argument>${project.basedir}/src/main/deploy/jpackage/FXDesktopSearch.png</argument>
 
                                 <argument>-i</argument>
                                 <argument>${project.build.directory}/jpackage-app</argument>
@@ -343,7 +341,8 @@
                         <configuration>
                             <executable>${env.JPACKAGE_HOME}/bin/jpackage</executable>
                             <arguments>
-                                <argument>create-installer</argument>
+                                <argument>--package-type</argument>
+                                <argument>msi</argument>
 
                                 <argument>-o</argument>
                                 <argument>${project.build.directory}</argument>
