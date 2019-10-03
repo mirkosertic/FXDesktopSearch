@@ -277,7 +277,7 @@
                                 <argument>--package-type</argument>
                                 <argument>rpm</argument>
 
-                                <argument>-o</argument>
+                                <argument>-d</argument>
                                 <argument>${project.build.directory}</argument>
 
                                 <argument>-n</argument>
@@ -344,7 +344,7 @@
                                 <argument>--package-type</argument>
                                 <argument>msi</argument>
 
-                                <argument>-o</argument>
+                                <argument>-d</argument>
                                 <argument>${project.build.directory}</argument>
 
                                 <argument>-n</argument>
