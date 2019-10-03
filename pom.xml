@@ -301,7 +301,7 @@
                                 <argument>--license-file </argument>
                                 <argument>${project.basedir}/LICENSE</argument>
 
-                                <argument>--temp-root</argument>
+                                <argument>--temp</argument>
                                 <argument>${project.build.directory}/jpackage</argument>
 
                                 <argument>--runtime-image</argument>
@@ -371,7 +371,7 @@
                                 <argument>--license-file </argument>
                                 <argument>${project.basedir}/LICENSE</argument>
 
-                                <argument>--temp-root</argument>
+                                <argument>--temp</argument>
                                 <argument>${project.build.directory}/jpackage</argument>
 
                                 <argument>--runtime-image</argument>
