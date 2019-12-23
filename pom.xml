@@ -274,7 +274,7 @@
                         <configuration>
                             <executable>${env.JPACKAGE_HOME}/bin/jpackage</executable>
                             <arguments>
-                                <argument>--package-type</argument>
+                                <argument>--type</argument>
                                 <argument>rpm</argument>
 
                                 <argument>-d</argument>
@@ -341,7 +341,7 @@
                         <configuration>
                             <executable>${env.JPACKAGE_HOME}/bin/jpackage</executable>
                             <arguments>
-                                <argument>--package-type</argument>
+                                <argument>--type</argument>
                                 <argument>msi</argument>
 
                                 <argument>-d</argument>
