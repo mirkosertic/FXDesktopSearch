@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - openjdk12
+  - openjdk14
 addons:
   apt:
     packages:
@@ -13,9 +13,6 @@ env:
   global:
     - "MAVEN_OPTS=-Xmx3072m -XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled -XX:-UseGCOverheadLimit"
 before_install:
-  - wget https://download.java.net/java/early_access/jdk14/28/GPL/openjdk-14-ea+28_linux-x64_bin.tar.gz
-  - tar xzf openjdk-14-ea+28_linux-x64_bin.tar.gz
-  - export JPACKAGE_HOME=./jdk-14
-  - export PATH=$JAVA_HOME/bin:$PATH
+  - export JPACKAGE_HOME=$JAVA_HOME
   - echo "MAVEN_OPTS='-Xmx3072m -XX:MaxPermSize=512m'" > ~/.mavenrc
 
