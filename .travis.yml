@@ -13,6 +13,5 @@ env:
   global:
     - "MAVEN_OPTS=-Xmx3072m -XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled -XX:-UseGCOverheadLimit"
 before_install:
-  - export JPACKAGE_HOME=$JAVA_HOME
-  - echo "MAVEN_OPTS='-Xmx3072m -XX:MaxPermSize=512m'" > ~/.mavenrc
+    - echo "MAVEN_OPTS='-Xmx3072m -XX:MaxPermSize=512m'" > ~/.mavenrc
 
