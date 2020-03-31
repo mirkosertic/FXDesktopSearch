@@ -1,0 +1,15 @@
+name: Build 
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest,windows-latest]
+    steps:
+     - uses: actions/checkout@v1
+     - run: mvn verify
