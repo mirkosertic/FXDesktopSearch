@@ -272,7 +272,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <executable>${env.JPACKAGE_HOME}/bin/jpackage</executable>
+                            <executable>${env.JAVA_HOME}/bin/jpackage</executable>
                             <arguments>
                                 <argument>--type</argument>
                                 <argument>rpm</argument>
@@ -339,7 +339,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <executable>${env.JPACKAGE_HOME}/bin/jpackage</executable>
+                            <executable>${env.JAVA_HOME}/bin/jpackage</executable>
                             <arguments>
                                 <argument>--type</argument>
                                 <argument>msi</argument>
