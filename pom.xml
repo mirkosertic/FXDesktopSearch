@@ -278,7 +278,7 @@
                                 <argument>rpm</argument>
 
                                 <argument>-d</argument>
-                                <argument>${project.build.directory}</argument>
+                                <argument>${project.build.directory}/release</argument>
 
                                 <argument>-n</argument>
                                 <argument>FXDesktopSearch</argument>
@@ -346,7 +346,7 @@
                                 <argument>dmg</argument>
 
                                 <argument>-d</argument>
-                                <argument>${project.build.directory}</argument>
+                                <argument>${project.build.directory}/release</argument>
 
                                 <argument>-n</argument>
                                 <argument>FXDesktopSearch</argument>
@@ -413,7 +413,7 @@
                                 <argument>msi</argument>
 
                                 <argument>-d</argument>
-                                <argument>${project.build.directory}</argument>
+                                <argument>${project.build.directory}/release</argument>
 
                                 <argument>-n</argument>
                                 <argument>FXDesktopSearch</argument>
