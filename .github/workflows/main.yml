@@ -16,3 +16,7 @@ jobs:
        with:
            java-version: '14' # The JDK version to make available on the path.
      - run: mvn verify
+     - uses: actions/upload-artifact@v2
+       with:
+           name: Installer
+           paths: 'target/FXDesktopSearch*.*'       
