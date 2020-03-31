@@ -15,4 +15,7 @@ jobs:
            java-version: '14' # The JDK version to make available on the path.
      - run: mvn verify
      - run: cd target
-
+     - uses: AButler/upload-release-assets@v2.0
+       with:
+         files: 'target/FXDesktopSearch*'
+         repo-token: ${{ secrets.GITHUB_TOKEN }}
