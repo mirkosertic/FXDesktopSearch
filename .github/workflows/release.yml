@@ -15,8 +15,4 @@ jobs:
            java-version: '14' # The JDK version to make available on the path.
      - run: mvn verify
      - run: cd target
-     - uses: skx/github-action-publish-binaries@master
-       env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       with:
-           args: 'FXDesktopSearch-*'
+
