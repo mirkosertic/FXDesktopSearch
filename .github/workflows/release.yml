@@ -22,7 +22,7 @@ jobs:
            java-version: '14'
      - name: Get the version
        id: get_version
-       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+       run: echo ::set-output name=VERSION::${{GITHUB_REF/refs\/tags\//}\
      - run: mvn verify -Dprojectrelease.version=${{ steps.get_version.outputs.VERSION }}
      - uses: actions/upload-artifact@v1
        with:
