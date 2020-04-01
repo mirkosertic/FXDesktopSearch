@@ -23,9 +23,9 @@ jobs:
      - run: mvn verify
      - uses: actions/upload-artifact@v1
        with:
-         name: ${{ matrix.releasename }}
-         path: 'target/release'
-     - uses: AButler/upload-release-assets@v2.0
+           name: ${{ matrix.releasename }}
+           path: 'target/release'
+     - uses: csexton/release-asset-action@v2
        with:
-         files: 'artifacts/*'
-         repo-token: ${{ secrets.GITHUB_TOKEN }}
+           pattern: 'target/FXDesktopSearch*.*'
+           github-token: ${{ secrets.GITHUB_TOKEN }}
