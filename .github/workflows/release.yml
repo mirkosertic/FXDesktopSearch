@@ -25,7 +25,7 @@ jobs:
        with:
            name: ${{ matrix.releasename }}
            path: 'target/release'
-     - uses: csexton/release-asset-action@v2
+     - uses: AButler/upload-release-assets@v2.0
        with:
-           pattern: 'target/release/FXDesktopSearch*.*'
-           github-token: ${{ secrets.GITHUB_TOKEN }}
+         files: 'target/release/*'
+         repo-token: ${{ secrets.GITHUB_TOKEN }}
