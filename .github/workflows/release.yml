@@ -27,5 +27,5 @@ jobs:
            path: 'target/release'
      - uses: csexton/release-asset-action@v2
        with:
-           pattern: 'target/FXDesktopSearch*.*'
+           pattern: 'target/release/FXDesktopSearch*.*'
            github-token: ${{ secrets.GITHUB_TOKEN }}
