@@ -20,7 +20,7 @@
     </scm>
 
     <properties>
-        <solr.version>8.5.0</solr.version>
+        <solr.version>8.5.1</solr.version>
         <tika.version>1.24</tika.version>
         <projectrelease.version>3.4.0</projectrelease.version>
         <javafx.version>14</javafx.version>
