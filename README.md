@@ -11,7 +11,7 @@ for drill-down facetted search.
 
 FXDesktopSearch can crawl the local and remote filesystems. It also watches already crawled files for changes, so once a file is indexed and changed on the filesystem, the index is automatically updated.
 
-![Build](https://github.com/mirkosertic/FXDesktopSearch/workflows/Build/badge.svg) [![Build Status](https://travis-ci.org/mirkosertic/FXDesktopSearch.svg?branch=master)](https://travis-ci.org/mirkosertic/FXDesktopSearch) [![Gitter](https://badges.gitter.im/mirkosertic/FXDesktopSearch.svg)](https://gitter.im/mirkosertic/FXDesktopSearch?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![Build](https://github.com/mirkosertic/FXDesktopSearch/workflows/Build/badge.svg) [![Build Status](https://travis-ci.org/mirkosertic/FXDesktopSearch.svg?branch=master)](https://travis-ci.org/mirkosertic/FXDesktopSearch)
 
 Download
 --------
