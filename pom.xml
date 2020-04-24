@@ -24,7 +24,7 @@
         <tika.version>1.24.1</tika.version>
         <projectrelease.version>3.4.0</projectrelease.version>
         <javafx.version>14.0.1</javafx.version>
-        <corenlp.version>3.9.2</corenlp.version>
+        <corenlp.version>4.0.0</corenlp.version>
     </properties>
 
     <build>
@@ -65,7 +65,7 @@
                                     <version>${corenlp.version}</version>
                                     <classifier>models-german</classifier>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                                    <includes>StanfordCoreNLP-german.properties,edu/stanford/nlp/models/pos-tagger/german/german-hgc.tagger,edu/stanford/nlp/models/ner/german.conll.germeval2014.hgc_175m_600.crf.ser.gz</includes>
+                                    <includes>StanfordCoreNLP-german.properties,edu/stanford/nlp/models/pos-tagger/german-ud.tagger,edu/stanford/nlp/models/ner/german.distsim.crf.ser.gz</includes>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>edu.stanford.nlp</groupId>
@@ -73,7 +73,7 @@
                                     <version>${corenlp.version}</version>
                                     <classifier>models</classifier>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                                    <includes>StanfordCoreNLP.properties,edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger,edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz</includes>
+                                    <includes>StanfordCoreNLP.properties,edu/stanford/nlp/models/pos-tagger/english-left3words-distsim.tagger,edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz</includes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
