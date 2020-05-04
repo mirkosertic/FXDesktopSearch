@@ -65,9 +65,8 @@ class Backend implements ConfigurationChangeListener {
     private LuceneIndexHandler luceneIndexHandler;
     private final ContentExtractor contentExtractor;
     private ProgressListener progressListener;
-    private final Map<Configuration.CrawlLocation, DirectoryWatcher> locations;
+    private final Map<Configuration.CrawlLocation, LocalDirectoryWatcher> locations;
     private final Notifier notifier;
-    private final WatchServiceCache watchServiceCache;
     private final PreviewProcessor previewProcessor;
     private Configuration configuration;
     private DirectoryListener directoryListener;
@@ -78,7 +77,6 @@ class Backend implements ConfigurationChangeListener {
         notifier = aNotifier;
         previewProcessor = aPreviewProcessor;
         locations = new HashMap<>();
-        watchServiceCache = new WatchServiceCache();
         contentExtractor = new ContentExtractor(aConfiguration);
         statistics = new Statistics();
         // This is our simple flux
@@ -89,11 +87,9 @@ class Backend implements ConfigurationChangeListener {
                 synchronized (this) {
                     try {
                         if (contentExtractor.supportsFile(aFile.toString())) {
-                            final var theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
-
                             statistics.newDeletedFileJob();
 
-                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.DELETED));
+                            sink.next(new FileEvent(aLocation, aFile, null, FileEvent.EventType.DELETED));
                         }
                     } catch (final Exception e) {
                         log.error("Error processing file {}", aFile, e);
@@ -205,7 +201,7 @@ class Backend implements ConfigurationChangeListener {
         setIndexLocation(aConfiguration);
 
         configuration = aConfiguration;
-        locations.values().forEach(DirectoryWatcher::stopWatching);
+        locations.values().forEach(LocalDirectoryWatcher::stopWatching);
         locations.clear();
 
         aConfiguration.getCrawlLocations().forEach(e -> {
@@ -272,7 +268,7 @@ class Backend implements ConfigurationChangeListener {
     }
 
     private void add(final Configuration.CrawlLocation aLocation) throws IOException {
-        locations.put(aLocation, new DirectoryWatcher(watchServiceCache, aLocation, DirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener).startWatching());
+        locations.put(aLocation, new LocalDirectoryWatcher(aLocation, LocalDirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener).startWatching());
     }
 
     private void setIndexLocation(final Configuration aConfiguration) throws IOException {
