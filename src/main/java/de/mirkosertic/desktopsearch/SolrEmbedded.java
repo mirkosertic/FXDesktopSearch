@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.core.CoreContainer;
+import org.apache.solr.core.SolrXmlConfig;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,7 +72,7 @@ public class SolrEmbedded {
         copyResourceToFile("/solrhome/core1/lang/stopwords_en.txt", new File(core1lang, "stopwords_en.txt"));
 
         // Bootstrap
-        coreContainer = new CoreContainer(solrHome.toString());
+        coreContainer = new CoreContainer(SolrXmlConfig.fromSolrHome(solrHome.toPath(), System.getProperties()));
         coreContainer.load();
 
         embeddedSolrServer = new EmbeddedSolrServer(coreContainer, "core1");

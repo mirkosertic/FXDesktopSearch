@@ -20,11 +20,12 @@
     </scm>
 
     <properties>
-        <solr.version>8.5.1</solr.version>
+        <solr.version>8.6.0</solr.version>
         <tika.version>1.24.1</tika.version>
         <projectrelease.version>3.4.0</projectrelease.version>
         <javafx.version>14.0.1</javafx.version>
         <corenlp.version>4.0.0</corenlp.version>
+        <restlet.version>2.4.0</restlet.version>
     </properties>
 
     <build>
@@ -253,6 +254,19 @@
             <artifactId>directory-watcher</artifactId>
             <version>0.9.10</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>org.restlet.ext.servlet</artifactId>
+            <version>${restlet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>org.restlet</artifactId>
+            <version>${restlet.version}</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
