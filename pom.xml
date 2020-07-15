@@ -25,8 +25,21 @@
         <projectrelease.version>3.4.0</projectrelease.version>
         <javafx.version>14.0.1</javafx.version>
         <corenlp.version>4.0.0</corenlp.version>
-        <restlet.version>2.4.0</restlet.version>
+        <restlet.version>2.4.3</restlet.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>restlet</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <url>https://mvnrepository.com/artifact</url>
+        </repository>
+    </repositories>
 
     <build>
         <finalName>FXDesktopSearch</finalName>
