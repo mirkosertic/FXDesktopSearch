@@ -20,6 +20,8 @@ jobs:
     steps:
      - uses: actions/checkout@v1
      - uses: joschi/setup-jdk@v1
+       env:
+            ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
        with:
            java-version: '14'
      - run: mvn verify
