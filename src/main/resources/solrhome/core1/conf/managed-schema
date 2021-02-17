@@ -19,6 +19,11 @@
     </analyzer>
   </fieldType>
 
+  <fieldType name="kw" class="solr.TextField" sortMissingLast="true" omitTermFreqAndPositions="true" omitNorms="true">
+    <analyzer>
+      <tokenizer class="solr.PatternTokenizerFactory" pattern="\s*(;|,)\s*"/>
+    </analyzer>
+  </fieldType>
   <field name="_root_" type="string" docValues="false" indexed="true" stored="false"/>
   <field name="_version_" type="long" indexed="true" stored="false"/>
 
@@ -30,5 +35,6 @@
   <field name="lastmodified" type="string" multiValued="false" indexed="false" required="true" stored="true"/>
   <field name="locationid" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
 
+  <field name="attr_keywords" type="kw" multiValued="true" indexed="true" required="false" stored="true"/>
   <dynamicField name="attr_*" type="string" multiValued="true" indexed="true" stored="true"/>
 </schema>

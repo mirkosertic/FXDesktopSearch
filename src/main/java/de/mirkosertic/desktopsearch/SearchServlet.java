@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class SearchServlet extends HttpServlet {
@@ -67,7 +68,7 @@ public class SearchServlet extends HttpServlet {
                 log.error("Error encoding query string {}", theQueryString, e);
             }
         }
-        final Map<String, String> theDrilldownDimensions = new HashMap<>();
+        final Map<String, Set<String>> theDrilldownDimensions = new HashMap<>();
 
         final var thePathInfo = aRequest.getPathInfo();
         if (!StringUtils.isEmpty(thePathInfo)) {

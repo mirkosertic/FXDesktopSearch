@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 @Slf4j
@@ -73,6 +74,7 @@ class LuceneIndexHandler {
         facetFieldToTitle.put("attr_entity_LOCATION", "Location");
         facetFieldToTitle.put("attr_entity_PERSON", "Person");
         facetFieldToTitle.put("attr_entity_ORGANIZATION", "Organization");
+        facetFieldToTitle.put("attr_keywords", "Keywords");
 
         final var theIndexDirectory = new File(aConfiguration.getConfigDirectory(), "index");
         theIndexDirectory.mkdirs();
@@ -245,7 +247,7 @@ class LuceneIndexHandler {
         return aDefault;
     }
 
-    public QueryResult performQuery(final String aQueryString, final String aBasePath, final Configuration aConfiguration, final Map<String, String> aDrilldownFields) {
+    public QueryResult performQuery(final String aQueryString, final String aBasePath, final Configuration aConfiguration, final Map<String, Set<String>> aDrilldownFields) {
 
         final Map<String, Object> theParams = new HashMap<>();
         theParams.put("defType", "google");
@@ -266,8 +268,11 @@ class LuceneIndexHandler {
         if (aDrilldownFields != null) {
             final List<String> theFilters = new ArrayList<>();
             for (final var theField : aDrilldownFields.entrySet()) {
-                theFilters.add(theField.getKey()+":"+ClientUtils.escapeQueryChars(theField.getValue()));
-                activeFilters.add(new QueryFilter(facetFieldToTitle.get(theField.getKey()) + " : " + theField.getValue(), filterFacet(aBasePath, theField.getKey())));
+                final var dim = theField.getKey();
+                for (final var f : theField.getValue()) {
+                    theFilters.add(dim + ":" + ClientUtils.escapeQueryChars(f));
+                    activeFilters.add(new QueryFilter(facetFieldToTitle.get(dim) + " : " + f, filterFacet(aBasePath, dim, encode(f))));
+                }
             }
             if (!theFilters.isEmpty()) {
                 theParams.put("fq", theFilters.toArray(new String[theFilters.size()]));
@@ -367,13 +372,14 @@ class LuceneIndexHandler {
             final var theDuration = System.currentTimeMillis() - theStartTime;
 
             final List<FacetDimension> theDimensions = new ArrayList<>();
-            fillFacet(IndexFields.LANGUAGE, aBasePath, theQueryResponse, theDimensions, t -> SupportedLanguage.valueOf(t).toLocale().getDisplayName());
-            fillFacet("attr_author", aBasePath, theQueryResponse, theDimensions, t -> t);
-            fillFacet("attr_last-modified-year", aBasePath, theQueryResponse, theDimensions, t -> t);
-            fillFacet("attr_" + IndexFields.EXTENSION, aBasePath, theQueryResponse, theDimensions, t -> t);
-            fillFacet("attr_entity_LOCATION", aBasePath, theQueryResponse, theDimensions, t -> t);
-            fillFacet("attr_entity_PERSON", aBasePath, theQueryResponse, theDimensions, t -> t);
-            fillFacet("attr_entity_ORGANIZATION", aBasePath, theQueryResponse, theDimensions, t -> t);
+            fillFacet(IndexFields.LANGUAGE, aBasePath, theQueryResponse, theDimensions, aDrilldownFields, t -> SupportedLanguage.valueOf(t).toLocale().getDisplayName());
+            fillFacet("attr_author", aBasePath, theQueryResponse, theDimensions, aDrilldownFields, t -> t);
+            fillFacet("attr_last-modified-year", aBasePath, theQueryResponse, theDimensions, aDrilldownFields, t -> t);
+            fillFacet("attr_" + IndexFields.EXTENSION, aBasePath, theQueryResponse, theDimensions, aDrilldownFields, t -> t);
+            fillFacet("attr_entity_LOCATION", aBasePath, theQueryResponse, theDimensions, aDrilldownFields, t -> t);
+            fillFacet("attr_entity_PERSON", aBasePath, theQueryResponse, theDimensions, aDrilldownFields, t -> t);
+            fillFacet("attr_entity_ORGANIZATION", aBasePath, theQueryResponse, theDimensions, aDrilldownFields, t -> t);
+            fillFacet("attr_keywords", aBasePath, theQueryResponse, theDimensions, aDrilldownFields, t -> t);
 
             return new QueryResult(StringEscapeUtils.escapeHtml4(aQueryString), theDuration, theDocuments, theDimensions, theIndexSize, Lists.reverse(activeFilters));
         } catch (final Exception e) {
@@ -381,7 +387,7 @@ class LuceneIndexHandler {
         }
     }
 
-    private String filterFacet(final String aPath, final String aFieldName) {
+    private String filterFacet(final String aPath, final String aFieldName, final String aFieldValue) {
         try {
             final var url = new URL(aPath);
             final var thePaths = StringUtils.split(url.getPath(), "/");
@@ -390,7 +396,7 @@ class LuceneIndexHandler {
             if (thePaths.length > 2) {
                 for (var i = 2; i < thePaths.length; i++) {
                     final var theFilter = thePaths[i];
-                    if (!theFilter.startsWith(aFieldName + "%3D")) {
+                    if (!theFilter.startsWith(aFieldName + "%3D" + aFieldValue)) {
                         theResult.append("/");
                         theResult.append(theFilter);
                     }
@@ -403,14 +409,16 @@ class LuceneIndexHandler {
     }
 
     private void fillFacet(final String aFacetField, final String aBacklink, final QueryResponse aQueryResponse, final List<FacetDimension> aDimensions,
-            final Function<String, String> aConverter) {
+            final Map<String, Set<String>> aDrilldownFields, final Function<String, String> aConverter) {
         final var theFacet = aQueryResponse.getFacetField(aFacetField);
         if (theFacet != null) {
             final List<Facet> theFacets = new ArrayList<>();
             for (final var theCount : theFacet.getValues()) {
                 if (theCount.getCount() > 0) {
                     final var theName = theCount.getName().trim();
-                    if (!theName.isEmpty()) {
+                    if (!theName.isEmpty()
+                            && !(aDrilldownFields.containsKey(aFacetField)
+                                    && aDrilldownFields.get(aFacetField).contains(theName))) {
                         theFacets.add(new Facet(aConverter.apply(theName), theCount.getCount(),
                                 aBacklink + "/" + encode(
                                         FacetSearchUtils.encode(aFacetField, theCount.getName()))));
