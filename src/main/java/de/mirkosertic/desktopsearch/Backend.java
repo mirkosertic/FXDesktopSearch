@@ -30,6 +30,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 class Backend implements ConfigurationChangeListener {
@@ -305,7 +306,7 @@ class Backend implements ConfigurationChangeListener {
         luceneIndexHandler.shutdown();
     }
 
-    public QueryResult performQuery(final String aQueryString, final String aBasePath, final Map<String, String> aDrilldownDimensions) {
+    public QueryResult performQuery(final String aQueryString, final String aBasePath, final Map<String, Set<String>> aDrilldownDimensions) {
         return luceneIndexHandler.performQuery(aQueryString, aBasePath, configuration, aDrilldownDimensions);
     }
 
