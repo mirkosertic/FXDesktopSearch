@@ -20,6 +20,7 @@ import org.reactivestreams.Subscription;
 import reactor.core.Exceptions;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.File;
@@ -31,6 +32,9 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 @Slf4j
 class Backend implements ConfigurationChangeListener {
@@ -74,60 +78,60 @@ class Backend implements ConfigurationChangeListener {
     private final Statistics statistics;
     private Thread progressInfo;
 
-    public Backend(final Notifier aNotifier, final Configuration aConfiguration, final PreviewProcessor aPreviewProcessor) throws IOException {
-        notifier = aNotifier;
-        previewProcessor = aPreviewProcessor;
-        locations = new HashMap<>();
-        contentExtractor = new ContentExtractor(aConfiguration);
-        statistics = new Statistics();
-        // This is our simple flux
-        final Flux<FileEvent> theFileEventFlux = Flux.push(sink -> directoryListener = new DirectoryListener() {
+    class SimpleDirectoryListener implements DirectoryListener {
 
-            @Override
-            public void fileDeleted(final Configuration.CrawlLocation aLocation, final Path aFile) {
-                synchronized (this) {
-                    try {
-                        if (contentExtractor.supportsFile(aFile.toString())) {
-                            statistics.newDeletedFileJob();
+        private final FluxSink<Backend.FileEvent> sink;
 
-                            sink.next(new FileEvent(aLocation, aFile, null, FileEvent.EventType.DELETED));
-                        }
-                    } catch (final Exception e) {
-                        log.error("Error processing file {}", aFile, e);
+        public SimpleDirectoryListener(final FluxSink<FileEvent> sink) {
+            this.sink = sink;
+        }
+
+        @Override
+        public void fileDeleted(final Configuration.CrawlLocation aLocation, final Path aFile) {
+            synchronized (this) {
+                try {
+                    if (contentExtractor.supportsFile(aFile.toString())) {
+                        statistics.newDeletedFileJob();
+
+                        sink.next(new FileEvent(aLocation, aFile, null, FileEvent.EventType.DELETED));
                     }
+                } catch (final Exception e) {
+                    log.error("Error processing file {}", aFile, e);
                 }
             }
+        }
 
-            @Override
-            public void fileCreatedOrModified(final Configuration.CrawlLocation aLocation, final Path aFile) {
-                synchronized (this) {
-                    try {
-                        if (contentExtractor.supportsFile(aFile.toString())) {
-                            final var theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+        @Override
+        public void fileCreatedOrModified(final Configuration.CrawlLocation aLocation, final Path aFile) {
+            synchronized (this) {
+                try {
+                    if (contentExtractor.supportsFile(aFile.toString())) {
+                        final var theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
 
-                            statistics.newModifiedFileJob();
+                        statistics.newModifiedFileJob();
 
-                            sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
-                        }
-                    } catch (final Exception e) {
-                        log.error("Error processing file {}", aFile, e);
+                        sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
                     }
+                } catch (final Exception e) {
+                    log.error("Error processing file {}", aFile, e);
                 }
             }
-        });
+        }
+    }
 
-        // Filter update events for Files that were not changed
-        final var theCheckFlux = theFileEventFlux.parallel(Math.max(1, Runtime.getRuntime().availableProcessors() / 2)).runOn(Schedulers.parallel()).filter(aFileEvent -> {
+    class UpdatedFilter implements Predicate<Backend.FileEvent> {
+        @Override
+        public boolean test(final FileEvent fileEvent) {
             // Always keep delete file events
-            if (aFileEvent.type == FileEvent.EventType.DELETED) {
+            if (fileEvent.type == FileEvent.EventType.DELETED) {
                 return true;
             }
-            final var thePath = aFileEvent.path;
+            final var thePath = fileEvent.path;
             final var theFileName = thePath.toString();
 
             try {
                 final var theUpdateCheckResult = luceneIndexHandler
-                        .checkIfModified(theFileName, aFileEvent.attributes.lastModifiedTime().toMillis());
+                        .checkIfModified(theFileName, fileEvent.attributes.lastModifiedTime().toMillis());
 
                 final boolean result = theUpdateCheckResult == UpdateCheckResult.UPDATED;
                 if (!result) {
@@ -137,44 +141,67 @@ class Backend implements ConfigurationChangeListener {
             } catch (final Exception e) {
                 throw Exceptions.propagate(e);
             }
-        });
+        }
+    }
 
-        // Ok, we now map the file events to lucene commands
-        final var theLuceneFlux = theCheckFlux.map(
-                aFileEvent -> {
-                    if (aFileEvent.type == FileEvent.EventType.DELETED) {
-                        return new LuceneCommand(aFileEvent, null);
-                    }
+    class EventContentExtractor implements Function<FileEvent, LuceneCommand> {
+        @Override
+        public LuceneCommand apply(final FileEvent fileEvent) {
+            if (fileEvent.type == FileEvent.EventType.DELETED) {
+                return new LuceneCommand(fileEvent, null);
+            }
 
-                    final var thePath = aFileEvent.path;
-                    final var theContent = contentExtractor.extractContentFrom(thePath, aFileEvent.attributes);
-                    return new LuceneCommand(aFileEvent, theContent);
-                });
+            final var thePath = fileEvent.path;
+            final var theContent = contentExtractor.extractContentFrom(thePath, fileEvent.attributes);
+            return new LuceneCommand(fileEvent, theContent);
+        }
+    }
 
-        // Ok, finally we add everything to the index
-        theLuceneFlux.doOnNext(aCommand -> {
-            if (aCommand.fileEvent.type == FileEvent.EventType.DELETED) {
+    class IndexUpdater implements Consumer<LuceneCommand> {
+        @Override
+        public void accept(final LuceneCommand command) {
+            if (command.fileEvent.type == FileEvent.EventType.DELETED) {
                 try {
-                    luceneIndexHandler.removeFromIndex(aCommand.fileEvent.path.toString());
+                    luceneIndexHandler.removeFromIndex(command.fileEvent.path.toString());
 
-                    aNotifier.showInformation("Deleted " + aCommand.fileEvent.path.getFileName());
+                    notifier.showInformation("Deleted " + command.fileEvent.path.getFileName());
 
-                } catch (Exception e) {
-                    aNotifier.showError("Error removing " + aCommand.fileEvent.path.getFileName(), e);
+                } catch (final Exception e) {
+                    notifier.showError("Error removing " + command.fileEvent.path.getFileName(), e);
                 }
             } else {
-                if (aCommand.content != null) {
+                if (command.content != null) {
                     try {
-                        luceneIndexHandler.addToIndex(aCommand.fileEvent.crawlLocation.getId(), aCommand.content);
+                        luceneIndexHandler.addToIndex(command.fileEvent.crawlLocation.getId(), command.content);
 
-                        notifier.showInformation("Reindexed " + aCommand.fileEvent.path.getFileName());
+                        notifier.showInformation("Reindexed " + command.fileEvent.path.getFileName());
 
-                    } catch (Exception e) {
-                        aNotifier.showError("Error re-inxeding " + aCommand.fileEvent.path.getFileName(), e);
+                    } catch (final Exception e) {
+                        notifier.showError("Error re-inxeding " + command.fileEvent.path.getFileName(), e);
                     }
                 }
             }
-        }).sequential().subscribe(new BaseSubscriber<>() {
+        }
+    }
+
+    public Backend(final Notifier aNotifier, final Configuration aConfiguration, final PreviewProcessor aPreviewProcessor) throws IOException {
+        notifier = aNotifier;
+        previewProcessor = aPreviewProcessor;
+        locations = new HashMap<>();
+        contentExtractor = new ContentExtractor(aConfiguration);
+        statistics = new Statistics();
+
+        // This is our simple flux
+        final Flux<FileEvent> theFileEventFlux = Flux.push(sink -> directoryListener = new SimpleDirectoryListener(sink));
+
+        // Filter update events for Files that were not changed
+        final var theCheckFlux = theFileEventFlux.parallel(Math.max(1, Runtime.getRuntime().availableProcessors() / 2)).runOn(Schedulers.parallel()).filter(new UpdatedFilter());
+
+        // Ok, we now map the file events to lucene commands
+        final var theLuceneFlux = theCheckFlux.map(new EventContentExtractor());
+
+        // Ok, finally we add everything to the index
+        theLuceneFlux.doOnNext(new IndexUpdater()).sequential().subscribe(new BaseSubscriber<>() {
             @Override
             protected void hookOnSubscribe(final Subscription aSubscription) {
                 request(Runtime.getRuntime().availableProcessors());
@@ -211,7 +238,7 @@ class Backend implements ConfigurationChangeListener {
                 try {
                     add(e);
                 } catch (final IOException e1) {
-                    log.error("Error setting filesystem location for {}" + theDirectory, e1);
+                    log.error("Error setting filesystem location for {}", theDirectory, e1);
                 }
             }
         });
@@ -258,7 +285,7 @@ class Backend implements ConfigurationChangeListener {
                     lastRemaining = remaining;
 
                     try {
-                        Thread.sleep(1000);
+                        sleep(1000);
                     } catch (final InterruptedException e) {
 
                     }
