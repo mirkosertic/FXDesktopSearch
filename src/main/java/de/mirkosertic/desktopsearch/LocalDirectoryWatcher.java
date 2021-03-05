@@ -168,7 +168,7 @@ public class LocalDirectoryWatcher {
     public void crawl() throws IOException {
 
         final var thePath = filesystemLocation.getDirectory().toPath();
-
+        log.info("Crawling {}", thePath);
         Files.walk(thePath).forEach(aPath -> {
             if (!Files.isDirectory(aPath)) {
                 publishActionFor(aPath, DirectoryChangeEvent.EventType.MODIFY);
