@@ -23,7 +23,7 @@
         <solr.version>8.8.0</solr.version>
         <tika.version>1.25</tika.version>
         <projectrelease.version>3.4.0</projectrelease.version>
-        <javafx.version>14.0.2.1</javafx.version>
+        <javafx.version>16</javafx.version>
         <corenlp.version>4.2.0</corenlp.version>
         <restlet.version>2.4.3</restlet.version>
     </properties>
