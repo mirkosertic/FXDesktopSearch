@@ -1,0 +1,36 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: io.projectreactor:reactor-core
+    versions:
+    - 3.4.4
+  - dependency-name: org.apache.solr:solr-langid
+    versions:
+    - 8.8.1
+  - dependency-name: org.apache.solr:solr-solrj
+    versions:
+    - 8.8.1
+  - dependency-name: org.apache.solr:solr-core
+    versions:
+    - 8.8.1
+  - dependency-name: io.methvin:directory-watcher
+    versions:
+    - 0.13.0
+  - dependency-name: org.openjfx:javafx-media
+    versions:
+    - 15.0.1
+  - dependency-name: org.openjfx:javafx-web
+    versions:
+    - 15.0.1
+  - dependency-name: org.openjfx:javafx-fxml
+    versions:
+    - 15.0.1
+  - dependency-name: org.openjfx:javafx-controls
+    versions:
+    - 15.0.1
