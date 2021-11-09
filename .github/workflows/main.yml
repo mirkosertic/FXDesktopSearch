@@ -19,11 +19,9 @@ jobs:
             releasename: 'Mac'
     steps:
      - uses: actions/checkout@v1
-     - uses: joschi/setup-jdk@v1
-       env:
-            ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+     - uses: joschi/setup-jdk@v2
        with:
-           java-version: '14'
+           java-version: '17'
      - run: mvn verify
      - uses: actions/upload-artifact@v1
        with:
