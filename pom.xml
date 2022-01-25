@@ -55,7 +55,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.2</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}/jpackage-app</outputDirectory>
                 </configuration>
@@ -216,7 +216,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.32</version>
+            <version>1.7.35</version>
         </dependency>
 
         <dependency>
