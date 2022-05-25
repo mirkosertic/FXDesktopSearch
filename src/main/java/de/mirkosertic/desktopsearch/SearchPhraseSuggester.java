@@ -15,12 +15,17 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -34,14 +39,7 @@ import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class SearchPhraseSuggester {
@@ -74,11 +72,11 @@ class SearchPhraseSuggester {
 
         final var theSpanQueries = theTokens.stream().map(s -> {
             if (QueryUtils.isWildCard(s)) {
-                var theWildcardQuery = new WildcardQuery(new Term(aFieldName, s));
-                var theWrapper = new SpanMultiTermQueryWrapper(theWildcardQuery);
+                final var theWildcardQuery = new WildcardQuery(new Term(aFieldName, s));
+                final var theWrapper = new SpanMultiTermQueryWrapper(theWildcardQuery);
                 try {
                     return theWrapper.getRewriteMethod().rewrite(indexSearcher.getIndexReader(), theWildcardQuery);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new RuntimeException(e);
                 }
             }

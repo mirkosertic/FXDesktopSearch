@@ -15,7 +15,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-public class DesktopSearch {
+public final class DesktopSearch {
 
     public static void main(final String[] args) {
         DesktopSearchMain.main(args);

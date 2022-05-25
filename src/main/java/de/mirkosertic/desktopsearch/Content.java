@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 public class Content {
 
-    public final class KeyValuePair {
+    public static final class KeyValuePair {
         public final String key;
         public final Object value;
 

@@ -15,13 +15,6 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.tika.Tika;
-import org.apache.tika.langdetect.OptimaizeLangDetector;
-import org.apache.tika.language.detect.LanguageDetector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.utils.DateUtils;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
@@ -33,6 +26,13 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import org.apache.tika.Tika;
+import org.apache.tika.language.detect.LanguageDetector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.utils.DateUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 class ContentExtractor {
 
@@ -43,7 +43,7 @@ class ContentExtractor {
 
     public ContentExtractor(final Configuration aConfiguration) {
 
-        // TODO: auch korrekt dieses Muster verarbeitrn :  Mon Feb 18 15:55:10 CET 2013
+        // TODO: auch korrekt dieses Muster verarbeiten :  Mon Feb 18 15:55:10 CET 2013
 
         metaDataDatePattern = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})Z");
 
@@ -51,10 +51,9 @@ class ContentExtractor {
         tika = new Tika();
         tika.setMaxStringLength(1024 * 1024 * 5);
 
-        final var theDetector = new OptimaizeLangDetector();
         try {
-            theDetector.loadModels();
-            languageDetector = theDetector;
+            languageDetector = LanguageDetector.getDefaultLanguageDetector();
+            languageDetector.loadModels();
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }

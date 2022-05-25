@@ -15,15 +15,15 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrXmlConfig;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class SolrEmbedded {
 
@@ -62,7 +62,6 @@ public class SolrEmbedded {
         copyResourceToFile("/solrhome/core1/solrconfig.xml", new File(core1, "solrconfig.xml"));
         copyResourceToFile("/solrhome/core1/stopwords.txt", new File(core1, "stopwords.txt"));
         copyResourceToFile("/solrhome/core1/synonyms.txt", new File(core1, "synonyms.txt"));
-        copyResourceToFile("/solrhome/core1/update-script.js", new File(core1, "update-script.js"));
 
         // Core1 Config
         copyResourceToFile("/solrhome/core1/conf/elevate.xml", new File(core1conf, "elevate.xml"));

@@ -965,20 +965,12 @@
             <str name="defaultFieldType">string</str>
         </processor>
 
-
         <!--<processor class="org.apache.solr.update.processor.LangDetectLanguageIdentifierUpdateProcessorFactory">
             <lst name="defaults">
                 <str name="langid.fl">content</str>
                 <str name="langid.langField">language</str>
             </lst>
         </processor>-->
-
-        <processor class="solr.StatelessScriptUpdateProcessorFactory">
-            <str name="script">update-script.js</str>
-            <!--<lst name="params">-->
-            <!--<str name="config_param">example config parameter</str>-->
-            <!--</lst>-->
-        </processor>
 
         <processor class="solr.LogUpdateProcessorFactory"/>
         <processor class="solr.DistributedUpdateProcessorFactory"/>

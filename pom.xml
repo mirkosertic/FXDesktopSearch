@@ -4,7 +4,7 @@
 
     <groupId>de.mirkosertic.desktopsearch</groupId>
     <artifactId>FXDesktopSearch</artifactId>
-    <version>3.3.0</version>
+    <version>3.4.0</version>
 
     <name>FXDesktopSearch</name>
     <organization>
@@ -21,11 +21,11 @@
 
     <properties>
         <solr.version>8.11.1</solr.version>
-        <tika.version>1.28.2</tika.version>
+        <tika.version>2.4.0</tika.version>
         <projectrelease.version>3.4.0</projectrelease.version>
         <javafx.version>18.0.1</javafx.version>
         <corenlp.version>4.4.0</corenlp.version>
-        <restlet.version>2.4.3</restlet.version>
+        <restlet.version>2.4.0</restlet.version>
     </properties>
 
     <repositories>
@@ -162,11 +162,19 @@
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
             <version>${tika.version}</version>
+            <type>pom</type>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-langdetect</artifactId>
+            <version>${tika.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-langdetect-optimaize</artifactId>
             <version>${tika.version}</version>
         </dependency>
 
@@ -174,6 +182,20 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
             <version>${solr.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
+                    <artifactId>tika-parsers</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
+                    <artifactId>tika-xmp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
+                    <artifactId>tika-java7</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -190,6 +212,18 @@
                 <exclusion>
                     <groupId>xerces</groupId>
                     <artifactId>xercesImpl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
+                    <artifactId>tika-parsers</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
+                    <artifactId>tika-xmp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
+                    <artifactId>tika-java7</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -226,6 +260,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>11.1.1</version>
@@ -254,12 +294,6 @@
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
             <version>${corenlp.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>23.0</version>
         </dependency>
 
         <dependency>

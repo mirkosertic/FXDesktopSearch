@@ -35,14 +35,14 @@ public class DesktopGateway {
     }
 
     public void configure() {
-        Platform.runLater(() -> controller.configure());
+        Platform.runLater(controller::configure);
     }
 
     public void completecrawl() {
-        Platform.runLater(() -> controller.recrawl());
+        Platform.runLater(controller::recrawl);
     }
 
     public void close() {
-        Platform.runLater(() -> controller.close());
+        Platform.runLater(controller::close);
     }
 }

@@ -15,28 +15,6 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.EncoderException;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.util.ClientUtils;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.util.NamedList;
-import org.apache.tika.metadata.DublinCore;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.OfficeOpenXMLCore;
-import org.apache.tika.metadata.PDF;
-import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.utils.DateUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -51,6 +29,28 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.util.NamedList;
+import org.apache.tika.metadata.DublinCore;
+import org.apache.tika.metadata.PDF;
+import org.apache.tika.metadata.TikaCoreProperties;
+import org.apache.tika.utils.DateUtils;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class LuceneIndexHandler {
@@ -196,7 +196,7 @@ class LuceneIndexHandler {
             }
             final var theDocument = theQueryResponse.getResults().get(0);
 
-            final long theStoredLastModified = Long.valueOf((String) theDocument.getFieldValue(IndexFields.LASTMODIFIED));
+            final long theStoredLastModified = Long.parseLong((String) theDocument.getFieldValue(IndexFields.LASTMODIFIED));
             if (theStoredLastModified != aLastModified) {
                 return UpdateCheckResult.UPDATED;
             }
@@ -225,8 +225,8 @@ class LuceneIndexHandler {
         return 0;
     }
 
-    private String getOrDefault(SolrDocument document, String aFieldname, String aDefault) {
-        Object theValue = document.get(aFieldname);
+    private String getOrDefault(final SolrDocument document, final String aFieldname, final String aDefault) {
+        final Object theValue = document.get(aFieldname);
         if (theValue == null) {
             return aDefault;
         }
@@ -234,11 +234,11 @@ class LuceneIndexHandler {
             return (String) theValue;
         }
         if (theValue instanceof List) {
-            List theList = (List) theValue;
+            final List theList = (List) theValue;
             if (theList.isEmpty()) {
                 return aDefault;
             }
-            Object theFirst = theList.get(0);
+            final Object theFirst = theList.get(0);
             if (theFirst instanceof String) {
                 return (String) theFirst;
             }
@@ -295,7 +295,7 @@ class LuceneIndexHandler {
                     final var theSolrDocument = theQueryResponse.getResults().get(i);
 
                     final var theFileName = (String) theSolrDocument.getFieldValue(IndexFields.UNIQUEID);
-                    final long theStoredLastModified = Long.valueOf((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
+                    final long theStoredLastModified = Long.parseLong((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
 
                     final var theNormalizedScore = (int) (
                             ((float) theSolrDocument.getFieldValue("score")) / theQueryResponse.getResults().getMaxScore() * 5);
@@ -324,7 +324,7 @@ class LuceneIndexHandler {
                         // Try to extract the title from the metadata
                         var theTitle = theFileName;
                         if (aConfiguration.isUseTitleAsFilename()) {
-                            theTitle = getOrDefault(theSolrDocument, "attr_" + Metadata.TITLE, "");
+                            theTitle = getOrDefault(theSolrDocument, "attr_" + DublinCore.TITLE, "");
                             if (theTitle == null || theTitle.trim().length() == 0) {
                                 theTitle = getOrDefault(theSolrDocument, "attr_" + PDF.DOC_INFO_TITLE.getName(), "");
                             }
@@ -338,7 +338,7 @@ class LuceneIndexHandler {
                                 theTitle = getOrDefault(theSolrDocument,"attr_" + DublinCore.TITLE.getName(), "");
                             }
                             if (theTitle == null || theTitle.trim().length() == 0) {
-                                theTitle = getOrDefault(theSolrDocument, "attr_" + OfficeOpenXMLCore.SUBJECT.getName(), "");
+                                theTitle = getOrDefault(theSolrDocument, "attr_" + DublinCore.SUBJECT.getName(), "");
                             }
                             if (theTitle == null || theTitle.trim().length() == 0) {
                                 theTitle = theFileName;
@@ -402,7 +402,7 @@ class LuceneIndexHandler {
                     }
                 }
             }
-            return new URL(url.getProtocol(), url.getHost(), url.getPort(), "/search/" + theResult.toString()).toString();
+            return new URL(url.getProtocol(), url.getHost(), url.getPort(), "/search/" + theResult).toString();
         } catch (final MalformedURLException e) {
             throw new IllegalStateException("Cannot happen", e);
         }

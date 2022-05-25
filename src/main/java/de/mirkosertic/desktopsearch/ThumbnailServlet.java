@@ -15,17 +15,16 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import lombok.extern.slf4j.Slf4j;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ThumbnailServlet extends HttpServlet {

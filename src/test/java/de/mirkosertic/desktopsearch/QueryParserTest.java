@@ -15,13 +15,12 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.lucene.analysis.de.GermanAnalyzer;
-import org.apache.lucene.search.Query;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.lucene.analysis.de.GermanAnalyzer;
+import org.junit.Test;
 
 public class QueryParserTest {
 

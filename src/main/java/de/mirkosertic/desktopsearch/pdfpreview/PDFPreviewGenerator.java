@@ -15,24 +15,20 @@
  */
 package de.mirkosertic.desktopsearch.pdfpreview;
 
-import de.mirkosertic.desktopsearch.Preview;
-import de.mirkosertic.desktopsearch.PreviewConstants;
-import de.mirkosertic.desktopsearch.PreviewGenerator;
-import de.mirkosertic.desktopsearch.SupportedDocumentType;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.rendering.PDFRenderer;
-
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
+
+import de.mirkosertic.desktopsearch.Preview;
+import de.mirkosertic.desktopsearch.PreviewConstants;
+import de.mirkosertic.desktopsearch.PreviewGenerator;
+import de.mirkosertic.desktopsearch.SupportedDocumentType;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {

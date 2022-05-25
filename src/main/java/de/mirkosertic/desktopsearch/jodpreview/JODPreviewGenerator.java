@@ -15,28 +15,28 @@
  */
 package de.mirkosertic.desktopsearch.jodpreview;
 
-import com.artofsolving.jodconverter.DefaultDocumentFormatRegistry;
-import com.artofsolving.jodconverter.DocumentFamily;
-import com.artofsolving.jodconverter.DocumentFormat;
-import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
-import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
-import de.mirkosertic.desktopsearch.ImageUtils;
-import de.mirkosertic.desktopsearch.Preview;
-import de.mirkosertic.desktopsearch.PreviewConstants;
-import de.mirkosertic.desktopsearch.PreviewGenerator;
-import de.mirkosertic.desktopsearch.SupportedDocumentType;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import javax.imageio.ImageIO;
+
+import com.artofsolving.jodconverter.DefaultDocumentFormatRegistry;
+import com.artofsolving.jodconverter.DocumentFamily;
+import com.artofsolving.jodconverter.DocumentFormat;
+import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
+
+import de.mirkosertic.desktopsearch.ImageUtils;
+import de.mirkosertic.desktopsearch.Preview;
+import de.mirkosertic.desktopsearch.PreviewConstants;
+import de.mirkosertic.desktopsearch.PreviewGenerator;
+import de.mirkosertic.desktopsearch.SupportedDocumentType;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {

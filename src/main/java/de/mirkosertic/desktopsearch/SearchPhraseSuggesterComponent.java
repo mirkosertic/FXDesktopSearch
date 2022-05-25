@@ -15,17 +15,14 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.lucene.analysis.Analyzer;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.handler.component.SearchComponent;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class SearchPhraseSuggesterComponent extends SearchComponent {
 
@@ -47,9 +44,9 @@ public class SearchPhraseSuggesterComponent extends SearchComponent {
             return;
         }
 
-        final int theSlop = Integer.valueOf(theRequestParams.get(SLOP_PARAM));
-        final boolean theInOrder = Boolean.valueOf(theRequestParams.get(INORDER_PARAM));
-        final int theNumberSuggest = Integer.valueOf(theRequestParams.get(NUMBERSUGGEST_PARAM));
+        final int theSlop = Integer.parseInt(theRequestParams.get(SLOP_PARAM));
+        final boolean theInOrder = Boolean.parseBoolean(theRequestParams.get(INORDER_PARAM));
+        final int theNumberSuggest = Integer.parseInt(theRequestParams.get(NUMBERSUGGEST_PARAM));
 
         final IndexSearcher theSearcher = aResponseBuilder.req.getSearcher();
         final var theAnalyzer = aResponseBuilder.req.getSchema().getQueryAnalyzer();
