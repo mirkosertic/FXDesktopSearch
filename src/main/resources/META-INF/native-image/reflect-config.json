@@ -1,0 +1,5506 @@
+[
+{
+  "name":"[B"
+},
+{
+  "name":"[C"
+},
+{
+  "name":"[D"
+},
+{
+  "name":"[F"
+},
+{
+  "name":"[I"
+},
+{
+  "name":"[J"
+},
+{
+  "name":"[Lcom.ctc.wstx.sr.Attribute;"
+},
+{
+  "name":"[Ljava.lang.Class;"
+},
+{
+  "name":"[Ljava.lang.Object;"
+},
+{
+  "name":"[Ljava.lang.String;"
+},
+{
+  "name":"[Ljavax.management.openmbean.CompositeData;"
+},
+{
+  "name":"[Lorg.apache.logging.log4j.core.Appender;"
+},
+{
+  "name":"[Lorg.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;"
+},
+{
+  "name":"[Lorg.apache.logging.log4j.core.appender.rolling.action.Action;"
+},
+{
+  "name":"[Lorg.apache.logging.log4j.core.appender.rolling.action.PathCondition;"
+},
+{
+  "name":"[Lorg.apache.logging.log4j.core.config.AppenderRef;"
+},
+{
+  "name":"[Lorg.apache.logging.log4j.core.config.LoggerConfig;"
+},
+{
+  "name":"[Lorg.apache.logging.log4j.core.config.Property;"
+},
+{
+  "name":"[Lorg.apache.lucene.index.FieldInfo;"
+},
+{
+  "name":"[Lorg.apache.lucene.util.fst.Builder$Arc;"
+},
+{
+  "name":"[Lorg.apache.lucene.util.fst.Builder$UnCompiledNode;"
+},
+{
+  "name":"[Lorg.apache.lucene.util.packed.PackedInts$Reader;"
+},
+{
+  "name":"[Lorg.eclipse.jetty.servlet.ServletMapping;"
+},
+{
+  "name":"[Lorg.openxmlformats.schemas.drawingml.x2006.main.CTNonVisualDrawingProps;"
+},
+{
+  "name":"[Lorg.openxmlformats.schemas.drawingml.x2006.picture.CTPicture;"
+},
+{
+  "name":"[Lorg.openxmlformats.schemas.presentationml.x2006.main.CTGroupShape;"
+},
+{
+  "name":"[Lorg.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;"
+},
+{
+  "name":"[S"
+},
+{
+  "name":"[Z"
+},
+{
+  "name":"com.drew.metadata.exif.ExifIFD0Directory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.drew.metadata.exif.ExifInteropDirectory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.drew.metadata.exif.ExifSubIFDDirectory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.drew.metadata.exif.ExifThumbnailDirectory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.drew.metadata.exif.GpsDirectory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.fasterxml.jackson.core.JsonParser"
+},
+{
+  "name":"com.fasterxml.jackson.databind.JsonNode"
+},
+{
+  "name":"com.fasterxml.jackson.databind.ObjectMapper"
+},
+{
+  "name":"com.fasterxml.jackson.databind.ext.Java7HandlersImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.fasterxml.jackson.databind.ser.std.FileSerializer",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.github.jaiimageio.impl.common.PackageUtil"
+},
+{
+  "name":"com.github.jaiimageio.impl.plugins.tiff.TIFFImageWriter"
+},
+{
+  "name":"com.microsoft.schemas.office.office.impl.CTOLEObjectImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"com.microsoft.schemas.office.office.impl.STOLETypeImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"com.microsoft.schemas.vml.impl.CTShapeImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"com.microsoft.schemas.vml.impl.CTShapetypeImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"com.microsoft.schemas.vml.impl.CTTextboxImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"com.sun.crypto.provider.AESCipher$General",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.ARCFOURCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DESCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DESedeCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DHParameters",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.GaloisCounterMode$AESGCM",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.TlsMasterSecretGenerator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.glass.ui.Screen"
+},
+{
+  "name":"com.sun.glass.ui.win.WinDnDClipboard"
+},
+{
+  "name":"com.sun.glass.ui.win.WinGestureSupport"
+},
+{
+  "name":"com.sun.glass.ui.win.WinPlatformFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.font.directwrite.DWFactory",
+  "methods":[{"name":"getFactory","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.fxml.builder.web.WebViewBuilder",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"build","parameterTypes":[] }, 
+    {"name":"create","parameterTypes":[] }, 
+    {"name":"prefHeight","parameterTypes":["double"] }
+  ]
+},
+{
+  "name":"com.sun.javafx.logging.PrintLogger",
+  "methods":[{"name":"createInstance","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.logging.jfr.JFRPulseLogger",
+  "methods":[{"name":"createInstance","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.reflect.Trampoline",
+  "methods":[{"name":"invoke","parameterTypes":["java.lang.reflect.Method","java.lang.Object","java.lang.Object[]"] }]
+},
+{
+  "name":"com.sun.javafx.scene.control.skin.Utils",
+  "methods":[{"name":"getResource","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.sun.javafx.tk.quantum.QuantumToolkit",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.javafx.webkit.theme.ScrollBarWidget"
+},
+{
+  "name":"com.sun.management.GarbageCollectorMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.GcInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.HotSpotDiagnosticMXBean",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"getVMOption","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.sun.management.OperatingSystemMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.ThreadMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.VMOption",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"getValue","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.management.internal.GarbageCollectorExtImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.sun.management.internal.HotSpotDiagnostic",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.sun.management.internal.HotSpotThreadImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.sun.management.internal.OperatingSystemImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.sun.prism.GraphicsPipeline",
+  "methods":[
+    {"name":"getFontFactory","parameterTypes":[] }, 
+    {"name":"getPipeline","parameterTypes":[] }
+  ]
+},
+{
+  "name":"com.sun.prism.d3d.D3DPipeline",
+  "methods":[{"name":"getInstance","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.prism.shader.DrawPgram_Color_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.prism.shader.FillPgram_Color_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.prism.shader.FillPgram_LinearGradient_PAD_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.prism.shader.Mask_TextureRGB_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.prism.shader.Solid_Color_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.prism.shader.Solid_TextureFirstPassLCD_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.prism.shader.Solid_TextureRGB_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.prism.shader.Solid_TextureSecondPassLCD_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.prism.shader.Texture_Color_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.prism.shader.Texture_LinearGradient_PAD_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "name":"com.sun.scenario.effect.impl.hw.d3d.D3DShaderSource",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.scenario.effect.impl.prism.PrRenderer",
+  "methods":[{"name":"createRenderer","parameterTypes":["com.sun.scenario.effect.FilterContext"] }]
+},
+{
+  "name":"com.sun.scenario.effect.impl.prism.ps.PPSLinearConvolveShadowPeer",
+  "methods":[{"name":"<init>","parameterTypes":["com.sun.scenario.effect.FilterContext","com.sun.scenario.effect.impl.Renderer","java.lang.String"] }]
+},
+{
+  "name":"com.sun.scenario.effect.impl.prism.ps.PPSRenderer",
+  "methods":[{"name":"createRenderer","parameterTypes":["com.sun.scenario.effect.FilterContext"] }]
+},
+{
+  "name":"com.sun.star.comp.bridgefactory.BridgeFactory",
+  "queryAllPublicConstructors":true,
+  "fields":[{"name":"__serviceName"}],
+  "methods":[{"name":"__getServiceFactory","parameterTypes":["java.lang.String","com.sun.star.lang.XMultiServiceFactory","com.sun.star.registry.XRegistryKey"] }]
+},
+{
+  "name":"com.sun.star.comp.connections.Acceptor",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"__getServiceFactory","parameterTypes":["java.lang.String","com.sun.star.lang.XMultiServiceFactory","com.sun.star.registry.XRegistryKey"] }]
+},
+{
+  "name":"com.sun.star.comp.connections.Connector",
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":["com.sun.star.lang.XMultiServiceFactory"] }, 
+    {"name":"__getServiceFactory","parameterTypes":["java.lang.String","com.sun.star.lang.XMultiServiceFactory","com.sun.star.registry.XRegistryKey"] }
+  ]
+},
+{
+  "name":"com.sun.star.comp.loader.JavaLoader",
+  "methods":[{"name":"getServiceFactory","parameterTypes":["java.lang.String","com.sun.star.lang.XMultiServiceFactory","com.sun.star.registry.XRegistryKey"] }]
+},
+{
+  "name":"com.sun.star.comp.servicemanager.ServiceManager",
+  "methods":[{"name":"getServiceFactory","parameterTypes":["java.lang.String","com.sun.star.lang.XMultiServiceFactory","com.sun.star.registry.XRegistryKey"] }]
+},
+{
+  "name":"com.sun.star.comp.urlresolver.UrlResolver",
+  "methods":[{"name":"__getServiceFactory","parameterTypes":["java.lang.String","com.sun.star.lang.XMultiServiceFactory","com.sun.star.registry.XRegistryKey"] }]
+},
+{
+  "name":"com.sun.star.comp.urlresolver.UrlResolver$_UrlResolver",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.sun.star.connection.XConnector"
+},
+{
+  "name":"com.sun.star.container.XSet"
+},
+{
+  "name":"com.sun.star.lang.XComponent"
+},
+{
+  "name":"com.sun.star.lang.XInitialization"
+},
+{
+  "name":"com.sun.star.lang.XMultiComponentFactory"
+},
+{
+  "name":"com.sun.star.lang.XMultiServiceFactory"
+},
+{
+  "name":"com.sun.star.lang.XServiceInfo"
+},
+{
+  "name":"com.sun.star.lang.XSingleComponentFactory"
+},
+{
+  "name":"com.sun.star.lib.connections.socket.socketConnector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.star.loader.XImplementationLoader"
+},
+{
+  "name":"com.sun.star.registry.XRegistryKey"
+},
+{
+  "name":"com.sun.star.uno.Any"
+},
+{
+  "name":"com.sun.star.uno.Enum"
+},
+{
+  "name":"com.sun.star.uno.Type"
+},
+{
+  "name":"com.sun.star.uno.XComponentContext"
+},
+{
+  "name":"com.sun.star.uno.XInterface"
+},
+{
+  "name":"de.mirkosertic.desktopsearch.BooleanPropertyEditor",
+  "methods":[{"name":"<init>","parameterTypes":["org.controlsfx.control.PropertySheet$Item"] }]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.Configuration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getConfigDirectory","parameterTypes":[] }, 
+    {"name":"getCrawlLocations","parameterTypes":[] }, 
+    {"name":"getEnabledDocumentTypes","parameterTypes":[] }, 
+    {"name":"getEnabledLanguages","parameterTypes":[] }, 
+    {"name":"getFacetCount","parameterTypes":[] }, 
+    {"name":"getMetaDataNameReplacement","parameterTypes":[] }, 
+    {"name":"getNumberOfSearchResults","parameterTypes":[] }, 
+    {"name":"getNumberOfSuggestions","parameterTypes":[] }, 
+    {"name":"getSuggestionSlop","parameterTypes":[] }, 
+    {"name":"getSuggestionWindowAfter","parameterTypes":[] }, 
+    {"name":"getSuggestionWindowBefore","parameterTypes":[] }, 
+    {"name":"isCrawlOnStartup","parameterTypes":[] }, 
+    {"name":"isNaturalLanguageProcessing","parameterTypes":[] }, 
+    {"name":"isShowSimilarDocuments","parameterTypes":[] }, 
+    {"name":"isSuggestionInOrder","parameterTypes":[] }, 
+    {"name":"isUseTitleAsFilename","parameterTypes":[] }
+  ]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.Configuration$CrawlLocation",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getDirectory","parameterTypes":[] }, 
+    {"name":"getId","parameterTypes":[] }
+  ]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.ConfigurationController",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.DesktopGateway",
+  "methods":[
+    {"name":"close","parameterTypes":[] }, 
+    {"name":"completecrawl","parameterTypes":[] }, 
+    {"name":"configure","parameterTypes":[] }
+  ]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.DesktopSearchController",
+  "allDeclaredFields":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.DesktopSearchMain",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.QueryParserPlugin",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SearchPhraseSuggesterComponent",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SpinnerPropertyEditor",
+  "methods":[{"name":"<init>","parameterTypes":["org.controlsfx.control.PropertySheet$Item"] }]
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$1",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$10",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$11",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$12",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$13",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$14",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$15",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$2",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$3",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$4",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$5",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$6",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$7",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$8",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedDocumentType$9",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"de.mirkosertic.desktopsearch.SupportedLanguage",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"edu.stanford.nlp.ie.NERFeatureFactory",
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"edu.stanford.nlp.international.german.process.GermanTokenizerPostProcessor",
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"edu.stanford.nlp.process.AmericanizeFunction",
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"edu.stanford.nlp.process.CoreLabelTokenFactory",
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"edu.stanford.nlp.time.TimeExpressionExtractorImpl"
+},
+{
+  "name":"edu.stanford.nlp.util.logging.SLF4JHandler",
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"freemarker.ext.jython.JythonModel"
+},
+{
+  "name":"freemarker.ext.servlet.FreemarkerServlet",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"freemarker.log._Log4jOverSLF4JTester",
+  "methods":[{"name":"test","parameterTypes":[] }]
+},
+{
+  "name":"freemarker.log._SLF4JLoggerFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"java.awt.SequencedEvent"
+},
+{
+  "name":"java.awt.event.KeyEvent",
+  "fields":[
+    {"name":"VK_CONTEXT_MENU"}, 
+    {"name":"VK_F10"}
+  ]
+},
+{
+  "name":"java.io.File",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"java.io.ObjectInputStream",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.io.Serializable",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.lang.Boolean",
+  "fields":[{"name":"TYPE"}],
+  "queriedMethods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Byte",
+  "fields":[{"name":"TYPE"}],
+  "queriedMethods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Character",
+  "fields":[{"name":"TYPE"}],
+  "methods":[{"name":"isIdeographic","parameterTypes":["int"] }]
+},
+{
+  "name":"java.lang.Class",
+  "allDeclaredFields":true,
+  "methods":[
+    {"name":"getFields","parameterTypes":[] }, 
+    {"name":"getMethods","parameterTypes":[] }, 
+    {"name":"getModule","parameterTypes":[] }
+  ],
+  "queriedMethods":[
+    {"name":"arrayType","parameterTypes":[] }, 
+    {"name":"asSubclass","parameterTypes":["java.lang.Class"] }, 
+    {"name":"cast","parameterTypes":["java.lang.Object"] }, 
+    {"name":"componentType","parameterTypes":[] }, 
+    {"name":"describeConstable","parameterTypes":[] }, 
+    {"name":"descriptorString","parameterTypes":[] }, 
+    {"name":"desiredAssertionStatus","parameterTypes":[] }, 
+    {"name":"getAnnotatedInterfaces","parameterTypes":[] }, 
+    {"name":"getAnnotatedSuperclass","parameterTypes":[] }, 
+    {"name":"getAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getAnnotations","parameterTypes":[] }, 
+    {"name":"getAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getCanonicalName","parameterTypes":[] }, 
+    {"name":"getClasses","parameterTypes":[] }, 
+    {"name":"getComponentType","parameterTypes":[] }, 
+    {"name":"getConstructor","parameterTypes":["java.lang.Class[]"] }, 
+    {"name":"getConstructors","parameterTypes":[] }, 
+    {"name":"getDeclaredAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotations","parameterTypes":[] }, 
+    {"name":"getDeclaredAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredClasses","parameterTypes":[] }, 
+    {"name":"getDeclaredConstructor","parameterTypes":["java.lang.Class[]"] }, 
+    {"name":"getDeclaredConstructors","parameterTypes":[] }, 
+    {"name":"getDeclaredField","parameterTypes":["java.lang.String"] }, 
+    {"name":"getDeclaredFields","parameterTypes":[] }, 
+    {"name":"getDeclaredMethod","parameterTypes":["java.lang.String","java.lang.Class[]"] }, 
+    {"name":"getDeclaredMethods","parameterTypes":[] }, 
+    {"name":"getDeclaringClass","parameterTypes":[] }, 
+    {"name":"getEnclosingClass","parameterTypes":[] }, 
+    {"name":"getEnclosingConstructor","parameterTypes":[] }, 
+    {"name":"getEnclosingMethod","parameterTypes":[] }, 
+    {"name":"getEnumConstants","parameterTypes":[] }, 
+    {"name":"getField","parameterTypes":["java.lang.String"] }, 
+    {"name":"getGenericInterfaces","parameterTypes":[] }, 
+    {"name":"getGenericSuperclass","parameterTypes":[] }, 
+    {"name":"getInterfaces","parameterTypes":[] }, 
+    {"name":"getMethod","parameterTypes":["java.lang.String","java.lang.Class[]"] }, 
+    {"name":"getModifiers","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getNestHost","parameterTypes":[] }, 
+    {"name":"getNestMembers","parameterTypes":[] }, 
+    {"name":"getPackage","parameterTypes":[] }, 
+    {"name":"getPackageName","parameterTypes":[] }, 
+    {"name":"getProtectionDomain","parameterTypes":[] }, 
+    {"name":"getSimpleName","parameterTypes":[] }, 
+    {"name":"getSuperclass","parameterTypes":[] }, 
+    {"name":"getTypeName","parameterTypes":[] }, 
+    {"name":"getTypeParameters","parameterTypes":[] }, 
+    {"name":"isAnnotation","parameterTypes":[] }, 
+    {"name":"isAnnotationPresent","parameterTypes":["java.lang.Class"] }, 
+    {"name":"isAnonymousClass","parameterTypes":[] }, 
+    {"name":"isArray","parameterTypes":[] }, 
+    {"name":"isAssignableFrom","parameterTypes":["java.lang.Class"] }, 
+    {"name":"isEnum","parameterTypes":[] }, 
+    {"name":"isInstance","parameterTypes":["java.lang.Object"] }, 
+    {"name":"isInterface","parameterTypes":[] }, 
+    {"name":"isLocalClass","parameterTypes":[] }, 
+    {"name":"isMemberClass","parameterTypes":[] }, 
+    {"name":"isNestmateOf","parameterTypes":["java.lang.Class"] }, 
+    {"name":"isPrimitive","parameterTypes":[] }, 
+    {"name":"isSynthetic","parameterTypes":[] }, 
+    {"name":"toGenericString","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.ClassLoader",
+  "queriedMethods":[{"name":"getName","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.Comparable",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.lang.Deprecated",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.Double",
+  "fields":[{"name":"TYPE"}],
+  "queriedMethods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Float",
+  "fields":[{"name":"TYPE"}],
+  "queriedMethods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Integer",
+  "fields":[{"name":"TYPE"}],
+  "queriedMethods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Long",
+  "allDeclaredFields":true,
+  "fields":[{"name":"TYPE"}],
+  "queriedMethods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Module",
+  "methods":[
+    {"name":"getLayer","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }
+  ],
+  "queriedMethods":[{"name":"getResourceAsStream","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.ModuleLayer",
+  "methods":[{"name":"configuration","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.Number",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.lang.Object",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "queryAllPublicMethods":true,
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"java.lang.Package",
+  "queriedMethods":[
+    {"name":"getAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getAnnotations","parameterTypes":[] }, 
+    {"name":"getAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotations","parameterTypes":[] }, 
+    {"name":"getDeclaredAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getImplementationTitle","parameterTypes":[] }, 
+    {"name":"getImplementationVendor","parameterTypes":[] }, 
+    {"name":"getImplementationVersion","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getPackage","parameterTypes":["java.lang.String"] }, 
+    {"name":"getPackages","parameterTypes":[] }, 
+    {"name":"getSpecificationTitle","parameterTypes":[] }, 
+    {"name":"getSpecificationVendor","parameterTypes":[] }, 
+    {"name":"getSpecificationVersion","parameterTypes":[] }, 
+    {"name":"isAnnotationPresent","parameterTypes":["java.lang.Class"] }, 
+    {"name":"isCompatibleWith","parameterTypes":["java.lang.String"] }, 
+    {"name":"isSealed","parameterTypes":[] }, 
+    {"name":"isSealed","parameterTypes":["java.net.URL"] }
+  ]
+},
+{
+  "name":"java.lang.Runtime",
+  "queriedMethods":[
+    {"name":"availableProcessors","parameterTypes":[] }, 
+    {"name":"freeMemory","parameterTypes":[] }, 
+    {"name":"maxMemory","parameterTypes":[] }, 
+    {"name":"totalMemory","parameterTypes":[] }, 
+    {"name":"version","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.Short",
+  "fields":[{"name":"TYPE"}],
+  "queriedMethods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.StackTraceElement",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.String",
+  "allDeclaredFields":true,
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.Object"] }]
+},
+{
+  "name":"java.lang.System",
+  "queriedMethods":[
+    {"name":"currentTimeMillis","parameterTypes":[] }, 
+    {"name":"getProperties","parameterTypes":[] }, 
+    {"name":"getProperty","parameterTypes":["java.lang.String"] }, 
+    {"name":"getProperty","parameterTypes":["java.lang.String","java.lang.String"] }, 
+    {"name":"getenv","parameterTypes":[] }, 
+    {"name":"getenv","parameterTypes":["java.lang.String"] }, 
+    {"name":"identityHashCode","parameterTypes":["java.lang.Object"] }, 
+    {"name":"lineSeparator","parameterTypes":[] }, 
+    {"name":"mapLibraryName","parameterTypes":["java.lang.String"] }, 
+    {"name":"nanoTime","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.Thread",
+  "allPublicFields":true,
+  "queryAllPublicMethods":true,
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"java.lang.ThreadGroup",
+  "queriedMethods":[
+    {"name":"activeCount","parameterTypes":[] }, 
+    {"name":"activeGroupCount","parameterTypes":[] }, 
+    {"name":"checkAccess","parameterTypes":[] }, 
+    {"name":"getMaxPriority","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getParent","parameterTypes":[] }, 
+    {"name":"isDaemon","parameterTypes":[] }, 
+    {"name":"isDestroyed","parameterTypes":[] }, 
+    {"name":"parentOf","parameterTypes":["java.lang.ThreadGroup"] }
+  ]
+},
+{
+  "name":"java.lang.Throwable",
+  "queriedMethods":[{"name":"initCause","parameterTypes":["java.lang.Throwable"] }]
+},
+{
+  "name":"java.lang.Void",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.annotation.Annotation",
+  "queriedMethods":[{"name":"annotationType","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.constant.ClassDesc",
+  "queriedMethods":[
+    {"name":"arrayType","parameterTypes":[] }, 
+    {"name":"arrayType","parameterTypes":["int"] }, 
+    {"name":"componentType","parameterTypes":[] }, 
+    {"name":"descriptorString","parameterTypes":[] }, 
+    {"name":"displayName","parameterTypes":[] }, 
+    {"name":"isArray","parameterTypes":[] }, 
+    {"name":"isClassOrInterface","parameterTypes":[] }, 
+    {"name":"isPrimitive","parameterTypes":[] }, 
+    {"name":"packageName","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.management.BufferPoolMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.ClassLoadingMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.CompilationMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.LockInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.ManagementFactory",
+  "methods":[
+    {"name":"getPlatformMXBean","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getRuntimeMXBean","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.management.ManagementPermission",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.management.MemoryMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.MemoryManagerMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.MemoryPoolMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.MemoryUsage",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.MonitorInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.PlatformLoggingMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.RuntimeMXBean",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"getStartTime","parameterTypes":[] }, 
+    {"name":"getUptime","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.management.ThreadInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.module.Configuration",
+  "methods":[{"name":"findModule","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.module.ModuleReference",
+  "methods":[{"name":"location","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.module.ResolvedModule",
+  "methods":[{"name":"reference","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.reflect.AccessibleObject",
+  "allPublicFields":true,
+  "queryAllPublicMethods":true,
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"java.lang.reflect.AnnotatedElement",
+  "queriedMethods":[
+    {"name":"getAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getAnnotations","parameterTypes":[] }, 
+    {"name":"getAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotations","parameterTypes":[] }, 
+    {"name":"getDeclaredAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"isAnnotationPresent","parameterTypes":["java.lang.Class"] }
+  ]
+},
+{
+  "name":"java.lang.reflect.AnnotatedType",
+  "queriedMethods":[
+    {"name":"getAnnotatedOwnerType","parameterTypes":[] }, 
+    {"name":"getAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getAnnotations","parameterTypes":[] }, 
+    {"name":"getDeclaredAnnotations","parameterTypes":[] }, 
+    {"name":"getType","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.reflect.Constructor",
+  "queriedMethods":[
+    {"name":"getAnnotatedReceiverType","parameterTypes":[] }, 
+    {"name":"getAnnotatedReturnType","parameterTypes":[] }, 
+    {"name":"getAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotations","parameterTypes":[] }, 
+    {"name":"getDeclaringClass","parameterTypes":[] }, 
+    {"name":"getExceptionTypes","parameterTypes":[] }, 
+    {"name":"getGenericExceptionTypes","parameterTypes":[] }, 
+    {"name":"getGenericParameterTypes","parameterTypes":[] }, 
+    {"name":"getModifiers","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getParameterAnnotations","parameterTypes":[] }, 
+    {"name":"getParameterCount","parameterTypes":[] }, 
+    {"name":"getParameterTypes","parameterTypes":[] }, 
+    {"name":"getTypeParameters","parameterTypes":[] }, 
+    {"name":"isSynthetic","parameterTypes":[] }, 
+    {"name":"isVarArgs","parameterTypes":[] }, 
+    {"name":"toGenericString","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.reflect.Executable",
+  "queriedMethods":[
+    {"name":"getAnnotatedExceptionTypes","parameterTypes":[] }, 
+    {"name":"getAnnotatedParameterTypes","parameterTypes":[] }, 
+    {"name":"getAnnotatedReceiverType","parameterTypes":[] }, 
+    {"name":"getAnnotatedReturnType","parameterTypes":[] }, 
+    {"name":"getAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotations","parameterTypes":[] }, 
+    {"name":"getDeclaringClass","parameterTypes":[] }, 
+    {"name":"getExceptionTypes","parameterTypes":[] }, 
+    {"name":"getGenericExceptionTypes","parameterTypes":[] }, 
+    {"name":"getGenericParameterTypes","parameterTypes":[] }, 
+    {"name":"getModifiers","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getParameterAnnotations","parameterTypes":[] }, 
+    {"name":"getParameterCount","parameterTypes":[] }, 
+    {"name":"getParameterTypes","parameterTypes":[] }, 
+    {"name":"getParameters","parameterTypes":[] }, 
+    {"name":"getTypeParameters","parameterTypes":[] }, 
+    {"name":"isSynthetic","parameterTypes":[] }, 
+    {"name":"isVarArgs","parameterTypes":[] }, 
+    {"name":"toGenericString","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.reflect.Field",
+  "queriedMethods":[
+    {"name":"getAnnotatedType","parameterTypes":[] }, 
+    {"name":"getAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotations","parameterTypes":[] }, 
+    {"name":"getDeclaringClass","parameterTypes":[] }, 
+    {"name":"getGenericType","parameterTypes":[] }, 
+    {"name":"getModifiers","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getType","parameterTypes":[] }, 
+    {"name":"isEnumConstant","parameterTypes":[] }, 
+    {"name":"isSynthetic","parameterTypes":[] }, 
+    {"name":"toGenericString","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.reflect.GenericDeclaration",
+  "queriedMethods":[{"name":"getTypeParameters","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.reflect.Member",
+  "queriedMethods":[
+    {"name":"getDeclaringClass","parameterTypes":[] }, 
+    {"name":"getModifiers","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"isSynthetic","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.reflect.Method",
+  "queriedMethods":[
+    {"name":"getAnnotatedReturnType","parameterTypes":[] }, 
+    {"name":"getAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotations","parameterTypes":[] }, 
+    {"name":"getDeclaringClass","parameterTypes":[] }, 
+    {"name":"getDefaultValue","parameterTypes":[] }, 
+    {"name":"getExceptionTypes","parameterTypes":[] }, 
+    {"name":"getGenericExceptionTypes","parameterTypes":[] }, 
+    {"name":"getGenericParameterTypes","parameterTypes":[] }, 
+    {"name":"getGenericReturnType","parameterTypes":[] }, 
+    {"name":"getModifiers","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getParameterAnnotations","parameterTypes":[] }, 
+    {"name":"getParameterCount","parameterTypes":[] }, 
+    {"name":"getParameterTypes","parameterTypes":[] }, 
+    {"name":"getReturnType","parameterTypes":[] }, 
+    {"name":"getTypeParameters","parameterTypes":[] }, 
+    {"name":"isBridge","parameterTypes":[] }, 
+    {"name":"isDefault","parameterTypes":[] }, 
+    {"name":"isSynthetic","parameterTypes":[] }, 
+    {"name":"isVarArgs","parameterTypes":[] }, 
+    {"name":"toGenericString","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.reflect.Parameter",
+  "queriedMethods":[
+    {"name":"getAnnotatedType","parameterTypes":[] }, 
+    {"name":"getAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getAnnotations","parameterTypes":[] }, 
+    {"name":"getAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotation","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaredAnnotations","parameterTypes":[] }, 
+    {"name":"getDeclaredAnnotationsByType","parameterTypes":["java.lang.Class"] }, 
+    {"name":"getDeclaringExecutable","parameterTypes":[] }, 
+    {"name":"getModifiers","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }, 
+    {"name":"getParameterizedType","parameterTypes":[] }, 
+    {"name":"getType","parameterTypes":[] }, 
+    {"name":"isImplicit","parameterTypes":[] }, 
+    {"name":"isNamePresent","parameterTypes":[] }, 
+    {"name":"isSynthetic","parameterTypes":[] }, 
+    {"name":"isVarArgs","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.reflect.Type",
+  "queriedMethods":[{"name":"getTypeName","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.reflect.TypeVariable",
+  "queriedMethods":[
+    {"name":"getAnnotatedBounds","parameterTypes":[] }, 
+    {"name":"getBounds","parameterTypes":[] }, 
+    {"name":"getGenericDeclaration","parameterTypes":[] }, 
+    {"name":"getName","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.math.BigDecimal"
+},
+{
+  "name":"java.math.BigInteger"
+},
+{
+  "name":"java.net.URI",
+  "queriedMethods":[
+    {"name":"compareTo","parameterTypes":["java.lang.Object"] }, 
+    {"name":"compareTo","parameterTypes":["java.net.URI"] }, 
+    {"name":"create","parameterTypes":["java.lang.String"] }, 
+    {"name":"getAuthority","parameterTypes":[] }, 
+    {"name":"getFragment","parameterTypes":[] }, 
+    {"name":"getHost","parameterTypes":[] }, 
+    {"name":"getPath","parameterTypes":[] }, 
+    {"name":"getPort","parameterTypes":[] }, 
+    {"name":"getQuery","parameterTypes":[] }, 
+    {"name":"getRawAuthority","parameterTypes":[] }, 
+    {"name":"getRawFragment","parameterTypes":[] }, 
+    {"name":"getRawPath","parameterTypes":[] }, 
+    {"name":"getRawQuery","parameterTypes":[] }, 
+    {"name":"getRawSchemeSpecificPart","parameterTypes":[] }, 
+    {"name":"getRawUserInfo","parameterTypes":[] }, 
+    {"name":"getScheme","parameterTypes":[] }, 
+    {"name":"getSchemeSpecificPart","parameterTypes":[] }, 
+    {"name":"getUserInfo","parameterTypes":[] }, 
+    {"name":"isAbsolute","parameterTypes":[] }, 
+    {"name":"isOpaque","parameterTypes":[] }, 
+    {"name":"normalize","parameterTypes":[] }, 
+    {"name":"parseServerAuthority","parameterTypes":[] }, 
+    {"name":"relativize","parameterTypes":["java.net.URI"] }, 
+    {"name":"resolve","parameterTypes":["java.lang.String"] }, 
+    {"name":"resolve","parameterTypes":["java.net.URI"] }, 
+    {"name":"toASCIIString","parameterTypes":[] }, 
+    {"name":"toURL","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.net.URL",
+  "queriedMethods":[
+    {"name":"getAuthority","parameterTypes":[] }, 
+    {"name":"getDefaultPort","parameterTypes":[] }, 
+    {"name":"getFile","parameterTypes":[] }, 
+    {"name":"getHost","parameterTypes":[] }, 
+    {"name":"getPath","parameterTypes":[] }, 
+    {"name":"getPort","parameterTypes":[] }, 
+    {"name":"getProtocol","parameterTypes":[] }, 
+    {"name":"getQuery","parameterTypes":[] }, 
+    {"name":"getRef","parameterTypes":[] }, 
+    {"name":"getUserInfo","parameterTypes":[] }, 
+    {"name":"sameFile","parameterTypes":["java.net.URL"] }, 
+    {"name":"toExternalForm","parameterTypes":[] }, 
+    {"name":"toURI","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.nio.ByteBuffer",
+  "methods":[{"name":"order","parameterTypes":["java.nio.ByteOrder"] }]
+},
+{
+  "name":"java.nio.ByteOrder",
+  "methods":[{"name":"nativeOrder","parameterTypes":[] }]
+},
+{
+  "name":"java.security.KeyStoreSpi"
+},
+{
+  "name":"java.security.ProtectionDomain"
+},
+{
+  "name":"java.security.SecureRandomParameters"
+},
+{
+  "name":"java.security.spec.DSAParameterSpec"
+},
+{
+  "name":"java.sql.PseudoColumnUsage"
+},
+{
+  "name":"java.util.AbstractCollection",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.util.AbstractList",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.util.AbstractMap",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.util.ArrayList",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.util.Date"
+},
+{
+  "name":"java.util.HashMap",
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"<init>","parameterTypes":["int"] }
+  ],
+  "queriedMethods":[{"name":"<init>","parameterTypes":["java.util.Map"] }]
+},
+{
+  "name":"java.util.HashSet",
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"<init>","parameterTypes":["int"] }, 
+    {"name":"<init>","parameterTypes":["java.util.Collection"] }
+  ]
+},
+{
+  "name":"java.util.PropertyPermission",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }]
+},
+{
+  "name":"java.util.concurrent.ConcurrentHashMap",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.util.concurrent.ConcurrentMap",
+  "queriedMethods":[{"name":"remove","parameterTypes":["java.lang.Object","java.lang.Object"] }]
+},
+{
+  "name":"java.util.concurrent.CopyOnWriteArrayList",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.util.logging.LogManager",
+  "methods":[{"name":"getLoggingMXBean","parameterTypes":[] }]
+},
+{
+  "name":"java.util.logging.LoggingMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"javafx.animation.KeyValue"
+},
+{
+  "name":"javafx.fxml.FXMLLoader"
+},
+{
+  "name":"javafx.geometry.Insets",
+  "queryAllPublicMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["double","double","double","double"] }]
+},
+{
+  "name":"javafx.geometry.Pos",
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"javafx.scene.Camera"
+},
+{
+  "name":"javafx.scene.Group"
+},
+{
+  "name":"javafx.scene.Node",
+  "queryAllDeclaredMethods":true,
+  "methods":[
+    {"name":"getId","parameterTypes":[] }, 
+    {"name":"getStyleClass","parameterTypes":[] }, 
+    {"name":"setDisable","parameterTypes":["boolean"] }, 
+    {"name":"setId","parameterTypes":["java.lang.String"] }
+  ]
+},
+{
+  "name":"javafx.scene.ParallelCamera"
+},
+{
+  "name":"javafx.scene.Parent",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"getStylesheets","parameterTypes":[] }]
+},
+{
+  "name":"javafx.scene.Scene"
+},
+{
+  "name":"javafx.scene.control.Button",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javafx.scene.control.ButtonBase",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"javafx.scene.control.ContentDisplay",
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"javafx.scene.control.Control",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"javafx.scene.control.Label",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javafx.scene.control.Labeled",
+  "queryAllDeclaredMethods":true,
+  "methods":[
+    {"name":"setAlignment","parameterTypes":["javafx.geometry.Pos"] }, 
+    {"name":"setContentDisplay","parameterTypes":["javafx.scene.control.ContentDisplay"] }, 
+    {"name":"setMnemonicParsing","parameterTypes":["boolean"] }, 
+    {"name":"setText","parameterTypes":["java.lang.String"] }, 
+    {"name":"setTextAlignment","parameterTypes":["javafx.scene.text.TextAlignment"] }
+  ]
+},
+{
+  "name":"javafx.scene.control.ListView",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javafx.scene.control.TextField",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javafx.scene.control.TextInputControl",
+  "queryAllDeclaredMethods":true,
+  "methods":[
+    {"name":"setEditable","parameterTypes":["boolean"] }, 
+    {"name":"setText","parameterTypes":["java.lang.String"] }
+  ]
+},
+{
+  "name":"javafx.scene.effect.Effect"
+},
+{
+  "name":"javafx.scene.image.Image"
+},
+{
+  "name":"javafx.scene.image.ImageView"
+},
+{
+  "name":"javafx.scene.layout.AnchorPane",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setBottomAnchor","parameterTypes":["javafx.scene.Node","java.lang.Double"] }, 
+    {"name":"setLeftAnchor","parameterTypes":["javafx.scene.Node","java.lang.Double"] }, 
+    {"name":"setRightAnchor","parameterTypes":["javafx.scene.Node","java.lang.Double"] }, 
+    {"name":"setTopAnchor","parameterTypes":["javafx.scene.Node","java.lang.Double"] }
+  ],
+  "queriedMethods":[
+    {"name":"getBottomAnchor","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"getLeftAnchor","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"getRightAnchor","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"getTopAnchor","parameterTypes":["javafx.scene.Node"] }
+  ]
+},
+{
+  "name":"javafx.scene.layout.BorderPane",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setAlignment","parameterTypes":["javafx.scene.Node","javafx.geometry.Pos"] }, 
+    {"name":"setBottom","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"setCenter","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"setRight","parameterTypes":["javafx.scene.Node"] }, 
+    {"name":"setTop","parameterTypes":["javafx.scene.Node"] }
+  ],
+  "queriedMethods":[{"name":"getAlignment","parameterTypes":["javafx.scene.Node"] }]
+},
+{
+  "name":"javafx.scene.layout.HBox",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setAlignment","parameterTypes":["javafx.geometry.Pos"] }
+  ]
+},
+{
+  "name":"javafx.scene.layout.Pane",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"getChildren","parameterTypes":[] }]
+},
+{
+  "name":"javafx.scene.layout.Priority",
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"javafx.scene.layout.Region",
+  "queryAllDeclaredMethods":true,
+  "methods":[
+    {"name":"setMaxHeight","parameterTypes":["double"] }, 
+    {"name":"setMaxWidth","parameterTypes":["double"] }, 
+    {"name":"setMinHeight","parameterTypes":["double"] }, 
+    {"name":"setMinWidth","parameterTypes":["double"] }, 
+    {"name":"setPadding","parameterTypes":["javafx.geometry.Insets"] }, 
+    {"name":"setPrefHeight","parameterTypes":["double"] }, 
+    {"name":"setPrefWidth","parameterTypes":["double"] }
+  ]
+},
+{
+  "name":"javafx.scene.layout.VBox",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setMargin","parameterTypes":["javafx.scene.Node","javafx.geometry.Insets"] }, 
+    {"name":"setVgrow","parameterTypes":["javafx.scene.Node","javafx.scene.layout.Priority"] }
+  ],
+  "queriedMethods":[{"name":"getVgrow","parameterTypes":["javafx.scene.Node"] }]
+},
+{
+  "name":"javafx.scene.shape.LineTo"
+},
+{
+  "name":"javafx.scene.shape.MoveTo"
+},
+{
+  "name":"javafx.scene.shape.Path"
+},
+{
+  "name":"javafx.scene.shape.PathElement"
+},
+{
+  "name":"javafx.scene.shape.Rectangle"
+},
+{
+  "name":"javafx.scene.shape.SVGPath"
+},
+{
+  "name":"javafx.scene.shape.Shape"
+},
+{
+  "name":"javafx.scene.text.Font"
+},
+{
+  "name":"javafx.scene.text.Text"
+},
+{
+  "name":"javafx.scene.text.TextAlignment",
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"javafx.scene.transform.Transform"
+},
+{
+  "name":"javafx.scene.web.WebView",
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"javafx.stage.PopupWindow"
+},
+{
+  "name":"javafx.stage.Stage"
+},
+{
+  "name":"javafx.stage.Window"
+},
+{
+  "name":"javax.el.BeanELResolver",
+  "fields":[{"name":"properties"}]
+},
+{
+  "name":"javax.imageio.spi.ImageReaderSpi"
+},
+{
+  "name":"javax.imageio.spi.ImageReaderWriterSpi",
+  "methods":[{"name":"getMIMETypes","parameterTypes":[] }],
+  "queriedMethods":[
+    {"name":"getFileSuffixes","parameterTypes":[] }, 
+    {"name":"getFormatNames","parameterTypes":[] }
+  ]
+},
+{
+  "name":"javax.imageio.spi.ImageWriterSpi"
+},
+{
+  "name":"javax.management.MBeanOperationInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"javax.management.MBeanServerBuilder",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javax.management.NotificationBroadcasterSupport",
+  "queriedMethods":[{"name":"getNotificationInfo","parameterTypes":[] }]
+},
+{
+  "name":"javax.management.ObjectName"
+},
+{
+  "name":"javax.management.openmbean.CompositeData"
+},
+{
+  "name":"javax.management.openmbean.OpenMBeanOperationInfoSupport"
+},
+{
+  "name":"javax.management.openmbean.SimpleType",
+  "allPublicFields":true
+},
+{
+  "name":"javax.management.openmbean.TabularData"
+},
+{
+  "name":"javax.security.auth.x500.X500Principal",
+  "methods":[{"name":"<init>","parameterTypes":["sun.security.x509.X500Name"] }]
+},
+{
+  "name":"javax.servlet.Servlet"
+},
+{
+  "name":"javax.swing.plaf.basic.BasicPanelUI",
+  "methods":[{"name":"createUI","parameterTypes":["javax.swing.JComponent"] }]
+},
+{
+  "name":"javax.swing.plaf.metal.MetalLabelUI",
+  "methods":[{"name":"createUI","parameterTypes":["javax.swing.JComponent"] }]
+},
+{
+  "name":"javax.swing.plaf.metal.MetalRootPaneUI",
+  "methods":[{"name":"createUI","parameterTypes":["javax.swing.JComponent"] }]
+},
+{
+  "name":"jdk.management.jfr.ConfigurationInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.EventTypeInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.FlightRecorderMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.FlightRecorderMXBeanImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"jdk.management.jfr.RecordingInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.SettingDescriptorInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.calcite.jdbc.CalciteJdbc41Factory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.AsiExtraField",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.JarMarker",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.ResourceAlignmentExtraField",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.UnicodeCommentExtraField",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.UnicodePathExtraField",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.X000A_NTFS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.X0014_X509Certificates",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.X0015_CertificateIdForFile",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.X0016_CertificateIdForCentralDirectory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.X0017_StrongEncryptionHeader",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.X0019_EncryptionRecipientCertificateList",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestamp",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.X7875_NewUnix",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.compress.archivers.zip.Zip64ExtendedInformationExtraField",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.logging.LogFactory"
+},
+{
+  "name":"org.apache.commons.logging.impl.SLF4JLogFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.logging.impl.WeakHashtable",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.jempbox.xmp.XMPSchemaBasic",
+  "methods":[{"name":"<init>","parameterTypes":["org.w3c.dom.Element","java.lang.String"] }]
+},
+{
+  "name":"org.apache.jempbox.xmp.XMPSchemaDublinCore",
+  "methods":[{"name":"<init>","parameterTypes":["org.w3c.dom.Element","java.lang.String"] }]
+},
+{
+  "name":"org.apache.jempbox.xmp.XMPSchemaMediaManagement",
+  "methods":[{"name":"<init>","parameterTypes":["org.w3c.dom.Element","java.lang.String"] }]
+},
+{
+  "name":"org.apache.jempbox.xmp.XMPSchemaPDF",
+  "methods":[{"name":"<init>","parameterTypes":["org.w3c.dom.Element","java.lang.String"] }]
+},
+{
+  "name":"org.apache.jempbox.xmp.XMPSchemaPhotoshop",
+  "methods":[{"name":"<init>","parameterTypes":["org.w3c.dom.Element","java.lang.String"] }]
+},
+{
+  "name":"org.apache.jempbox.xmp.pdfa.XMPSchemaPDFAId",
+  "methods":[{"name":"<init>","parameterTypes":["org.w3c.dom.Element","java.lang.String"] }]
+},
+{
+  "name":"org.apache.log4j.Logger"
+},
+{
+  "name":"org.apache.log4j.builders.appender.AsyncAppenderBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.appender.ConsoleAppenderBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.appender.DailyRollingFileAppenderBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.appender.FileAppenderBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.appender.NullAppenderBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.appender.RewriteAppenderBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.appender.RollingFileAppenderBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.appender.SyslogAppenderBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.filter.DenyAllFilterBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.filter.LevelMatchFilterBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.filter.LevelRangeFilterBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.filter.StringMatchFilterBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.layout.HtmlLayoutBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.layout.PatternLayoutBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.layout.SimpleLayoutBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.layout.TTCCLayoutBuilder"
+},
+{
+  "name":"org.apache.log4j.builders.layout.XmlLayoutBuilder"
+},
+{
+  "name":"org.apache.log4j.config.PropertiesConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.log4j.layout.Log4j1XmlLayout"
+},
+{
+  "name":"org.apache.log4j.pattern.Log4j1MdcPatternConverter"
+},
+{
+  "name":"org.apache.log4j.pattern.Log4j1NdcPatternConverter"
+},
+{
+  "name":"org.apache.log4j.xml.XmlConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.Logger"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.AbstractAppender$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.AppenderSet"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.AsyncAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.ConsoleAppender",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newBuilder","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.ConsoleAppender$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.CountingNoOpAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.FailoverAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.FailoversPlugin"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.FileAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.HttpAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.MemoryMappedFileAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.NullAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.OutputStreamAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.RandomAccessFileAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.RollingFileAppender",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newBuilder","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.RollingFileAppender$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.ScriptAppenderSelector"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.SmtpAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.SocketAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.SyslogAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.WriterAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.db.ColumnMapping"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.db.jdbc.ColumnConfig"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.db.jdbc.DataSourceConnectionSource"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.db.jdbc.DriverManagerConnectionSource"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.db.jdbc.FactoryMethodConnectionSource"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.db.jdbc.JdbcAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.mom.JmsAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.mom.jeromq.JeroMqAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.mom.kafka.KafkaAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.nosql.NoSqlAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rewrite.LoggerNameLevelRewritePolicy"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rewrite.MapRewritePolicy"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rewrite.PropertiesRewritePolicy"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rewrite.RewriteAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createPolicy","parameterTypes":["org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.CronTriggeringPolicy"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newBuilder","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.NoOpTriggeringPolicy"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.OnStartupTriggeringPolicy",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createPolicy","parameterTypes":["long"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createPolicy","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newBuilder","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.DeleteAction",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createDeleteAction","parameterTypes":["java.lang.String","boolean","int","boolean","org.apache.logging.log4j.core.appender.rolling.action.PathSorter","org.apache.logging.log4j.core.appender.rolling.action.PathCondition[]","org.apache.logging.log4j.core.appender.rolling.action.ScriptCondition","org.apache.logging.log4j.core.config.Configuration"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.IfAccumulatedFileCount"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.IfAccumulatedFileSize"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.IfAll"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.IfAny"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.IfFileName",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createNameCondition","parameterTypes":["java.lang.String","java.lang.String","org.apache.logging.log4j.core.appender.rolling.action.PathCondition[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.IfLastModified",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createAgeCondition","parameterTypes":["org.apache.logging.log4j.core.appender.rolling.action.Duration","org.apache.logging.log4j.core.appender.rolling.action.PathCondition[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.IfNot"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.PathSortByModificationTime"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.rolling.action.ScriptCondition"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.routing.IdlePurgePolicy"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.routing.Route"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.routing.Routes"
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.routing.RoutingAppender"
+},
+{
+  "name":"org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory"
+},
+{
+  "name":"org.apache.logging.log4j.core.async.AsyncLoggerConfig"
+},
+{
+  "name":"org.apache.logging.log4j.core.async.AsyncLoggerConfig$RootLogger"
+},
+{
+  "name":"org.apache.logging.log4j.core.async.DisruptorBlockingQueueFactory"
+},
+{
+  "name":"org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory"
+},
+{
+  "name":"org.apache.logging.log4j.core.async.LinkedTransferQueueFactory"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.AppenderRef",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createAppenderRef","parameterTypes":["java.lang.String","org.apache.logging.log4j.Level","org.apache.logging.log4j.core.Filter"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.AppendersPlugin",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createAppenders","parameterTypes":["org.apache.logging.log4j.core.Appender[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.CustomLevelConfig"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.CustomLevels"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.DefaultAdvertiser"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.HttpWatcher"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.LoggerConfig"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.LoggerConfig$RootLogger",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createLogger","parameterTypes":["java.lang.String","org.apache.logging.log4j.Level","java.lang.String","org.apache.logging.log4j.core.config.AppenderRef[]","org.apache.logging.log4j.core.config.Property[]","org.apache.logging.log4j.core.config.Configuration","org.apache.logging.log4j.core.Filter"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.LoggersPlugin",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"createLoggers","parameterTypes":["org.apache.logging.log4j.core.config.LoggerConfig[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.PropertiesPlugin"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.Property"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.ScriptsPlugin"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.arbiters.ClassArbiter"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.arbiters.DefaultArbiter"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.arbiters.ScriptArbiter"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.arbiters.SelectArbiter"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.arbiters.SystemPropertyArbiter"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.json.JsonConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$BigDecimalConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$BigIntegerConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$BooleanConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ByteArrayConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ByteConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CharArrayConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CharacterConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CharsetConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ClassConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CronExpressionConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$DoubleConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$DurationConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$FileConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$FloatConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$InetAddressConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$IntegerConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$LevelConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$LongConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$PathConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$PatternConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$SecurityProviderConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ShortConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$StringConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$UriConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$UrlConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$UuidConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.validation.validators.RequiredValidator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.visitors.PluginBuilderAttributeVisitor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.visitors.PluginConfigurationVisitor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.visitors.PluginElementVisitor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.AbstractFilterable$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.BurstFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.CompositeFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.DenyAllFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.DynamicThresholdFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.LevelMatchFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.LevelRangeFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.MapFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.MarkerFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.NoMarkerFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.RegexFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.ScriptFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.StringMatchFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.StructuredDataFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.ThreadContextMapFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.ThresholdFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.TimeFilter"
+},
+{
+  "name":"org.apache.logging.log4j.core.impl.Log4jContextFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.AppenderAdmin",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.AppenderAdminMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.ContextSelectorAdmin",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.ContextSelectorAdminMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.LoggerConfigAdmin",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.LoggerConfigAdminMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.LoggerContextAdmin",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.StatusLoggerAdmin",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.CsvLogEventLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.CsvParameterLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.GelfLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.HtmlLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.JsonLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.LevelPatternSelector"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.LoggerFields"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.MarkerPatternSelector"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.MessageLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.PatternLayout",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newBuilder","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.PatternLayout$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.PatternMatch"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.Rfc5424Layout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.ScriptPatternSelector"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.SerializedLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.SyslogLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.XmlLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.YamlLayout"
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.ContextMapLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.DateLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.EnvironmentLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.EventLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.JavaLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.JndiLookup"
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.Log4jLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.LowerLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.MainMapLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.MapLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.MarkerLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.ResourceBundleLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.StructuredDataLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.SystemPropertiesLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.UpperLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.net.MulticastDnsAdvertiser"
+},
+{
+  "name":"org.apache.logging.log4j.core.net.SocketAddress"
+},
+{
+  "name":"org.apache.logging.log4j.core.net.SocketOptions"
+},
+{
+  "name":"org.apache.logging.log4j.core.net.SocketPerformancePreferences"
+},
+{
+  "name":"org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration"
+},
+{
+  "name":"org.apache.logging.log4j.core.net.ssl.SslConfiguration"
+},
+{
+  "name":"org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Black"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Blue"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Cyan"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Green"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Magenta"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Red"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$White"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter$Yellow"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.ClassNamePatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.DatePatternConverter",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newInstance","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.EncodingPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.EndOfBatchPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.EqualsIgnoreCaseReplacementConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.EqualsReplacementConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.ExtendedThrowablePatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.FileDatePatternConverter",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newInstance","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.FileLocationPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.FullLocationPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.HighlightConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.IntegerPatternConverter",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newInstance","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.LevelPatternConverter",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newInstance","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.LineLocationPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newInstance","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.LoggerFqcnPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.LoggerPatternConverter",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newInstance","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.MapPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.MarkerPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.MarkerSimpleNamePatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.MaxLengthConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.MdcPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.MessagePatternConverter",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newInstance","parameterTypes":["org.apache.logging.log4j.core.config.Configuration","java.lang.String[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.MethodLocationPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.NanoTimePatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.NdcPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.ProcessIdPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.RegexReplacement"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.RegexReplacementConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.RelativeTimePatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.RepeatPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.RootThrowablePatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.SequenceNumberPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.StyleConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.ThreadIdPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter",
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"newInstance","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.ThreadPriorityPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.ThrowablePatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.UuidPatternConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.VariablesNotEmptyReplacementConverter"
+},
+{
+  "name":"org.apache.logging.log4j.core.script.Script"
+},
+{
+  "name":"org.apache.logging.log4j.core.script.ScriptFile"
+},
+{
+  "name":"org.apache.logging.log4j.core.script.ScriptRef"
+},
+{
+  "name":"org.apache.logging.log4j.core.util.ExecutorServices"
+},
+{
+  "name":"org.apache.logging.log4j.core.util.KeyValuePair"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.JsonTemplateLayout"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.JsonTemplateLayout$EventTemplateAdditionalField"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.CaseConverterResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.CounterResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.EndOfBatchResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.EventAdditionalFieldInterceptor"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.EventRootObjectKeyInterceptor"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.ExceptionResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.ExceptionRootCauseResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.LevelResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.LoggerResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.MainMapResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.MapResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.MarkerResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.MessageParameterResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.MessageResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.PatternResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.SourceResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.ThreadContextDataResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.ThreadContextStackResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.ThreadResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.resolver.TimestampResolverFactory"
+},
+{
+  "name":"org.apache.logging.log4j.layout.template.json.util.RecyclerFactoryConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.message.DefaultFlowMessageFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.message.ParameterizedMessageFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.util.internal.DefaultObjectInputFilter",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.web.WebLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.web.appender.ServletAppender"
+},
+{
+  "name":"org.apache.lucene.analysis.ar.ArabicNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ar.ArabicStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.bg.BulgarianStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.bn.BengaliNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.bn.BengaliStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.boost.DelimitedBoostTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.br.BrazilianStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.cjk.CJKBigramFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.cjk.CJKWidthFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ckb.SoraniNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ckb.SoraniStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.commongrams.CommonGramsFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.commongrams.CommonGramsQueryFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.compound.DictionaryCompoundWordTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.compound.HyphenationCompoundWordTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.core.DecimalDigitFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.core.FlattenGraphFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.core.KeywordTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.core.LetterTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.core.LowerCaseFilterFactory",
+  "fields":[{"name":"NAME"}],
+  "methods":[{"name":"<init>","parameterTypes":["java.util.Map"] }]
+},
+{
+  "name":"org.apache.lucene.analysis.core.StopFilterFactory",
+  "fields":[{"name":"NAME"}],
+  "methods":[{"name":"<init>","parameterTypes":["java.util.Map"] }]
+},
+{
+  "name":"org.apache.lucene.analysis.core.TypeTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.core.UpperCaseFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.core.WhitespaceTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.cz.CzechStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.de.GermanLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.de.GermanMinimalStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.de.GermanNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.de.GermanStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.el.GreekLowerCaseFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.el.GreekStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.en.EnglishMinimalStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.en.EnglishPossessiveFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.en.KStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.en.PorterStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.es.SpanishLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.es.SpanishMinimalStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.fa.PersianNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.fi.FinnishLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.fr.FrenchLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.fr.FrenchMinimalStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ga.IrishLowerCaseFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.gl.GalicianMinimalStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.gl.GalicianStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.hi.HindiNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.hi.HindiStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.hu.HungarianLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.hunspell.HunspellStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.id.IndonesianStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.in.IndicNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.it.ItalianLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ja.JapaneseBaseFormFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ja.JapaneseKatakanaStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ja.JapaneseNumberFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ja.JapanesePartOfSpeechStopFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ja.JapaneseReadingFormFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ja.JapaneseTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ko.KoreanPartOfSpeechStopFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ko.KoreanReadingFormFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ko.KoreanTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.lv.LatvianStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.minhash.MinHashFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.CapitalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.CodepointCountFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.ConcatenateGraphFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.DateRecognizerFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.DelimitedTermFrequencyTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.DropIfFlaggedFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.FingerprintFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.FixBrokenOffsetsFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.HyphenatedWordsFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.KeepWordFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.KeywordMarkerFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.KeywordRepeatFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.LengthFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.LimitTokenCountFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.LimitTokenOffsetFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.LimitTokenPositionFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.ProtectedTermFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.RemoveDuplicatesTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.ScandinavianFoldingFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.ScandinavianNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.StemmerOverrideFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.TrimFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.TruncateTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.TypeAsSynonymFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.WordDelimiterFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ngram.EdgeNGramTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ngram.NGramFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ngram.NGramTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.no.NorwegianLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.no.NorwegianMinimalStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.path.PathHierarchyTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.pattern.PatternCaptureGroupFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.pattern.PatternReplaceFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.pattern.PatternTokenizerFactory",
+  "fields":[{"name":"NAME"}],
+  "methods":[{"name":"<init>","parameterTypes":["java.util.Map"] }]
+},
+{
+  "name":"org.apache.lucene.analysis.pattern.PatternTypingFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.pattern.SimplePatternSplitTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.pattern.SimplePatternTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.payloads.DelimitedPayloadTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.payloads.NumericPayloadTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.payloads.TokenOffsetPayloadTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.payloads.TypeAsPayloadTokenFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.phonetic.BeiderMorseFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.phonetic.DoubleMetaphoneFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.phonetic.PhoneticFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.pt.PortugueseLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.pt.PortugueseMinimalStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.pt.PortugueseStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.reverse.ReverseStringFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.ru.RussianLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.shingle.FixedShingleFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.shingle.ShingleFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.snowball.SnowballPorterFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.sr.SerbianNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.standard.ClassicFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.standard.ClassicTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.standard.StandardTokenizerFactory",
+  "fields":[{"name":"NAME"}],
+  "methods":[{"name":"<init>","parameterTypes":["java.util.Map"] }]
+},
+{
+  "name":"org.apache.lucene.analysis.standard.UAX29URLEmailTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.sv.SwedishLightStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.synonym.SolrSynonymParser",
+  "methods":[{"name":"<init>","parameterTypes":["boolean","boolean","org.apache.lucene.analysis.Analyzer"] }]
+},
+{
+  "name":"org.apache.lucene.analysis.synonym.SynonymFilterFactory",
+  "fields":[{"name":"NAME"}],
+  "methods":[{"name":"<init>","parameterTypes":["java.util.Map"] }]
+},
+{
+  "name":"org.apache.lucene.analysis.synonym.SynonymGraphFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.te.TeluguNormalizationFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.te.TeluguStemFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.th.ThaiTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.tokenattributes.OffsetAttributeImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.analysis.tokenattributes.PackedTokenAttributeImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.analysis.tokenattributes.PositionIncrementAttributeImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.analysis.tokenattributes.TermFrequencyAttributeImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.analysis.tokenattributes.TypeAttributeImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.analysis.tr.ApostropheFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.tr.TurkishLowerCaseFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.util.ElisionFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.analysis.wikipedia.WikipediaTokenizerFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.codecs.DocValuesProducer",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.codecs.FieldsProducer",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.codecs.PostingsReaderBase",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.codecs.blocktree.FieldReader",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.codecs.blocktreeords.BlockTreeOrdsPostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.bloom.BloomFilteringPostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.compressing.FieldsIndex",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.codecs.compressing.FieldsIndexReader",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.codecs.idversion.IDVersionPostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.lucene50.Lucene50PostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.lucene70.Lucene70Codec",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.lucene70.Lucene70DocValuesFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.lucene80.Lucene80Codec",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.lucene80.Lucene80DocValuesFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.lucene80.Lucene80DocValuesProducer",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.codecs.lucene84.Lucene84Codec",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.lucene84.Lucene84PostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.lucene84.Lucene84PostingsReader",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.codecs.lucene86.Lucene86Codec",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.lucene87.Lucene87Codec",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.memory.DirectDocValuesFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.memory.DirectPostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.memory.FSTPostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.perfield.PerFieldPostingsFormat$FieldsReader",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.codecs.simpletext.SimpleTextCodec",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.uniformsplit.UniformSplitPostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.codecs.uniformsplit.sharedterms.STUniformSplitPostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.index.ConcurrentMergeScheduler",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.index.DocsWithFieldSet",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.index.Fields",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.index.OrdinalMap",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.index.OrdinalMap$2",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.index.OrdinalMap$SegmentMap",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.index.Term",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.index.Terms",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.search.DocIdSet",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.search.SortField",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.search.suggest.analyzing.SuggestStopFilterFactory",
+  "fields":[{"name":"NAME"}]
+},
+{
+  "name":"org.apache.lucene.search.suggest.document.Completion50PostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.search.suggest.document.Completion84PostingsFormat",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.lucene.store.DataOutput",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.BitSet",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.ByteBlockPool",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.BytesRef",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.BytesRefHash",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.FixedBitSet",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.FrequencyTrackingRingBuffer",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.FrequencyTrackingRingBuffer$IntBag",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.LongValues",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.fst.BytesStore",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.fst.FST",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.fst.FST$Arc",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.fst.OffHeapFSTStore",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.packed.DeltaPackedLongValues",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.packed.DeltaPackedLongValues$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.packed.DirectMonotonicReader",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.packed.DirectMonotonicReader$Meta",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.packed.MonotonicLongValues",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.packed.MonotonicLongValues$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.packed.PackedLongValues",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.lucene.util.packed.PackedLongValues$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.pdfbox.pdmodel.encryption.StandardSecurityHandler",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink",
+  "methods":[{"name":"getAction","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget",
+  "methods":[{"name":"getAction","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.CoresVariable",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.FreeDiskVariable",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.NodeVariable",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.ReplicaVariable",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type",
+  "fields":[
+    {"name":"COLL"}, 
+    {"name":"CORES"}, 
+    {"name":"CORE_IDX"}, 
+    {"name":"DISKTYPE"}, 
+    {"name":"FREEDISK"}, 
+    {"name":"HEAPUSAGE"}, 
+    {"name":"HOST"}, 
+    {"name":"IP_1"}, 
+    {"name":"IP_2"}, 
+    {"name":"IP_3"}, 
+    {"name":"IP_4"}, 
+    {"name":"LAZY"}, 
+    {"name":"NODE"}, 
+    {"name":"NODE_ROLE"}, 
+    {"name":"NUMBER"}, 
+    {"name":"PORT"}, 
+    {"name":"REPLICA"}, 
+    {"name":"SHARD"}, 
+    {"name":"SYSLOADAVG"}, 
+    {"name":"SYSPROP"}, 
+    {"name":"TOTALDISK"}, 
+    {"name":"WITH_COLLECTION"}
+  ]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.VariableBase",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.VariableBase$CoreIndexSizeVariable",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.VariableBase$DiskTypeVariable",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.VariableBase$LazyVariable",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.VariableBase$TotalDiskVariable",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.cloud.autoscaling.WithCollectionVariable",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.client.solrj.cloud.autoscaling.Variable$Type"] }]
+},
+{
+  "name":"org.apache.solr.client.solrj.request.beans.ClusterPropInfo",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.client.solrj.request.beans.ClusterPropInfo$ClusterInfo",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.client.solrj.request.beans.ClusterPropInfo$CollectionDefaults",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.client.solrj.request.beans.ClusterPropInfo$DefaultsInfo",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.client.solrj.request.beans.CreateConfigInfo",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.client.solrj.request.beans.DeleteBackupPayload",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.client.solrj.request.beans.ListBackupPayload",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.core.NRTCachingDirectoryFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.core.QuerySenderListener",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.SolrCore"] }]
+},
+{
+  "name":"org.apache.solr.core.SchemaCodecFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.core.TransientSolrCoreCacheFactoryDefault",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.filestore.PackageStoreAPI$FSRead",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"read","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }]
+},
+{
+  "name":"org.apache.solr.filestore.PackageStoreAPI$FSWrite",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"delete","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"deleteLocal","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"upload","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }
+  ]
+},
+{
+  "name":"org.apache.solr.handler.ClusterAPI",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"aliases","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"deleteCommandStatus","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"deleteConfigSet","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"getCluster","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"getCommandStatus","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"getNodes","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"getOverseerStatus","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"insertIntoConfigSet","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"listConfigSet","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"uploadConfigSet","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }
+  ]
+},
+{
+  "name":"org.apache.solr.handler.ClusterAPI$Commands",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"addRole","parameterTypes":["org.apache.solr.api.PayloadObj"] }, 
+    {"name":"removeRole","parameterTypes":["org.apache.solr.api.PayloadObj"] }, 
+    {"name":"setObjProperty","parameterTypes":["org.apache.solr.api.PayloadObj"] }, 
+    {"name":"setProperty","parameterTypes":["org.apache.solr.api.PayloadObj"] }
+  ]
+},
+{
+  "name":"org.apache.solr.handler.ClusterAPI$ConfigSetCommands",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"create","parameterTypes":["org.apache.solr.api.PayloadObj"] }]
+},
+{
+  "name":"org.apache.solr.handler.ClusterAPI$RoleInfo",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.handler.CollectionBackupsAPI",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"deleteBackups","parameterTypes":["org.apache.solr.api.PayloadObj"] }, 
+    {"name":"listBackups","parameterTypes":["org.apache.solr.api.PayloadObj"] }
+  ]
+},
+{
+  "name":"org.apache.solr.handler.CollectionsAPI",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"deleteCollection","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }, 
+    {"name":"getCollections","parameterTypes":["org.apache.solr.request.SolrQueryRequest","org.apache.solr.response.SolrQueryResponse"] }
+  ]
+},
+{
+  "name":"org.apache.solr.handler.DumpRequestHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.ExportHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.GraphHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.PingRequestHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.RealTimeGetHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.ReplicationHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.SQLHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.SchemaHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.SolrConfigHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.StreamHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.UpdateRequestHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.UpdateRequestHandlerApi",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.AutoscalingHistoryHandler",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.CoreContainer"] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.CollectionsHandler",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.CoreContainer"] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.ConfigSetsHandler",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.CoreContainer"] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.CoreAdminHandler",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.CoreContainer"] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.HealthCheckHandler",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.CoreContainer"] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.InfoHandler",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.CoreContainer"] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.LoggingHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.LukeRequestHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.MetricsCollectorHandler",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.CoreContainer"] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.PluginInfoHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.PropertiesRequestHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.SegmentsInfoRequestHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.ShowFileRequestHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.SolrInfoMBeanHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.SystemInfoHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.ThreadDumpHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.ZookeeperInfoHandler",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.CoreContainer"] }]
+},
+{
+  "name":"org.apache.solr.handler.admin.ZookeeperStatusHandler",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.CoreContainer"] }]
+},
+{
+  "name":"org.apache.solr.handler.component.DebugComponent",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.ExpandComponent",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.FacetComponent",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.HighlightComponent",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.HttpShardHandlerFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.MoreLikeThisComponent",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.QueryComponent",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.QueryElevationComponent",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.RealTimeGetComponent",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.SearchHandler",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.SpellCheckComponent",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.StatsComponent",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.TermVectorComponent",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.handler.component.TermsComponent",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.BreakIteratorBoundaryScanner",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.DefaultSolrHighlighter",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.SolrCore"] }]
+},
+{
+  "name":"org.apache.solr.highlight.GapFragmenter",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.HtmlEncoder",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.HtmlFormatter",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.RegexFragmenter",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.ScoreOrderFragmentsBuilder",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.SimpleBoundaryScanner",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.SimpleFragListBuilder",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.SingleFragListBuilder",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.highlight.WeightedFragListBuilder",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.index.DefaultMergePolicyFactory",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.SolrResourceLoader","org.apache.solr.index.MergePolicyFactoryArgs","org.apache.solr.schema.IndexSchema"] }]
+},
+{
+  "name":"org.apache.solr.legacy.LegacyNumericTokenStream$LegacyNumericTermAttributeImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.metrics.reporters.SolrJmxReporter",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.metrics.SolrMetricManager","java.lang.String"] }]
+},
+{
+  "name":"org.apache.solr.metrics.reporters.jmx.JmxMetricsReporter$JmxCounter",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"org.apache.solr.metrics.reporters.jmx.JmxMetricsReporter$JmxCounterMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.solr.metrics.reporters.jmx.JmxMetricsReporter$JmxGauge",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"org.apache.solr.metrics.reporters.jmx.JmxMetricsReporter$JmxGaugeMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.solr.metrics.reporters.jmx.JmxMetricsReporter$JmxMeter",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"org.apache.solr.metrics.reporters.jmx.JmxMetricsReporter$JmxMeterMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.solr.metrics.reporters.jmx.JmxMetricsReporter$JmxTimer",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"org.apache.solr.metrics.reporters.jmx.JmxMetricsReporter$JmxTimerMBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.apache.solr.metrics.reporters.jmx.JmxMetricsReporter$MetricMBean",
+  "methods":[{"name":"get_instanceTag","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.response.JSONResponseWriter",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.response.XSLTResponseWriter",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.schema.ManagedIndexSchemaFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.schema.StrField",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.schema.TextField",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.schema.TrieLongField",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.search.DocSetBase",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.search.DocSlice",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.search.FastLRUCache",
+  "allDeclaredFields":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.search.LRUCache",
+  "allDeclaredFields":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.search.LRUCache$CacheValue",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.search.QueryResultKey",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.search.SolrCacheBase",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.search.facet.FacetModule",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.search.similarities.SchemaSimilarityFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.spelling.DirectSolrSpellChecker",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.spelling.WordBreakSolrSpellChecker",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.DirectUpdateHandler2",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.SolrCore"] }]
+},
+{
+  "name":"org.apache.solr.update.processor.AddSchemaFieldsUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.DistributedUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.FieldNameMutatingUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.LogUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.ParseBooleanFieldUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.ParseDateFieldUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.ParseDoubleFieldUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.ParseLongFieldUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.RemoveBlankFieldUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.RunUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.UUIDUpdateProcessorFactory",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.solr.update.processor.UpdateRequestProcessorChain",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.solr.core.SolrCore"] }]
+},
+{
+  "name":"org.apache.solr.util.ConcurrentLRUCache",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.solr.util.ConcurrentLRUCache$Stats",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.tika.detect.OverrideDetector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.langdetect.OptimaizeLangDetector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.metadata.Metadata",
+  "allPublicFields":true
+},
+{
+  "name":"org.apache.tika.metadata.TikaCoreProperties",
+  "allPublicFields":true
+},
+{
+  "name":"org.apache.tika.metadata.filter.NoOpFilter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.apple.AppleSingleFileParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.apple.BPListDetector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.apple.PListParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.asm.ClassParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.audio.AudioParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.audio.MidiParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.chm.ChmParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.code.SourceCodeParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.crypto.Pkcs7Parser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.crypto.TSDParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.csv.TextAndCSVParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.dbf.DBFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.dif.DIFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.dwg.DWGParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.epub.EpubParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.executable.ExecutableParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.external.CompositeExternalParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.feed.FeedParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.font.AdobeFontMetricParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.font.TrueTypeParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.gdal.GDALParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.geo.topic.GeoParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.geoinfo.GeographicInformationParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.grib.GribParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.hdf.HDFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.html.HtmlEncodingDetector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.html.HtmlParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.hwp.HwpV5Parser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.image.BPGParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.image.HeifParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.image.ICNSParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.image.ImageParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.image.PSDParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.image.TiffParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.image.WebPParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.indesign.IDMLParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.iptc.IptcAnpaParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.isatab.ISArchiveParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.iwork.IWorkPackageParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.jdbc.SQLite3Parser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.journal.JournalParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.jpeg.JpegParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.mail.RFC822Parser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.mat.MatParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.mbox.MboxParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.mbox.OutlookPSTParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.EMFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.JackcessParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.MSOwnerFileParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.OfficeParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.OldExcelParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.POIFSContainerDetector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.TNEFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.WMFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.onenote.OneNoteParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.ooxml.OOXMLParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.ooxml.xwpf.ml2006.Word2006MLParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.xml.SpreadsheetMLParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.microsoft.xml.WordMLParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.mif.MIFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.mp3.Mp3Parser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.mp4.NoakesMP4Parser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.netcdf.NetCDFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.ocr.TesseractOCRParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.odf.FlatOpenDocumentParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.odf.OpenDocumentParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.pdf.PDFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.pkg.CompressorParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.pkg.PackageParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.pkg.RarParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.pkg.ZipContainerDetector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.pot.PooledTimeSeriesParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.rtf.RTFParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.sas.SAS7BDATParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.txt.Icu4jEncodingDetector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.txt.UniversalEncodingDetector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.video.FLVParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.wordperfect.QuattroProParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.wordperfect.WordPerfectParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.xliff.XLIFF12Parser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.xliff.XLZParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.xml.DcXMLParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tika.parser.xml.FictionBookParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.xalan.templates.FuncKey"
+},
+{
+  "name":"org.apache.xerces.impl.dv.dtd.DTDDVFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.xerces.parsers.XIncludeAwareParserConfiguration",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.xerces.util.SecurityManager",
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setEntityExpansionLimit","parameterTypes":["int"] }
+  ]
+},
+{
+  "name":"org.apache.xml.dtm.ObjectFactory"
+},
+{
+  "name":"org.apache.xml.dtm.ref.DTMManagerDefault",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.xmlbeans.metadata.system.sXMLCONFIG.TypeSystemHolder",
+  "fields":[{"name":"typeSystem"}]
+},
+{
+  "name":"org.apache.xmlbeans.metadata.system.sXMLLANG.TypeSystemHolder",
+  "fields":[{"name":"typeSystem"}]
+},
+{
+  "name":"org.apache.xmlbeans.metadata.system.sXMLSCHEMA.TypeSystemHolder",
+  "fields":[{"name":"typeSystem"}]
+},
+{
+  "name":"org.apache.xmlbeans.metadata.system.sXMLTOOLS.TypeSystemHolder",
+  "fields":[{"name":"typeSystem"}]
+},
+{
+  "name":"org.apache.xpath.functions.FuncBoolean"
+},
+{
+  "name":"org.apache.xpath.functions.FuncCeiling"
+},
+{
+  "name":"org.apache.xpath.functions.FuncConcat"
+},
+{
+  "name":"org.apache.xpath.functions.FuncContains"
+},
+{
+  "name":"org.apache.xpath.functions.FuncCount"
+},
+{
+  "name":"org.apache.xpath.functions.FuncCurrent"
+},
+{
+  "name":"org.apache.xpath.functions.FuncDoclocation"
+},
+{
+  "name":"org.apache.xpath.functions.FuncExtElementAvailable"
+},
+{
+  "name":"org.apache.xpath.functions.FuncExtFunctionAvailable"
+},
+{
+  "name":"org.apache.xpath.functions.FuncFalse"
+},
+{
+  "name":"org.apache.xpath.functions.FuncFloor"
+},
+{
+  "name":"org.apache.xpath.functions.FuncGenerateId"
+},
+{
+  "name":"org.apache.xpath.functions.FuncId"
+},
+{
+  "name":"org.apache.xpath.functions.FuncLang"
+},
+{
+  "name":"org.apache.xpath.functions.FuncLast"
+},
+{
+  "name":"org.apache.xpath.functions.FuncLocalPart"
+},
+{
+  "name":"org.apache.xpath.functions.FuncNamespace"
+},
+{
+  "name":"org.apache.xpath.functions.FuncNormalizeSpace"
+},
+{
+  "name":"org.apache.xpath.functions.FuncNot"
+},
+{
+  "name":"org.apache.xpath.functions.FuncNumber"
+},
+{
+  "name":"org.apache.xpath.functions.FuncPosition"
+},
+{
+  "name":"org.apache.xpath.functions.FuncQname"
+},
+{
+  "name":"org.apache.xpath.functions.FuncRound"
+},
+{
+  "name":"org.apache.xpath.functions.FuncStartsWith"
+},
+{
+  "name":"org.apache.xpath.functions.FuncString"
+},
+{
+  "name":"org.apache.xpath.functions.FuncStringLength"
+},
+{
+  "name":"org.apache.xpath.functions.FuncSubstring"
+},
+{
+  "name":"org.apache.xpath.functions.FuncSubstringAfter"
+},
+{
+  "name":"org.apache.xpath.functions.FuncSubstringBefore"
+},
+{
+  "name":"org.apache.xpath.functions.FuncSum"
+},
+{
+  "name":"org.apache.xpath.functions.FuncSystemProperty"
+},
+{
+  "name":"org.apache.xpath.functions.FuncTranslate"
+},
+{
+  "name":"org.apache.xpath.functions.FuncTrue"
+},
+{
+  "name":"org.apache.xpath.functions.FuncUnparsedEntityURI"
+},
+{
+  "name":"org.controlsfx.control.PropertySheet",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setMode","parameterTypes":["org.controlsfx.control.PropertySheet$Mode"] }, 
+    {"name":"setModeSwitcherVisible","parameterTypes":["boolean"] }, 
+    {"name":"setSearchBoxVisible","parameterTypes":["boolean"] }
+  ]
+},
+{
+  "name":"org.controlsfx.control.PropertySheet$Mode",
+  "methods":[{"name":"valueOf","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.eclipse.jetty.jsp.JettyJspServlet",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.security.ConstraintSecurityHandler",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.servlet.DefaultServlet",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.servlet.listener.ELContextCleaner",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.servlet.listener.IntrospectorCleaner",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.util.ModuleLocation",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.util.log.Slf4jLog",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.webapp.ClasspathPattern$ByLocationOrModule",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.webapp.ClasspathPattern$ByPackageOrName",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.webapp.FragmentConfiguration",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.webapp.JettyWebXmlConfiguration",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.webapp.MetaInfConfiguration",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.webapp.StandardDescriptorProcessor",
+  "methods":[
+    {"name":"visitListener","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitLocaleEncodingList","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitSecurityConstraint","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitServlet","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitServletMapping","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitSessionConfig","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitWelcomeFileList","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }
+  ],
+  "queriedMethods":[
+    {"name":"visitContextParam","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitDenyUncoveredHttpMethods","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitDisplayName","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitDistributable","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitErrorPage","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitFilter","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitFilterMapping","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitJspConfig","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitLoginConfig","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitMimeMapping","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitSecurityRole","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }, 
+    {"name":"visitTagLib","parameterTypes":["org.eclipse.jetty.webapp.WebAppContext","org.eclipse.jetty.webapp.Descriptor","org.eclipse.jetty.xml.XmlParser$Node"] }
+  ]
+},
+{
+  "name":"org.eclipse.jetty.webapp.WebInfConfiguration",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jetty.webapp.WebXmlConfiguration",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.gagravarr.tika.FlacParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.gagravarr.tika.OggDetector",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.gagravarr.tika.OggParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.gagravarr.tika.OpusParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.gagravarr.tika.SpeexParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.gagravarr.tika.TheoraParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.gagravarr.tika.VorbisParser",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.CTNonVisualDrawingProps"
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTBlipFillPropertiesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTBlipImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTGraphicalObjectDataImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTGraphicalObjectImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTGroupShapePropertiesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTNonVisualDrawingPropsImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTNonVisualDrawingShapePropsImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTOfficeStyleSheetImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTOuterShadowEffectImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTRegularTextRunImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTShapePropertiesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTTableStyleListImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTTextBodyImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTTextCharacterPropertiesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTTextFieldImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTTextParagraphImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.CTTextParagraphPropertiesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.STDrawingElementIdImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.TblStyleLstDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.main.impl.ThemeDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.picture.CTPicture"
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.picture.impl.CTPictureImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.picture.impl.CTPictureNonVisualImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.impl.CTAnchorImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.impl.CTInlineImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.officeDocument.x2006.customProperties.impl.CTPropertiesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.officeDocument.x2006.customProperties.impl.CTPropertyImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.officeDocument.x2006.customProperties.impl.PropertiesDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.impl.CTPropertiesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.impl.PropertiesDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.officeDocument.x2006.relationships.impl.STRelationshipIdImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.impl.STOnOffImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.impl.STStringImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.CTGroupShape"
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.STPlaceholderType$Enum",
+  "fields":[{"name":"table"}]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTApplicationNonVisualDrawingPropsImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTCommonSlideDataImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTGroupShapeImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTGroupShapeNonVisualImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTNotesMasterImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTNotesSlideImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTPictureImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTPictureNonVisualImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTPlaceholderImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTPresentationImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTShapeImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTShapeNonVisualImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTSlideIdListEntryImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTSlideIdListImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTSlideImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTSlideLayoutImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTSlideMasterIdListEntryImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTSlideMasterIdListImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.CTSlideMasterImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.NotesDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.NotesMasterDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.PresentationDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.STPlaceholderTypeImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.SldDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.SldLayoutDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.presentationml.x2006.main.impl.SldMasterDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.CTNumLvl"
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText"
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType$Enum",
+  "fields":[{"name":"table"}]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr$Enum",
+  "fields":[{"name":"table"}]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat$Enum",
+  "fields":[{"name":"table"}]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.STUnderline$Enum",
+  "fields":[{"name":"table"}]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTAbstractNumImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTBodyImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTBookmarkImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTBrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTCommentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTCommentsImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTDecimalNumberImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTDocDefaultsImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTDocument1Impl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTDrawingImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTEmptyImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTEndnotesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTFldCharImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTFootnotesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTFtnEdnImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTHdrFtrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTHdrFtrRefImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTHyperlinkImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTLatentStylesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTLevelTextImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTLvlImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTMarkupImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTMarkupRangeImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTNumFmtImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTNumImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTNumPrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTNumberingImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTObjectImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTOnOffImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTPImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTPPrDefaultImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTPPrGeneralImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTPPrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTPictureImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTProofErrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTRImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTRPrDefaultImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTRPrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTRowImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTRunTrackChangeImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTSectPrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTSettingsImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTStringImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTStyleImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTStylesImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTTblImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTTcImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTTcPrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTTextImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTTrPrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTTxbxContentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTUnderlineImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CommentsDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.DocumentDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.EndnotesDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.FootnotesDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.FtrDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.HdrDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.NumberingDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.STDecimalNumberImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.STFldCharTypeImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.STHdrFtrImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.STNumberFormatImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.STUnderlineImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.SettingsDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.StylesDocumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.xmlbeans.SchemaType"] }]
+},
+{
+  "name":"org.slf4j.Logger"
+},
+{
+  "name":"org.slf4j.LoggerFactory",
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.awt.Symbol",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.awt.Win32FontManager",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.awt.windows.WingDings",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.java2d.marlin.DMarlinRenderingEngine",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.management.ClassLoadingImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.CompilationImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.ManagementFactoryHelper$1",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.ManagementFactoryHelper$PlatformLoggingImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.MemoryImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.MemoryManagerImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.MemoryPoolImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.RuntimeImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.misc.Unsafe",
+  "fields":[{"name":"theUnsafe"}],
+  "methods":[{"name":"invokeCleaner","parameterTypes":["java.nio.ByteBuffer"] }]
+},
+{
+  "name":"sun.security.pkcs12.PKCS12KeyStore",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.pkcs12.PKCS12KeyStore$DualFormatPKCS12",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DRBG",
+  "methods":[{"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
+},
+{
+  "name":"sun.security.provider.DSA$SHA1withDSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DSA$SHA224withDSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DSAKeyFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DSAParameters",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.JavaKeyStore$JKS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.MD5",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA224",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA5$SHA384",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA5$SHA512",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.X509Factory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.PSSParameters",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAKeyFactory$Legacy",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAKeyPairGenerator$Legacy",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAPSSSignature",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSASignature$SHA224withRSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.KeyManagerFactoryImpl$SunX509",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.SSLContextImpl$DefaultSSLContext",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.SSLContextImpl$TLSContext",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.TrustManagerFactoryImpl$PKIXFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.x509.AuthorityInfoAccessExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.AuthorityKeyIdentifierExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.BasicConstraintsExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.CRLDistributionPointsExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.CertificatePoliciesExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.ExtendedKeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.IssuerAlternativeNameExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.KeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.NetscapeCertTypeExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.PrivateKeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.SubjectAlternativeNameExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.SubjectKeyIdentifierExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+}
+]

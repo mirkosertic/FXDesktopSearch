@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.methvin.watcher.DirectoryChangeEvent;
 import io.methvin.watcher.DirectoryWatcher;
+import io.methvin.watcher.hashing.FileHasher;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -74,6 +75,7 @@ public class LocalDirectoryWatcher {
                 .builder()
                 .path(filesystemLocation.getDirectory().toPath())
                 .logger(log)
+                .fileHasher(FileHasher.LAST_MODIFIED_TIME)
                 .listener(event -> publishActionFor(event.path(), event.eventType()))
                 .build();
 
