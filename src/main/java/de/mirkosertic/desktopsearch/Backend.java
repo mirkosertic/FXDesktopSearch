@@ -15,7 +15,6 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscription;
 import reactor.core.Exceptions;
 import reactor.core.publisher.BaseSubscriber;
@@ -35,6 +34,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class Backend implements ConfigurationChangeListener {

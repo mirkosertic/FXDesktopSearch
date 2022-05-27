@@ -81,7 +81,10 @@ class ContentExtractor {
             // Files under 10 Meg are read into memory as a whole
             if (aBasicFileAttributes.size() < 1024 * 1024 * 4) {
                 final var theData = Files.readAllBytes(aFile);
-                theStringData = tika.parseToString(new ByteArrayInputStream(theData), theMetaData);
+                theStringData = tika.parseToString(new ByteArrayInputStream(theData), theMetaData)
+                        .replace('\n', ' ')
+                        .replace('\r', ' ')
+                        .replace('\t',' ');
             } else {
                 try (final var theStream = Files.newInputStream(aFile, StandardOpenOption.READ)) {
                     theStringData = tika.parseToString(new BufferedInputStream(theStream), theMetaData)
