@@ -89,129 +89,6 @@
       "pattern":"\\QStanfordCoreNLP-german.properties\\E"
     }, 
     {
-      "pattern":"\\Qapi-ms-win-core-console-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-console-l1-2-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-datetime-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-debug-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-errorhandling-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-file-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-file-l1-2-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-file-l2-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-handle-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-heap-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-interlocked-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-libraryloader-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-localization-l1-2-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-memory-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-namedpipe-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-processenvironment-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-processthreads-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-processthreads-l1-1-1.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-profile-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-rtlsupport-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-string-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-synch-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-synch-l1-2-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-sysinfo-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-timezone-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-core-util-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-conio-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-convert-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-environment-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-filesystem-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-heap-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-locale-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-math-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-multibyte-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-private-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-process-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-runtime-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-stdio-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-string-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-time-l1-1-0.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qapi-ms-win-crt-utility-l1-1-0.dll\\E"
-    }, 
-    {
       "pattern":"\\Qapispec/autoscaling.history.json\\E"
     }, 
     {
@@ -353,43 +230,40 @@
       "pattern":"\\Qcom/sun/javafx/scene/control/skin/modena/modena.bss\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/DrawPgram_Color.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/DrawPgram_Color.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/FillPgram_Color.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/FillPgram_Color.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/FillPgram_LinearGradient_PAD.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/FillPgram_LinearGradient_PAD.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/Mask_TextureRGB.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/Mask_TextureRGB.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/Solid_Color.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/Solid_Color.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/Solid_TextureFirstPassLCD.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/Solid_TextureFirstPassLCD.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/Solid_TextureRGB.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/Solid_TextureRGB.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/Solid_TextureSecondPassLCD.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/Solid_TextureSecondPassLCD.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/Texture_Color.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/Texture_Color.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/prism/d3d/hlsl/Texture_LinearGradient_PAD.obj\\E"
+      "pattern":"\\Qcom/sun/prism/es2/glsl/Texture_LinearGradient_PAD.frag\\E"
     }, 
     {
-      "pattern":"\\Qcom/sun/scenario/effect/impl/hw/d3d/hlsl/LinearConvolveShadow_4.obj\\E"
+      "pattern":"\\Qcom/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_4.frag\\E"
     }, 
     {
       "pattern":"\\Qedu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz\\E"
-    }, 
-    {
-      "pattern":"\\Qedu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz\\E"
     }, 
     {
       "pattern":"\\Qedu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz\\E"
@@ -407,9 +281,6 @@
       "pattern":"\\Qentity-blacklist-de.txt\\E"
     }, 
     {
-      "pattern":"\\Qentity-blacklist-en.txt\\E"
-    }, 
-    {
       "pattern":"\\Qfds.png\\E"
     }, 
     {
@@ -422,16 +293,28 @@
       "pattern":"\\Qfreemarker/version.properties\\E"
     }, 
     {
-      "pattern":"\\Qglass.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qjavafx_font.dll\\E"
-    }, 
-    {
       "pattern":"\\Qjetty-dir.css\\E"
     }, 
     {
-      "pattern":"\\Qjfxwebkit.dll\\E"
+      "pattern":"\\Qlibglass.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibglassgtk3.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibjavafx_font.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibjavafx_font_freetype.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibjavafx_font_pango.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibjfxwebkit.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibprism_es2.so\\E"
     }, 
     {
       "pattern":"\\Qlog4j2.xml\\E"
@@ -440,61 +323,10 @@
       "pattern":"\\Qmozilla/public-suffix-list.txt\\E"
     }, 
     {
-      "pattern":"\\Qmsvcp140.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/fontbox/cmap/Adobe-Korea1-0\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/fontbox/cmap/Adobe-Korea1-UCS2\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/fontbox/cmap/Identity-H\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/http/client/version.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Courier-Bold.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Courier-BoldOblique.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Courier-Oblique.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Courier.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Helvetica-Bold.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Helvetica-BoldOblique.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Helvetica-Oblique.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Helvetica.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Symbol.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Times-Bold.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Times-BoldItalic.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Times-Italic.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/Times-Roman.afm\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/pdfbox/resources/afm/ZapfDingbats.afm\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/pdfbox/resources/glyphlist/additional.txt\\E"
@@ -509,22 +341,7 @@
       "pattern":"\\Qorg/apache/pdfbox/resources/text/BidiMirroring.txt\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/pdfbox/resources/ttf/LiberationSans-Regular.ttf\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/hdgf/chunks_parse_cmds.tbl\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/comments3da0doctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctabstractnum588etype.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctanchorff8atype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctapplicationnonvisualdrawingprops2fb6type.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctblip034ctype.xsb\\E"
@@ -542,18 +359,6 @@
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctbr7dd8type.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctcomment6a93type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctcomments7674type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctcommonslidedata8c7ftype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctdecimalnumbera518type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctdocdefaults2ea8type.xsb\\E"
     }, 
     {
@@ -569,9 +374,6 @@
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctendnotescee2type.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctfldchare83etype.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctfootnotes691ftype.xsb\\E"
     }, 
     {
@@ -584,37 +386,7 @@
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctgraphicalobjectdata66adtype.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctgroupshape5b43type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctgroupshapenonvisual3e44type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctgroupshapeproperties8690type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cthdrftr26datype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cthdrftrref224dtype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cthyperlink38actype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctinline5726type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctlatentstyles2e3atype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctleveltext0621type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctlvlf630type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctmarkup2d80type.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctmarkuprangeba3dtype.xsb\\E"
@@ -623,64 +395,19 @@
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctnonvisualdrawingprops8fb0type.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctnonvisualdrawingshapepropsf17btype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctnotesmaster69ectype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctnotesslideab75type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctnumberingfdf9type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctnume94ctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctnumfmt00e1type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctnumlvl416ctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctnumpr16aatype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctobject47c9type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctofficestylesheetce25type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctoleobjecte5c0type.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctonoff04c2type.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctoutershadoweffect7b5dtype.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctpa1e2type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctpicture1054type.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctpicture1d48type.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctpicture4f11type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctpicturenonvisual05adtype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctpicturenonvisualb236type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctplaceholder9efctype.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctppr01c0type.xsb\\E"
@@ -690,9 +417,6 @@
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctpprgenerald6f2type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctpresentation56cbtype.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctprooferr1e07type.xsb\\E"
@@ -710,61 +434,16 @@
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctr8120type.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctregulartextrun7e3dtype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctrow3b78type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctrpr097etype.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctrprdefault5ebbtype.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctruntrackchangea458type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctsectpr1123type.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctsettingsd6a5type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctshape5cb5type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctshapecfcetype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctshapenonvisualb619type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctshapeproperties30e5type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctshapetype5c6ftype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctslided7betype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctslideidlist70a5type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctslideidlistentry427dtype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctslidelayouteb34type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctslidemasterd8fctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctslidemasteridlist0b63type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctslidemasteridlistentryae7ftype.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctstring9c37type.xsb\\E"
@@ -776,46 +455,7 @@
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctstyles8506type.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttablestylelist4bdctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttblc014type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttc4019type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttcpree37type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttext7f5btype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttextbodya3catype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttextboxf712type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttextcharacterproperties76c0type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttextfield187etype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttextparagraphcaf2type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttextparagraphpropertiesdd05type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttrpr2848type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/cttxbxcontent1133type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ctunderline8406type.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/document2bd9doctype.xsb\\E"
@@ -827,37 +467,13 @@
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/footnotes8773doctype.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ftre182doctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/hdra530doctype.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/index.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/notes4a02doctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/notesmaster8840doctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/numbering1c4ddoctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/oleobjectbaccdoctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/oleobjectelement.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/pic8010doctype.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/picelement.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/presentation02f7doctype.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/properties288cdoctype.xsb\\E"
@@ -869,52 +485,10 @@
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/settings9dd1doctype.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/shapeaee1doctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/shapeelement.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/shapetypeb89bdoctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/shapetypeelement.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/sld1b98doctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/sldlayout638edoctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/sldmaster5156doctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/stdecimalnumber8d28type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/stdrawingelementid75a4type.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/stfldchartype1eb4type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/sthdrftr30catype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/stnumberformat0fb8type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/stoletype716btype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/stonoff18ddbtype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/stonoff9300type.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/stplaceholdertypeca72type.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/strelationshipid1e94type.xsb\\E"
@@ -923,16 +497,7 @@
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/ststring76cbtype.xsb\\E"
     }, 
     {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/stunderlinef416type.xsb\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/styles2732doctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/tblstylelst4997doctype.xsb\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/poi/schemas/ooxml/system/ooxml/themefd26doctype.xsb\\E"
     }, 
     {
       "pattern":"\\Qorg/apache/tika/mime/custom-mimetypes.xml\\E"
@@ -1016,9 +581,6 @@
       "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
     }, 
     {
-      "pattern":"\\Qprism_d3d.dll\\E"
-    }, 
-    {
       "pattern":"\\Qscenes/configuration.fxml\\E"
     }, 
     {
@@ -1055,15 +617,6 @@
       "pattern":"\\Qsolrhome/solr.xml\\E"
     }, 
     {
-      "pattern":"\\Qucrtbase.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qvcruntime140.dll\\E"
-    }, 
-    {
-      "pattern":"\\Qvcruntime140_1.dll\\E"
-    }, 
-    {
       "pattern":"\\Qwebapp/logo.png\\E"
     }, 
     {
@@ -1090,13 +643,6 @@
       "classNames":[
         "com.sun.swing.internal.plaf.metal.resources.metal", 
         "com.sun.swing.internal.plaf.metal.resources.metal_de"
-      ]
-    }, 
-    {
-      "name":"com/sun/glass/ui/win/themes",
-      "locales":[
-        "", 
-        "de"
       ]
     }, 
     {

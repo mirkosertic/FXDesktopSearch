@@ -324,11 +324,6 @@
     <profiles>
         <profile>
             <id>fxrelease-linux</id>
-            <activation>
-                <os>
-                    <family>linux</family>
-                </os>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -567,16 +562,9 @@
                                 </goals>
                                 <phase>package</phase>
                             </execution>
-                            <execution>
-                                <id>test-native</id>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                                <phase>test</phase>
-                            </execution>
                         </executions>
                         <configuration>
-                            <!-- ... -->
+                            <mainClass>de.mirkosertic.desktopsearch.DesktopSearch</mainClass>
                         </configuration>
                     </plugin>
                 </plugins>
