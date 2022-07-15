@@ -334,7 +334,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.0.0</version>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -402,7 +402,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.0.0</version>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -469,7 +469,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.0.0</version>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -535,7 +535,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.0.0</version>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
                                 <id>java-agent</id>
