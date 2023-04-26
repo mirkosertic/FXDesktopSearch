@@ -134,7 +134,7 @@ class Backend implements ConfigurationChangeListener {
                 final var theUpdateCheckResult = luceneIndexHandler
                         .checkIfModified(theFileName, fileEvent.attributes.lastModifiedTime().toMillis());
 
-                final boolean result = theUpdateCheckResult == UpdateCheckResult.UPDATED;
+                final var result = theUpdateCheckResult == UpdateCheckResult.UPDATED;
                 if (!result) {
                     statistics.jobSkipped();
                 }
@@ -258,10 +258,10 @@ class Backend implements ConfigurationChangeListener {
 
                 while (!isInterrupted()) {
 
-                    final long totalJobs = statistics.totalJobs();
-                    final long completedJobs = statistics.completedJobs();
+                    final var totalJobs = statistics.totalJobs();
+                    final var completedJobs = statistics.completedJobs();
 
-                    final long remaining = Math.max(totalJobs - completedJobs, 0);
+                    final var remaining = Math.max(totalJobs - completedJobs, 0);
 
                     if (remaining > 0) {
                         if (lastRemaining == -1) {
@@ -270,7 +270,7 @@ class Backend implements ConfigurationChangeListener {
                         } else {
                             final var thruput = lastRemaining - remaining;
                             if (thruput > 0) {
-                                final double eta = ((double) remaining) / thruput;
+                                final var eta = ((double) remaining) / thruput;
                                 lastMessage = remaining + " Files are still in the indexing queue, " + format.format(eta) + " seconds remaining (ETA).";
                                 progressListener.infotext(lastMessage);
                             } else {

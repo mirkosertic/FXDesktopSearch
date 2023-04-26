@@ -63,7 +63,7 @@
                 <#list queryResult.documents as document>
                     <div class="resultentry">
                         <div class="image">
-                            <img class="lazy" src="loading.gif" data-src="/thumbnail/preview/${document.uniqueID}.png"/>
+                            <img class="lazy" src="loading.gif" data-src="/thumbnail/preview${document.uniqueID}.png"/>
                         </div>
                         <div class="text">
                             <a class="entrytitle" onclick="desktopsearch.openFile('${queryResult.getEscapedFileName(document.fileName)}')">${document.title}</a>

@@ -16,10 +16,8 @@
 package de.mirkosertic.desktopsearch;
 
 import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.janino.util.Producer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Slf4j
 public abstract class NLP {
@@ -50,20 +49,20 @@ public abstract class NLP {
         @Override
         public void addMetaDataTo(final String aStringData, final Content aContent) {
             log.info("Annotating document");
-            final CoreDocument doc = new CoreDocument(aStringData);
+            final var doc = new CoreDocument(aStringData);
             nlp.annotate(doc);
             log.info("Done with annotating, timing = {}", nlp.timingInformation());
 
             if (doc.entityMentions() != null) {
                 final Map<String, Set<String>> entityMentions = new HashMap<>();
-                for (final CoreEntityMention em : doc.entityMentions()) {
+                for (final var em : doc.entityMentions()) {
                     if (!blacklist.isBlacklisted(em.text())) {
-                        final Set<String> mentions = entityMentions.computeIfAbsent(em.entityType(), k -> new HashSet<>());
+                        final var mentions = entityMentions.computeIfAbsent(em.entityType(), k -> new HashSet<>());
                         mentions.add(em.text());
                     }
                 }
 
-                for (final Map.Entry<String, Set<String>> entry : entityMentions.entrySet()) {
+                for (final var entry : entityMentions.entrySet()) {
                     aContent.addMetaData("entity_" + entry.getKey(), new ArrayList<>(entry.getValue()));
                 }
             }
@@ -72,11 +71,11 @@ public abstract class NLP {
 
     private static final Map<SupportedLanguage, StanfordCoreNLP> PIPELINES = new HashMap<>();
 
-    private synchronized static StanfordCoreNLP cachedPipeLine(final SupportedLanguage aLanguage, final Producer<StanfordCoreNLP> aCreator) {
-        StanfordCoreNLP nlp = PIPELINES.get(aLanguage);
+    private synchronized static StanfordCoreNLP cachedPipeLine(final SupportedLanguage aLanguage, final Supplier<StanfordCoreNLP> aCreator) {
+        var nlp = PIPELINES.get(aLanguage);
         if (nlp == null) {
             log.info("No cached pipeline for {}", aLanguage);
-            nlp = aCreator.produce();
+            nlp = aCreator.get();
             PIPELINES.put(aLanguage, nlp);
             log.info("Pipeline created!");
         }
@@ -86,7 +85,7 @@ public abstract class NLP {
     private static final Map<SupportedLanguage, EntityBlacklist> BLACKLISTS = new HashMap<>();
 
     private static synchronized EntityBlacklist cachedBlacklist(final SupportedLanguage aLanguage) {
-        EntityBlacklist list = BLACKLISTS.get(aLanguage);
+        var list = BLACKLISTS.get(aLanguage);
         if (list == null) {
             switch (aLanguage) {
                 case de:
@@ -108,7 +107,7 @@ public abstract class NLP {
             case en:
                 return new StanfordNLP(cachedPipeLine(aLanguage, () -> {
                     log.info("Ceating new English NLP Pipeline");
-                    final Properties props = new Properties();
+                    final var props = new Properties();
                     props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
                     props.setProperty("ner.useSUTime", "false");
                     props.setProperty("ner.applyFineGrained", "false");
@@ -119,7 +118,7 @@ public abstract class NLP {
                 return new StanfordNLP(cachedPipeLine(aLanguage, () -> {
                     try {
                         log.info("Ceating new German NLP Pipeline");
-                        final Properties props = new Properties();
+                        final var props = new Properties();
                         props.load(NLP.class.getResourceAsStream("/StanfordCoreNLP-german.properties"));
                         props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
                         props.setProperty("ner.useSUTime", "false");

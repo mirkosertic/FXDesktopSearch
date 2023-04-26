@@ -20,12 +20,13 @@
     </scm>
 
     <properties>
-        <solr.version>8.11.1</solr.version>
+        <solr.version>9.2.0</solr.version>
         <tika.version>1.28.5</tika.version>
         <projectrelease.version>3.4.0</projectrelease.version>
         <javafx.version>19.0.2.1</javafx.version>
         <corenlp.version>4.5.1</corenlp.version>
         <restlet.version>2.4.3</restlet.version>
+        <jetty.version>10.0.13</jetty.version>
     </properties>
 
     <repositories>
@@ -48,8 +49,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>12</source>
-                    <target>12</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -318,6 +319,48 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>[24.1.1,)</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.10.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-highlighter</artifactId>
+            <version>9.4.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.20.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.20.0</version>
         </dependency>
     </dependencies>
 

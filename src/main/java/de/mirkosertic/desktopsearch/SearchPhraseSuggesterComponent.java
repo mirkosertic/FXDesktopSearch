@@ -44,9 +44,9 @@ public class SearchPhraseSuggesterComponent extends SearchComponent {
             return;
         }
 
-        final int theSlop = Integer.parseInt(theRequestParams.get(SLOP_PARAM));
-        final boolean theInOrder = Boolean.parseBoolean(theRequestParams.get(INORDER_PARAM));
-        final int theNumberSuggest = Integer.parseInt(theRequestParams.get(NUMBERSUGGEST_PARAM));
+        final var theSlop = Integer.parseInt(theRequestParams.get(SLOP_PARAM));
+        final var theInOrder = Boolean.parseBoolean(theRequestParams.get(INORDER_PARAM));
+        final var theNumberSuggest = Integer.parseInt(theRequestParams.get(NUMBERSUGGEST_PARAM));
 
         final IndexSearcher theSearcher = aResponseBuilder.req.getSearcher();
         final var theAnalyzer = aResponseBuilder.req.getSchema().getQueryAnalyzer();
