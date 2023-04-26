@@ -196,7 +196,7 @@ class LuceneIndexHandler {
             }
             final var theDocument = theQueryResponse.getResults().get(0);
 
-            final long theStoredLastModified = Long.parseLong((String) theDocument.getFieldValue(IndexFields.LASTMODIFIED));
+            final var theStoredLastModified = Long.parseLong((String) theDocument.getFieldValue(IndexFields.LASTMODIFIED));
             if (theStoredLastModified != aLastModified) {
                 return UpdateCheckResult.UPDATED;
             }
@@ -226,7 +226,7 @@ class LuceneIndexHandler {
     }
 
     private String getOrDefault(final SolrDocument document, final String aFieldname, final String aDefault) {
-        final Object theValue = document.get(aFieldname);
+        final var theValue = document.get(aFieldname);
         if (theValue == null) {
             return aDefault;
         }
@@ -234,11 +234,11 @@ class LuceneIndexHandler {
             return (String) theValue;
         }
         if (theValue instanceof List) {
-            final List theList = (List) theValue;
+            final var theList = (List) theValue;
             if (theList.isEmpty()) {
                 return aDefault;
             }
-            final Object theFirst = theList.get(0);
+            final var theFirst = theList.get(0);
             if (theFirst instanceof String) {
                 return (String) theFirst;
             }
@@ -275,7 +275,7 @@ class LuceneIndexHandler {
                 }
             }
             if (!theFilters.isEmpty()) {
-                theParams.put("fq", theFilters.toArray(new String[theFilters.size()]));
+                theParams.put("fq", theFilters.toArray(new String[0]));
             }
         }
 
@@ -295,7 +295,7 @@ class LuceneIndexHandler {
                     final var theSolrDocument = theQueryResponse.getResults().get(i);
 
                     final var theFileName = (String) theSolrDocument.getFieldValue(IndexFields.UNIQUEID);
-                    final long theStoredLastModified = Long.parseLong((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
+                    final var theStoredLastModified = Long.parseLong((String) theSolrDocument.getFieldValue(IndexFields.LASTMODIFIED));
 
                     final var theNormalizedScore = (int) (
                             ((float) theSolrDocument.getFieldValue("score")) / theQueryResponse.getResults().getMaxScore() * 5);
@@ -446,14 +446,16 @@ class LuceneIndexHandler {
 
             final var theSuggestions = (NamedList) theQueryResponse.getResponse().get("fxsuggest");
             final List<Suggestion> theResult = new ArrayList<>();
-            for (var i = 0; i<theSuggestions.size(); i++) {
-                final var theEntry = (Map) theSuggestions.get(Integer.toString(i));
-                final var theLabel = (String) theEntry.get("label");
-                final var theValue = (String) theEntry.get("value");
-                theResult.add(new Suggestion(theLabel, theValue));
+            if (theSuggestions != null) {
+                for (var i = 0; i < theSuggestions.size(); i++) {
+                    final var theEntry = (Map) theSuggestions.get(Integer.toString(i));
+                    final var theLabel = (String) theEntry.get("label");
+                    final var theValue = (String) theEntry.get("value");
+                    theResult.add(new Suggestion(theLabel, theValue));
+                }
             }
 
-            return theResult.toArray(new Suggestion[theResult.size()]);
+            return theResult.toArray(new Suggestion[0]);
 
         } catch (final Exception e) {
             throw new RuntimeException(e);

@@ -53,13 +53,14 @@ public class ThumbnailServlet extends HttpServlet {
 
         log.info("Was requested for thumbnail of {}", theFilename);
 
-        // Strip the first path
-        theFilename = theFilename.substring(1);
-
-        final var theSlash = theFilename.indexOf("/");
-        final var theType = theFilename.substring(0, theSlash);
-
-        theFilename = theFilename.substring(theSlash + 1);
+        var theType = "";
+        if (theFilename.startsWith("/preview")) {
+            theType = "preview";
+            theFilename = theFilename.substring("/preview".length());
+        } else if (theFilename.startsWith("/icon")) {
+            theType = "icon";
+            theFilename = theFilename.substring("/icon".length());
+        }
 
         final var theDot = theFilename.lastIndexOf('.');
         final var theDocumentID = theFilename.substring(0, theDot);

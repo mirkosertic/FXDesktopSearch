@@ -34,10 +34,10 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
-import org.apache.lucene.search.spans.SpanNearQuery;
-import org.apache.lucene.search.spans.SpanQuery;
-import org.apache.lucene.search.spans.SpanTermQuery;
+import org.apache.lucene.queries.spans.SpanMultiTermQueryWrapper;
+import org.apache.lucene.queries.spans.SpanNearQuery;
+import org.apache.lucene.queries.spans.SpanQuery;
+import org.apache.lucene.queries.spans.SpanTermQuery;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,7 +85,7 @@ class SearchPhraseSuggester {
 
         final Query theQuery;
         if (theSpanQueries.size() > 1) {
-            theQuery = new SpanNearQuery(theSpanQueries.toArray(new SpanQuery[theSpanQueries.size()]), configuration.getSuggestionSlop(), configuration.isSuggestionInOrder());
+            theQuery = new SpanNearQuery(theSpanQueries.toArray(new SpanQuery[0]), configuration.getSuggestionSlop(), configuration.isSuggestionInOrder());
         } else {
             theQuery = theSpanQueries.get(0);
         }

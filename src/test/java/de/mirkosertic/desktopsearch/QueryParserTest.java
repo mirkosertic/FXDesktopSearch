@@ -27,7 +27,6 @@ public class QueryParserTest {
     @Test
     public void testParse() throws IOException {
         final var theAnalyzer = new GermanAnalyzer();
-        theAnalyzer.setVersion(IndexFields.LUCENE_VERSION);
 
         final var theParser = new QueryParser(theAnalyzer);
         final var theQuery = theParser.parse("der a +b -c dudel* ~nudel -~yahoo -*wildcard hello","field");

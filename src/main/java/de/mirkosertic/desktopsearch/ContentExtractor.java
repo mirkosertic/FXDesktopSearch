@@ -146,7 +146,7 @@ class ContentExtractor {
             if (configuration.isNaturalLanguageProcessing()) {
                 // Run natural language processing
                 try {
-                    final NLP nlp = NLP.forLanguage(theLanguage);
+                    final var nlp = NLP.forLanguage(theLanguage);
                     nlp.addMetaDataTo(theStringData, theContent);
                 } catch (final Exception e) {
                     log.warn("Error on NLP, document will still be indexed", e);

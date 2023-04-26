@@ -30,9 +30,9 @@ public class EntityBlacklist {
 
     public EntityBlacklist(final InputStream blacklistData) {
         entries = new HashSet<>();
-        try (final BufferedReader br = new BufferedReader(new InputStreamReader(blacklistData))) {
+        try (final var br = new BufferedReader(new InputStreamReader(blacklistData))) {
             while(br.ready()) {
-                final String line = br.readLine();
+                final var line = br.readLine();
                 if (line != null && line.length() > 0) {
                     entries.add(line);
                 }
