@@ -19,7 +19,7 @@ jobs:
      - uses: actions/checkout@v1
      - uses: actions/setup-java@v2
        with:
-         java-version: 17
+         java-version: 20
          distribution: "temurin"
      - run: mvn verify
      - uses: actions/upload-artifact@v1
