@@ -4,7 +4,7 @@
 
     <groupId>de.mirkosertic.desktopsearch</groupId>
     <artifactId>FXDesktopSearch</artifactId>
-    <version>3.4.0</version>
+    <version>3.5.0</version>
 
     <name>FXDesktopSearch</name>
     <organization>
@@ -20,13 +20,16 @@
     </scm>
 
     <properties>
+        <lucene.version>9.4.2</lucene.version>
         <solr.version>9.2.0</solr.version>
         <tika.version>1.28.5</tika.version>
-        <projectrelease.version>3.4.0</projectrelease.version>
+        <projectrelease.version>3.5.0</projectrelease.version>
         <javafx.version>20.0.1</javafx.version>
         <corenlp.version>4.5.4</corenlp.version>
         <restlet.version>2.4.3</restlet.version>
         <jetty.version>10.0.13</jetty.version>
+        <jackson.version>2.14.2</jackson.version>
+        <log4j.version>2.20.0</log4j.version>
     </properties>
 
     <repositories>
@@ -258,13 +261,13 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.14.2</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.14.2</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
@@ -349,19 +352,19 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-highlighter</artifactId>
-            <version>9.4.2</version>
+            <version>${lucene.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.20.0</version>
+            <version>${log4j.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.20.0</version>
+            <version>${log4j.version}</version>
         </dependency>
     </dependencies>
 
