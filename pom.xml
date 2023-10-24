@@ -25,7 +25,7 @@
         <tika.version>1.28.5</tika.version>
         <projectrelease.version>3.5.0</projectrelease.version>
         <javafx.version>21</javafx.version>
-        <corenlp.version>4.5.4</corenlp.version>
+        <corenlp.version>4.5.5</corenlp.version>
         <restlet.version>2.4.3</restlet.version>
         <jetty.version>10.0.13</jetty.version>
         <jackson.version>2.15.3</jackson.version>
