@@ -27,7 +27,7 @@
         <javafx.version>21.0.2</javafx.version>
         <corenlp.version>4.5.5</corenlp.version>
         <restlet.version>2.4.3</restlet.version>
-        <jetty.version>10.0.13</jetty.version>
+        <jetty.version>11.0.20</jetty.version>
         <jackson.version>2.16.1</jackson.version>
         <log4j.version>2.22.1</log4j.version>
     </properties>
