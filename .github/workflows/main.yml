@@ -24,7 +24,7 @@ jobs:
          java-version: 20
          distribution: "temurin"
      - run: mvn verify
-     - uses: actions/upload-artifact@v1
+     - uses: actions/upload-artifact@v4
        with:
            name: ${{ matrix.releasename }}
            path: 'target/release'
