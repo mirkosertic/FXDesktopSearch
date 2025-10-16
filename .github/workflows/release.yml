@@ -16,11 +16,12 @@ jobs:
             - os: macOS-latest
               releasename: 'Mac'
     steps:
-     - uses: actions/checkout@v1
-     - uses: actions/setup-java@v2
+     - uses: actions/checkout@v4
+     - uses: actions/setup-java@v4
        with:
-         java-version: 20
+         java-version: 25
          distribution: "temurin"
+         cache: maven
      - run: mvn verify
      - uses: actions/upload-artifact@v1
        with:

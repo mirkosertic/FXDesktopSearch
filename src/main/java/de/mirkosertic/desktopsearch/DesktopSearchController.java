@@ -188,6 +188,7 @@ public class DesktopSearchController implements Initializable {
             stage.initStyle(StageStyle.UTILITY);
 
             final var theLoader = new FXMLLoader(getClass().getResource("/scenes/configuration.fxml"));
+            theLoader.setClassLoader(DesktopSearchController.class.getClassLoader());
             final Parent theConfigurationRoot = theLoader.load();
             stage.setScene(new Scene(theConfigurationRoot));
             stage.setTitle("Configuration");

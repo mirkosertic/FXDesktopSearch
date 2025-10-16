@@ -15,9 +15,34 @@
  */
 package de.mirkosertic.desktopsearch;
 
-public final class DesktopSearch {
+import javafx.application.Application;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.net.URL;
+
+@SpringBootApplication
+@EnableScheduling
+@Slf4j
+public class DesktopSearch {
 
     public static void main(final String[] args) {
-        DesktopSearchMain.main(args);
+
+        // Try to show an already running instance
+        try {
+            // Inform the instance to bring it to front end terminate the current process.
+            final var theURL = new URL("http://localhost:8080/bringToFront");
+            // Retrieve the content, but it can be safely ignored
+            // There must only be the get request
+            theURL.getContent();
+
+            // Terminate the JVM. The window of the running instance is visible now.
+            System.exit(0);
+        } catch (final Exception e)  {
+            log.info("Failed to bring to front the existing instance. We assume we need to create a new one.");
+        }
+
+        Application.launch(DesktopSearchMain.class, args);
     }
 }

@@ -15,12 +15,15 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-class PreviewProcessor {
+@Component
+public class PreviewProcessor {
 
     private final Set<PreviewGenerator> generators;
 

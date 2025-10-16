@@ -15,62 +15,56 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 @Slf4j
-public class SearchServlet extends HttpServlet {
+@Controller
+public class SearchServlet {
 
-    public static final String URL = "/search";
+    private final DesktopSearchMain desktopSearchMain;
 
-    private final Backend backend;
-    private final String basePath;
-    private final String serverBase;
-
-    public SearchServlet(final Backend aBackend, final String aServerBase) {
-        serverBase = aServerBase;
-        backend = aBackend;
-        basePath = serverBase + URL;
+    public SearchServlet(final DesktopSearchMain main) {
+        desktopSearchMain = main;
     }
 
-    @Override
-    protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
-        fillinSearchResult(aRequest, aResponse);
+    @GetMapping("/search/**")
+    protected ModelAndView doGet(final HttpServletRequest request) {
+        return fillinSearchResult(request);
     }
 
-    @Override
-    protected void doPost(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws ServletException, IOException {
-        fillinSearchResult(aRequest, aResponse);
+    @PostMapping("/search/**")
+    protected ModelAndView doPost(final HttpServletRequest request) {
+        return fillinSearchResult(request);
     }
 
-    private void fillinSearchResult(final HttpServletRequest aRequest, final HttpServletResponse aResponse)
-            throws ServletException, IOException {
+    private ModelAndView fillinSearchResult(final HttpServletRequest request) {
 
         final var theURLCodec = new URLCodec();
 
-        var theQueryString = aRequest.getParameter("querystring");
-        var theBasePath = basePath;
+        var theQueryString = request.getParameter("querystring");
+        final StringBuilder theBasePath = new StringBuilder("/");
         if (!StringUtils.isEmpty(theQueryString)) {
             try {
-                theBasePath = theBasePath + "/" + theURLCodec.encode(theQueryString);
+                theBasePath.append("/").append(theURLCodec.encode(theQueryString));
             } catch (final EncoderException e) {
                 log.error("Error encoding query string {}", theQueryString, e);
             }
         }
         final Map<String, Set<String>> theDrilldownDimensions = new HashMap<>();
 
-        final var thePathInfo = aRequest.getPathInfo();
+        final var thePathInfo = request.getPathInfo();
         if (!StringUtils.isEmpty(thePathInfo)) {
             var theWorkingPathInfo = thePathInfo;
 
@@ -83,31 +77,33 @@ public class SearchServlet extends HttpServlet {
                 try {
                     final var theDecodedValue = thePaths[i].replace('+',' ');
                     final var theEncodedValue = theURLCodec.encode(theDecodedValue);
-                    theBasePath = theBasePath + "/" + theEncodedValue;
+                    theBasePath.append("/").append(theEncodedValue);
                     if (i == 0) {
                         theQueryString = theDecodedValue;
                     } else {
                         FacetSearchUtils.addToMap(theDecodedValue, theDrilldownDimensions);
                     }
                 } catch (final EncoderException e) {
-                    log.error("Error while decoding drilldown params for {}", aRequest.getPathInfo(), e);
+                    log.error("Error while decoding drilldown params for {}", request.getPathInfo(), e);
                 }
             }
         }
 
+        final ModelAndView modelAndView = new ModelAndView("index.html");
+
         if (!StringUtils.isEmpty(theQueryString)) {
-            aRequest.setAttribute("querystring", theQueryString);
+            modelAndView.addObject("querystring", theQueryString);
             try {
-                aRequest.setAttribute("queryResult", backend.performQuery(theQueryString, theBasePath, theDrilldownDimensions));
+                modelAndView.addObject("queryResult", desktopSearchMain.performQuery(theQueryString, theBasePath.toString(), theDrilldownDimensions));
             } catch (final Exception e) {
                 log.error("Error running query {}", theQueryString, e);
             }
         } else {
-            aRequest.setAttribute("querystring", "");
+            modelAndView.addObject("querystring", "");
         }
 
-        aRequest.setAttribute("serverBase", serverBase);
+        modelAndView.addObject("serverBase", "/");
 
-        aRequest.getRequestDispatcher("/index.ftl").forward(aRequest, aResponse);
+        return modelAndView;
     }
 }

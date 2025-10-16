@@ -15,35 +15,32 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+@Controller
+public class SuggestionServlet  {
 
-class SuggestionServlet extends HttpServlet {
+    private final DesktopSearchMain desktopSearchMain;
 
-    public static final String URL = "/suggestion";
-
-    private final Backend backend;
-
-    public SuggestionServlet(final Backend aBackend) {
-        backend = aBackend;
+    public SuggestionServlet(final DesktopSearchMain main) {
+        desktopSearchMain = main;
     }
 
-    @Override
-    protected void service(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws IOException {
-        final var theTerm = aRequest.getParameter("term");
-        final var theTerms = backend.findSuggestionTermsFor(theTerm);
+    @GetMapping("/suggestion")
+    public ResponseEntity<Suggestion[]> suggest(@RequestParam("term") final String term) {
+        final var theTerms = desktopSearchMain.findSuggestionTermsFor(term);
 
-        aResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-        aResponse.setHeader("Pragma", "no-cache");
-        aResponse.setDateHeader("Expires", 0);
-        aResponse.setContentType("application/json; charset=UTF-8");
-        aResponse.setCharacterEncoding("UTF-8");
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json; charset=UTF-8");
+        headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.set("Pragma", "no-cache");
+        headers.setDate("Expires", 0);
 
-        final var theMapper = new ObjectMapper();
-        theMapper.writeValue(aResponse.getWriter(), theTerms);
+        return new ResponseEntity<>(theTerms, headers, HttpStatus.OK);
     }
 }

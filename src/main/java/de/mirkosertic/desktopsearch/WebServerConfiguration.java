@@ -15,24 +15,20 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import javafx.stage.Screen;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.CacheControl;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Slf4j
+import java.time.Duration;
+
 @Component
-public class Notifier {
+public class WebServerConfiguration implements WebMvcConfigurer {
 
-    public Notifier() {
-    }
-
-    public void showInformation(final String aMessage) {
-        final var theScreenBounds = Screen.getPrimary().getVisualBounds();
-        log.info(aMessage);
-    }
-
-    public void showError(final String aMessage, final Exception aException) {
-        final var theScreenBounds = Screen.getPrimary().getVisualBounds();
-        log.error(aMessage, aException);
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+                .addResourceLocations("/", "classpath:/webapp/")
+                .setCacheControl(CacheControl.noCache().mustRevalidate().sMaxAge(Duration.ZERO));
     }
 }

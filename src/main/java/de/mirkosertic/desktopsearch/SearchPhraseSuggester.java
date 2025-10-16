@@ -42,7 +42,7 @@ import org.apache.lucene.queries.spans.SpanTermQuery;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-class SearchPhraseSuggester {
+public class SearchPhraseSuggester {
 
     public interface SearchPhraseSuggesterConfiguration {
 
@@ -75,7 +75,7 @@ class SearchPhraseSuggester {
                 final var theWildcardQuery = new WildcardQuery(new Term(aFieldName, s));
                 final var theWrapper = new SpanMultiTermQueryWrapper(theWildcardQuery);
                 try {
-                    return theWrapper.getRewriteMethod().rewrite(indexSearcher.getIndexReader(), theWildcardQuery);
+                    return theWrapper.getRewriteMethod().rewrite(indexSearcher, theWildcardQuery);
                 } catch (final IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -99,7 +99,7 @@ class SearchPhraseSuggester {
 
         final TopDocs theDocs = indexSearcher.search(theQuery, configuration.getNumberOfSuggestions(), Sort.RELEVANCE);
         for (var i = 0; i<theDocs.scoreDocs.length; i++) {
-            final var theDocument = indexSearcher.getIndexReader().document(theDocs.scoreDocs[i].doc);
+            final var theDocument = indexSearcher.storedFields().document(theDocs.scoreDocs[i].doc);
             final var theOriginalContent = theDocument.getField(aFieldName).stringValue();
 
             try {

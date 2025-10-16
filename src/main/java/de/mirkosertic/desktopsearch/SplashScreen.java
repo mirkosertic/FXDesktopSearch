@@ -19,7 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
-class SplashScreen extends JWindow {
+public class SplashScreen extends JWindow {
 
     public SplashScreen(final URL iconUrl) {
         final var icon = new ImageIcon(iconUrl);
@@ -27,6 +27,21 @@ class SplashScreen extends JWindow {
         toFront();
         getContentPane().add(imageLabel, BorderLayout.CENTER);
 
+    }
+
+    private static SplashScreen instance;
+
+    public static void showMe() {
+        if (instance == null) {
+            instance = new SplashScreen(SplashScreen.class.getResource("/logo.png"));
+        }
+        instance.setVisible(true);
+    }
+
+    public static void hideMe() {
+        if (instance != null) {
+            instance.setVisible(false);
+        }
     }
 
     @Override

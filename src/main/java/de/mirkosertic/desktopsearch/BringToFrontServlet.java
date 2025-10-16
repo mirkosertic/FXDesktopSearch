@@ -17,29 +17,23 @@ package de.mirkosertic.desktopsearch;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
-import javafx.stage.Stage;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
-public class BringToFrontServlet extends HttpServlet {
+@Controller
+public class BringToFrontServlet {
 
-    public static final String URL = "/bringToFront";
+    private final DesktopSearchMain desktopSearchMain;
 
-    private final Stage stage;
-
-    public BringToFrontServlet(final Stage aStage) {
-        stage = aStage;
+    public BringToFrontServlet(final DesktopSearchMain main) {
+        desktopSearchMain = main;
     }
 
-    @Override
-    protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws IOException {
-        Platform.runLater(() -> {
-            stage.show();
-            stage.toFront();
-        });
+    @GetMapping("/bringToFront")
+    protected void doGet(final HttpServletResponse aResponse) throws IOException {
+        Platform.runLater(desktopSearchMain::bringToFront);
         aResponse.setStatus(HttpServletResponse.SC_OK);
         aResponse.setContentType("text/plain");
         aResponse.getWriter().print("Ok");

@@ -66,7 +66,6 @@ public class Configuration {
     private Set<SupportedDocumentType> enabledDocumentTypes;
     private Map<String, String> metaDataNameReplacement;
     private File configDirectory;
-    private boolean naturalLanguageProcessing;
     private int facetCount;
     private boolean useTitleAsFilename;
 
@@ -103,7 +102,6 @@ public class Configuration {
         metaDataNameReplacement.put("character count", "character-count");
         metaDataNameReplacement.put("npages", "page-count");
         metaDataNameReplacement.put("slide-count", "page-count");
-        naturalLanguageProcessing = true;
         facetCount = 10;
         useTitleAsFilename = true;
     }
@@ -123,7 +121,6 @@ public class Configuration {
         metaDataNameReplacement = new HashMap<>(aConfiguration.metaDataNameReplacement);
         configDirectory = aConfiguration.configDirectory;
         crawlOnStartup = aConfiguration.crawlOnStartup;
-        naturalLanguageProcessing = aConfiguration.naturalLanguageProcessing;
         facetCount = aConfiguration.facetCount;
         useTitleAsFilename = aConfiguration.useTitleAsFilename;
     }
@@ -189,10 +186,6 @@ public class Configuration {
         return crawlOnStartup;
     }
 
-    public boolean isNaturalLanguageProcessing() {
-        return naturalLanguageProcessing;
-    }
-
     public boolean isUseTitleAsFilename() {
         return useTitleAsFilename;
     }
@@ -212,12 +205,6 @@ public class Configuration {
     public Configuration updateIncludeSimilarDocuments(final boolean aValue) {
         final var theConfiguration = new Configuration(this);
         theConfiguration.showSimilarDocuments = aValue;
-        return theConfiguration;
-    }
-
-    public Configuration updateNaturalLanguageProcessing(final boolean aValue) {
-        final var theConfiguration = new Configuration(this);
-        theConfiguration.naturalLanguageProcessing = aValue;
         return theConfiguration;
     }
 

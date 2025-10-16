@@ -114,18 +114,6 @@ public class ConfigurationController {
                 currentConfiguration = currentConfiguration.updateUseTitleAsFilename((Boolean) o);
             }
         });
-        propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Use Natural Language Processing", BooleanPropertyEditor.class) {
-
-            @Override
-            public Object getValue() {
-                return currentConfiguration.isNaturalLanguageProcessing();
-            }
-
-            @Override
-            public void setValue(final Object o) {
-                currentConfiguration = currentConfiguration.updateNaturalLanguageProcessing((Boolean) o);
-            }
-        });
         propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_COMMON, "Max number of facet entries", SpinnerPropertyEditor.class) {
 
             @Override

@@ -15,7 +15,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-interface ProgressListener {
+public interface ProgressListener {
 
     void infotext(String aInfoText);
 

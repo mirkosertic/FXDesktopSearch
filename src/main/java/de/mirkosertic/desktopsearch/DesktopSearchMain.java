@@ -25,27 +25,36 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.URL;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class DesktopSearchMain extends Application {
 
-    public static void main(final String[] args) {
-        launch(args);
-    }
-
-    private FrontendEmbeddedWebServer embeddedWebServer;
     private Backend backend;
     private Stage stage;
     private ConfigurationManager configurationManager;
 
+    public DesktopSearchMain() {
+    }
+
     @Override
     public void start(final Stage aStage) throws Exception {
+
+        this.stage = aStage;
 
         // This is our base directory
         final var theBaseDirectory = new File(SystemUtils.getUserHome(), "FXDesktopSearch");
@@ -53,28 +62,11 @@ public class DesktopSearchMain extends Application {
             log.info("Directory {} could not be created. Maybe there is already a configuration?", theBaseDirectory);
         }
 
+        SplashScreen.showMe();
+
         configurationManager = new ConfigurationManager(theBaseDirectory);
 
         final var theNotifier = new Notifier();
-
-        stage = aStage;
-
-        // Try to bring to front an existing instance
-        try {
-            // Inform the instance to bring it to front end terminate the current process.
-            final var theURL = new URL(FrontendEmbeddedWebServer.getBringToFrontUrl());
-            // Retrieve the content, but it can be safely ignored
-            // There must only be the get request
-            final var theContent = theURL.getContent();
-
-            // Terminate the JVM. The window of the running instance is visible now.
-            System.exit(0);
-        } catch (final Exception e)  {
-            log.info("Failed to bring to front the existing instance. We assume we need to create a new one.");
-        }
-
-        final var theSplash = new SplashScreen(DesktopSearchMain.class.getResource("/webapp/logo.png"));
-        theSplash.setVisible(true);
 
         // Create the known preview processors
         final var thePreviewProcessor = new PreviewProcessor();
@@ -83,72 +75,87 @@ public class DesktopSearchMain extends Application {
         backend = new Backend(theNotifier, configurationManager.getConfiguration(), thePreviewProcessor);
         configurationManager.addChangeListener(backend);
 
-        // Boot embedded JSP container
-        embeddedWebServer = new FrontendEmbeddedWebServer(aStage, backend, thePreviewProcessor);
-
-        embeddedWebServer.start();
-
-        aStage.setTitle("FXDesktopSearch");
-        aStage.setWidth(800);
-        aStage.setHeight(600);
-        aStage.setMinWidth(640);
-        aStage.setMinHeight(480);
-        aStage.initStyle(StageStyle.TRANSPARENT);
-
-        final var theLoader = new FXMLLoader(getClass().getResource("/scenes/mainscreen.fxml"));
-        final AnchorPane theMainScene = theLoader.load();
-
-        final DesktopSearchController theController = theLoader.getController();
-        theController.configure(this, backend, FrontendEmbeddedWebServer.getSearchUrl(), stage.getOwner());
-
-        final var theScene = new Scene(theMainScene);
-
-        aStage.initStyle(StageStyle.DECORATED);
-        aStage.setScene(theScene);
-        aStage.getIcons().add(new Image(getClass().getResourceAsStream("/fds.png")));
-
-        if (SystemTray.isSupported()) {
-            Platform.setImplicitExit(false);
-            final var theTray = SystemTray.getSystemTray();
-
-            // We need to reformat the icon according to the current tray icon dimensions
-            // this depends on the underlying OS
-            final var theTrayIconImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/fds_small.png"));
-            final var trayIconWidth = new TrayIcon(theTrayIconImage).getSize().width;
-            final var theTrayIcon = new TrayIcon(theTrayIconImage.getScaledInstance(trayIconWidth, -1, java.awt.Image.SCALE_SMOOTH), "Free Desktop Search");
-            theTrayIcon.setImageAutoSize(true);
-            theTrayIcon.setToolTip("FXDesktopSearch");
-            theTrayIcon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(final MouseEvent e) {
-                    if (e.getClickCount() == 1) {
-                        Platform.runLater(() -> {
-                            if (stage.isIconified()) {
-                                stage.setIconified(false);
-                            }
-                            stage.show();
-                            stage.toFront();
-                        });
+        new SpringApplicationBuilder(DesktopSearch.class)
+                .initializers(new ApplicationContextInitializer<ConfigurableApplicationContext>() {
+                    @Override
+                    public void initialize(final ConfigurableApplicationContext applicationContext) {
+                        applicationContext.getBeanFactory().registerSingleton("desktopSearchMain", DesktopSearchMain.this);
                     }
+                })
+                .sources(DesktopSearch.class)
+                .web(WebApplicationType.SERVLET)
+                .run(getParameters().getRaw().toArray(new String[0]));
+    }
+
+
+    @EventListener
+    public void fullyInitialize(final ApplicationStartedEvent startedEvent) {
+        Platform.runLater(() -> {
+            try {
+                stage.setTitle("FXDesktopSearch");
+                stage.setWidth(800);
+                stage.setHeight(600);
+                stage.setMinWidth(640);
+                stage.setMinHeight(480);
+                stage.initStyle(StageStyle.TRANSPARENT);
+
+                final var theLoader = new FXMLLoader(getClass().getResource("/scenes/mainscreen.fxml"));
+                final AnchorPane theMainScene = theLoader.load();
+
+                final DesktopSearchController theController = theLoader.getController();
+                theController.configure(this, backend, "http://localhost:8080/search", stage.getOwner());
+
+                final var theScene = new Scene(theMainScene);
+
+                stage.initStyle(StageStyle.DECORATED);
+                stage.setScene(theScene);
+                stage.getIcons().add(new Image(getClass().getResourceAsStream("/fds.png")));
+
+                if (SystemTray.isSupported()) {
+                    Platform.setImplicitExit(false);
+                    final var theTray = SystemTray.getSystemTray();
+
+                    // We need to reformat the icon according to the current tray icon dimensions
+                    // this depends on the underlying OS
+                    final var theTrayIconImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/fds_small.png"));
+                    final var trayIconWidth = new TrayIcon(theTrayIconImage).getSize().width;
+                    final var theTrayIcon = new TrayIcon(theTrayIconImage.getScaledInstance(trayIconWidth, -1, java.awt.Image.SCALE_SMOOTH), "Free Desktop Search");
+                    theTrayIcon.setImageAutoSize(true);
+                    theTrayIcon.setToolTip("FXDesktopSearch");
+                    theTrayIcon.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(final MouseEvent e) {
+                            if (e.getClickCount() == 1) {
+                                Platform.runLater(() -> {
+                                    if (stage.isIconified()) {
+                                        stage.setIconified(false);
+                                    }
+                                    stage.show();
+                                    stage.toFront();
+                                });
+                            }
+                        }
+                    });
+                    theTray.add(theTrayIcon);
+
+                    stage.setOnCloseRequest(x -> stage.hide());
+                } else {
+
+                    stage.setOnCloseRequest(x -> shutdown());
                 }
-            });
-            theTray.add(theTrayIcon);
 
-            aStage.setOnCloseRequest(aEvent -> stage.hide());
-        } else {
+                SplashScreen.hideMe();
 
-            aStage.setOnCloseRequest(aEvent -> shutdown());
-        }
-
-        theSplash.setVisible(false);
-
-        aStage.setMaximized(true);
-        aStage.show();
+                stage.setMaximized(true);
+                stage.show();
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void shutdown() {
 
-        embeddedWebServer.stop();
         backend.shutdown();
         stage.hide();
 
@@ -158,5 +165,22 @@ public class DesktopSearchMain extends Application {
 
     public ConfigurationManager getConfigurationManager() {
         return configurationManager;
+    }
+
+    public void bringToFront() {
+        stage.show();
+        stage.toFront();
+    }
+
+    public QueryResult performQuery(final String theQueryString, final String string, final Map<String, Set<String>> theDrilldownDimensions) {
+        return backend.performQuery(theQueryString, string, theDrilldownDimensions);
+    }
+
+    public Suggestion[] findSuggestionTermsFor(final String term) {
+        return backend.findSuggestionTermsFor(term);
+    }
+
+    public File getFileOnDiskForDocument(final String theDocumentID) {
+        return backend.getFileOnDiskForDocument(theDocumentID);
     }
 }

@@ -15,13 +15,6 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.reactivestreams.Subscription;
-import reactor.core.Exceptions;
-import reactor.core.publisher.BaseSubscriber;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxSink;
-import reactor.core.scheduler.Schedulers;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,7 +31,7 @@ import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-class Backend implements ConfigurationChangeListener {
+public class Backend implements ConfigurationChangeListener {
 
     public static class FileEvent {
         public enum EventType {
@@ -75,16 +68,14 @@ class Backend implements ConfigurationChangeListener {
     private final Notifier notifier;
     private final PreviewProcessor previewProcessor;
     private Configuration configuration;
-    private DirectoryListener directoryListener;
+    private final DirectoryListener directoryListener;
     private final Statistics statistics;
     private Thread progressInfo;
+    private final Consumer<FileEvent> processingPipeline;
 
     class SimpleDirectoryListener implements DirectoryListener {
 
-        private final FluxSink<Backend.FileEvent> sink;
-
-        public SimpleDirectoryListener(final FluxSink<FileEvent> sink) {
-            this.sink = sink;
+        public SimpleDirectoryListener() {
         }
 
         @Override
@@ -94,7 +85,7 @@ class Backend implements ConfigurationChangeListener {
                     if (contentExtractor.supportsFile(aFile.toString())) {
                         statistics.newDeletedFileJob();
 
-                        sink.next(new FileEvent(aLocation, aFile, null, FileEvent.EventType.DELETED));
+                        processingPipeline.accept(new FileEvent(aLocation, aFile, null, FileEvent.EventType.DELETED));
                     }
                 } catch (final Exception e) {
                     log.error("Error processing file {}", aFile, e);
@@ -111,7 +102,7 @@ class Backend implements ConfigurationChangeListener {
 
                         statistics.newModifiedFileJob();
 
-                        sink.next(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
+                        processingPipeline.accept(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
                     }
                 } catch (final Exception e) {
                     log.error("Error processing file {}", aFile, e);
@@ -140,7 +131,7 @@ class Backend implements ConfigurationChangeListener {
                 }
                 return result;
             } catch (final Exception e) {
-                throw Exceptions.propagate(e);
+                throw new RuntimeException();
             }
         }
     }
@@ -192,34 +183,22 @@ class Backend implements ConfigurationChangeListener {
         contentExtractor = new ContentExtractor(aConfiguration);
         statistics = new Statistics();
 
-        // This is our simple flux
-        final Flux<FileEvent> theFileEventFlux = Flux.push(sink -> directoryListener = new SimpleDirectoryListener(sink));
+        directoryListener = new SimpleDirectoryListener();
 
-        // Filter update events for Files that were not changed
-        final var theCheckFlux = theFileEventFlux.parallel(Math.max(1, Runtime.getRuntime().availableProcessors() / 2)).runOn(Schedulers.parallel()).filter(new UpdatedFilter());
+        final UpdatedFilter updatedFilter = new UpdatedFilter();
+        final EventContentExtractor eventContentExtractor = new EventContentExtractor();
+        final IndexUpdater indexUpdater = new IndexUpdater();
 
-        // Ok, we now map the file events to lucene commands
-        final var theLuceneFlux = theCheckFlux.map(new EventContentExtractor());
-
-        // Ok, finally we add everything to the index
-        theLuceneFlux.doOnNext(new IndexUpdater()).sequential().subscribe(new BaseSubscriber<>() {
-            @Override
-            protected void hookOnSubscribe(final Subscription aSubscription) {
-                request(Runtime.getRuntime().availableProcessors());
+        processingPipeline = fileEvent -> {
+            try {
+                if (updatedFilter.test(fileEvent)) {
+                    final LuceneCommand theCommand = eventContentExtractor.apply(fileEvent);
+                    indexUpdater.accept(theCommand);
+                }
+            } catch (final Exception e) {
+                log.error("Error processing file {}", fileEvent.path, e);
             }
-
-            @Override
-            protected void hookOnNext(final LuceneCommand aCommand) {
-                log.info("Processed command for {}", aCommand.fileEvent.path);
-                statistics.jobFinished();
-                request(1);
-            }
-
-            @Override
-            protected void hookOnError(final Throwable aThrowable) {
-                log.error("Flux went into error state", aThrowable);
-            }
-        });
+        };
 
         configurationUpdated(aConfiguration);
     }
@@ -274,7 +253,7 @@ class Backend implements ConfigurationChangeListener {
                                 lastMessage = remaining + " Files are still in the indexing queue, " + format.format(eta) + " seconds remaining (ETA).";
                                 progressListener.infotext(lastMessage);
                             } else {
-                                if (lastMessage.length() > 0) {
+                                if (!lastMessage.isEmpty()) {
                                     progressListener.infotext(lastMessage);
                                 }
                             }

@@ -16,7 +16,7 @@
 package de.mirkosertic.desktopsearch;
 
 @FunctionalInterface
-interface ConfigurationChangeListener {
+public interface ConfigurationChangeListener {
 
     void configurationUpdated(Configuration aConfiguration) throws Exception;
 }

@@ -8,8 +8,8 @@ var desktopsearch = {
     close: function() {
         desktop.close();
     },
-    openFile: function(f) {
-        desktop.openFile(f);
+    openFile: function(event) {
+        desktop.openFile(event.target.dataset.filename);
     },
     registerSuggest: function() {
         document.getElementById("querystring").addEventListener("keyup", function(e) {

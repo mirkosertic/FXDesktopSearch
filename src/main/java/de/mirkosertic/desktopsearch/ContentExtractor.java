@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.apache.tika.Tika;
+import org.apache.tika.config.TikaConfig;
 import org.apache.tika.language.detect.LanguageDetector;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.utils.DateUtils;
@@ -34,7 +35,7 @@ import org.apache.tika.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-class ContentExtractor {
+public class ContentExtractor {
 
     private final Tika tika;
     private final Pattern metaDataDatePattern;
@@ -143,15 +144,6 @@ class ContentExtractor {
                 theContent.addMetaData(IndexFields.EXTENSION, theExtension.toLowerCase());
             }
 
-            if (configuration.isNaturalLanguageProcessing()) {
-                // Run natural language processing
-                try {
-                    final var nlp = NLP.forLanguage(theLanguage);
-                    nlp.addMetaDataTo(theStringData, theContent);
-                } catch (final Exception e) {
-                    log.warn("Error on NLP, document will still be indexed", e);
-                }
-            }
             return theContent;
         } catch (final Exception e) {
             log.error("Error extracting content of {}", aFile, e);

@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-final class FacetSearchUtils {
+public final class FacetSearchUtils {
 
     private FacetSearchUtils() {
     }

@@ -17,56 +17,65 @@ package de.mirkosertic.desktopsearch;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.swing.filechooser.FileSystemView;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.HandlerMapping;
 
 @Slf4j
-public class ThumbnailServlet extends HttpServlet {
-
-    public static final String URL = "/thumbnail";
+@Controller
+public class ThumbnailServlet {
 
     private static final String TYPE_ICON = "icon";
     private static final String TYPE_PREVIEW = "preview";
 
-    private final Backend backend;
+    private final DesktopSearchMain desktopSearchMain;
     private final PreviewProcessor previewProcessor;
 
-    public ThumbnailServlet(final Backend aBackend, final PreviewProcessor aProcessor) {
-        backend = aBackend;
-        previewProcessor = aProcessor;
+    public ThumbnailServlet(final DesktopSearchMain desktopSearchMain, final PreviewProcessor aProcessor) {
+        this.desktopSearchMain = desktopSearchMain;
+        this.previewProcessor = aProcessor;
     }
 
-    @Override
+    @GetMapping("/thumbnail/**")
     protected void doGet(final HttpServletRequest aRequest, final HttpServletResponse aResponse) throws IOException {
 
         aResponse.setHeader("Cache-Control", "no-cache"); //HTTP 1.1
         aResponse.setHeader("Pragma", "no-cache"); //HTTP 1.0
         aResponse.setDateHeader("Expires", 0);
 
-        var theFilename = aRequest.getPathInfo();
+        final String path = (String) aRequest.getAttribute(
+                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+        final String bestMatchPattern = (String ) aRequest.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+
+        final AntPathMatcher apm = new AntPathMatcher();
+        var theFilename = URLDecoder.decode(apm.extractPathWithinPattern(bestMatchPattern, path), StandardCharsets.UTF_8);
 
         log.info("Was requested for thumbnail of {}", theFilename);
 
         var theType = "";
-        if (theFilename.startsWith("/preview")) {
+        if (theFilename.startsWith("preview/")) {
             theType = "preview";
-            theFilename = theFilename.substring("/preview".length());
-        } else if (theFilename.startsWith("/icon")) {
+            theFilename = theFilename.substring("preview/".length() - 1);
+        } else if (theFilename.startsWith("icon/")) {
             theType = "icon";
-            theFilename = theFilename.substring("/icon".length());
+            theFilename = theFilename.substring("icon/".length() - 1);
         }
 
         final var theDot = theFilename.lastIndexOf('.');
         final var theDocumentID = theFilename.substring(0, theDot);
         final var theFileType = theFilename.substring(theDot + 1);
 
-        final var theFileOnDisk = backend.getFileOnDiskForDocument(theDocumentID);
+        final var theFileOnDisk = desktopSearchMain.getFileOnDiskForDocument(theDocumentID);
 
         if (theFileOnDisk != null && theFileOnDisk.exists()) {
 
