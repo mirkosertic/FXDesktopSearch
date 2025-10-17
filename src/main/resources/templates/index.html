@@ -68,7 +68,7 @@
             <div class="image">
                 <img class="lazy"
                      src="loading.gif"
-                     th:attr="data-src=@{/thumbnail/preview{id}.png(id=${document.uniqueID})}"/>
+                     th:attr="data-filename=${document.fileName}"/>
             </div>
             <div class="text">
                 <a class="entrytitle"

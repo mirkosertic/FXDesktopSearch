@@ -15,21 +15,20 @@
  */
 package de.mirkosertic.desktopsearch.officeopen;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.zip.ZipFile;
-
-import javax.imageio.ImageIO;
-
 import de.mirkosertic.desktopsearch.ImageUtils;
 import de.mirkosertic.desktopsearch.Preview;
 import de.mirkosertic.desktopsearch.PreviewConstants;
 import de.mirkosertic.desktopsearch.PreviewGenerator;
 import de.mirkosertic.desktopsearch.SupportedDocumentType;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.imageio.ImageIO;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.zip.ZipFile;
 
 @Slf4j
 public class OfficeOpenPreviewGenerator implements PreviewGenerator, PreviewConstants {

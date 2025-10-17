@@ -15,20 +15,20 @@
  */
 package de.mirkosertic.desktopsearch.pdfpreview;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.PDFRenderer;
-
 import de.mirkosertic.desktopsearch.Preview;
 import de.mirkosertic.desktopsearch.PreviewConstants;
 import de.mirkosertic.desktopsearch.PreviewGenerator;
 import de.mirkosertic.desktopsearch.SupportedDocumentType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.rendering.PDFRenderer;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
@@ -42,7 +42,7 @@ public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
 
     @Override
     public Preview createPreviewFor(final File aFile) {
-        try(final var theDocument = PDDocument.load(aFile))  {
+        try(final var theDocument = Loader.loadPDF(aFile))  {
             final var thePages = theDocument.getPages();
             if (thePages.getCount() == 0) {
                 return null;

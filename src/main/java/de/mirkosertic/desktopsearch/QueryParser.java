@@ -15,14 +15,14 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queries.spans.SpanMultiTermQueryWrapper;
+import org.apache.lucene.queries.spans.SpanNearQuery;
+import org.apache.lucene.queries.spans.SpanQuery;
+import org.apache.lucene.queries.spans.SpanTermQuery;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BoostQuery;
@@ -30,10 +30,10 @@ import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
-import org.apache.lucene.queries.spans.SpanMultiTermQueryWrapper;
-import org.apache.lucene.queries.spans.SpanNearQuery;
-import org.apache.lucene.queries.spans.SpanQuery;
-import org.apache.lucene.queries.spans.SpanTermQuery;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QueryParser {
 

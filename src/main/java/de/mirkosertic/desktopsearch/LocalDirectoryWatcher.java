@@ -15,6 +15,11 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import io.methvin.watcher.DirectoryChangeEvent;
+import io.methvin.watcher.DirectoryWatcher;
+import io.methvin.watcher.hashing.FileHasher;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,11 +30,6 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
-
-import io.methvin.watcher.DirectoryChangeEvent;
-import io.methvin.watcher.DirectoryWatcher;
-import io.methvin.watcher.hashing.FileHasher;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LocalDirectoryWatcher {

@@ -15,14 +15,6 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-
-import javax.imageio.ImageIO;
-import javax.swing.filechooser.FileSystemView;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +22,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.HandlerMapping;
+
+import javax.imageio.ImageIO;
+import javax.swing.filechooser.FileSystemView;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Controller

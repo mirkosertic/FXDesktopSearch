@@ -15,18 +15,15 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queries.spans.SpanMultiTermQueryWrapper;
+import org.apache.lucene.queries.spans.SpanNearQuery;
+import org.apache.lucene.queries.spans.SpanQuery;
+import org.apache.lucene.queries.spans.SpanTermQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
@@ -34,12 +31,14 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.queries.spans.SpanMultiTermQueryWrapper;
-import org.apache.lucene.queries.spans.SpanNearQuery;
-import org.apache.lucene.queries.spans.SpanQuery;
-import org.apache.lucene.queries.spans.SpanTermQuery;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class SearchPhraseSuggester {

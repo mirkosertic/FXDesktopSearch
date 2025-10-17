@@ -15,6 +15,12 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
+import org.apache.tika.language.detect.LanguageDetector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.utils.DateUtils;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
@@ -25,14 +31,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.regex.Pattern;
-
-import org.apache.tika.Tika;
-import org.apache.tika.config.TikaConfig;
-import org.apache.tika.language.detect.LanguageDetector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.utils.DateUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ContentExtractor {

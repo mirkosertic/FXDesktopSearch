@@ -15,7 +15,8 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 public final class ImageUtils {

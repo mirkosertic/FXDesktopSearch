@@ -15,18 +15,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
@@ -42,25 +31,20 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.facet.DrillDownQuery;
 import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
-import org.apache.lucene.facet.FacetsCollector;
 import org.apache.lucene.facet.FacetsCollectorManager;
 import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.TopScoreDocCollector;
-import org.apache.lucene.search.TopScoreDocCollectorManager;
 import org.apache.lucene.search.highlight.Formatter;
 import org.apache.lucene.search.highlight.Fragmenter;
 import org.apache.lucene.search.highlight.Highlighter;
@@ -76,7 +60,17 @@ import org.apache.tika.metadata.PDF;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.utils.DateUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class LuceneIndexHandler {

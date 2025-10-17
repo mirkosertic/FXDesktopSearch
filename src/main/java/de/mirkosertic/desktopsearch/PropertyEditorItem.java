@@ -15,12 +15,11 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import java.util.Optional;
-
+import javafx.beans.value.ObservableValue;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.editor.PropertyEditor;
 
-import javafx.beans.value.ObservableValue;
+import java.util.Optional;
 
 public abstract class PropertyEditorItem implements PropertySheet.Item {
 

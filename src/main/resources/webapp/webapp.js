@@ -56,7 +56,9 @@ document.addEventListener("DOMContentLoaded", function() {
             setTimeout(function() {
                 lazyImages.forEach(function(lazyImage) {
                     if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
-                        lazyImage.src = lazyImage.dataset.src;
+                        var resourceToLoad = "/thumbnail/preview/" + lazyImage.dataset.filename + ".png";
+                        console.info("Loading lazy resource " + resourceToLoad);
+                        lazyImage.src = resourceToLoad;
                         lazyImage.classList.remove("lazy");
 
                         lazyImages = lazyImages.filter(function(image) {

@@ -15,8 +15,12 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JWindow;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.net.URL;
 
 public class SplashScreen extends JWindow {
