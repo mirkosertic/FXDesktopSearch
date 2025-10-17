@@ -20,15 +20,21 @@ import java.util.List;
 public class FacetDimension {
 
     private final String name;
+    private final String label;
     private final List<Facet> facets;
 
-    public FacetDimension(final String name, final List<Facet> facets) {
+    public FacetDimension(final String name, final String label, final List<Facet> facets) {
         this.name = name;
+        this.label = label;
         this.facets = facets;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public List<Facet> getFacets() {

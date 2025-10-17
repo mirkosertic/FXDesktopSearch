@@ -98,7 +98,7 @@ public class LuceneIndexHandler {
         facetFieldToTitle.put("attr_entity_LOCATION", "Location");
         facetFieldToTitle.put("attr_entity_PERSON", "Person");
         facetFieldToTitle.put("attr_entity_ORGANIZATION", "Organization");
-        facetFieldToTitle.put("attr_keywords", "Keywords");
+        //facetFieldToTitle.put("attr_keywords", "Keywords");
 
         facetsConfig = new FacetsConfig();
 
@@ -146,7 +146,7 @@ public class LuceneIndexHandler {
             if (!StringUtils.isEmpty(theEntry.key)) {
                 final var theValue = theEntry.value;
                 if (theValue instanceof String) {
-                    final var theStringValue = (String) theValue;
+                    final var theStringValue = ((String) theValue).trim();
                     if (!StringUtils.isEmpty(theStringValue)) {
                         theDocument.add(new SortedSetDocValuesField("attr_" + theEntry.key, new BytesRef(theStringValue)));
                     }
@@ -365,21 +365,27 @@ public class LuceneIndexHandler {
                 }
             }
 
+            final List<FacetDimension> facetDimensions = new ArrayList<>();
             for (final String facetField : facetFields()) {
                 try {
                     final SortedSetDocValuesReaderState state = new DefaultSortedSetDocValuesReaderState(indexSearcher.getIndexReader(), facetField, facetsConfig);
                     final Facets facets = new SortedSetDocValuesFacetCounts(state, facetResult.facetsCollector());
+                    final List<Facet> facetValues = new ArrayList<>();
                     for (final FacetResult facet : facets.getAllDims(configuration.getFacetCount())) {
-                        // TODO: Generate facet dimensions....
+                        // TODO: Compute selection link
+                        facetValues.add(new Facet(facet.dim, facet.value.longValue(), ""));
                     }
-                } catch (final Exception e) {
-                    log.warn("Coult not get facets for field {}", facetField, e);
+                    if (!facetValues.isEmpty()) {
+                        facetDimensions.add(new FacetDimension(facetField, facetFieldToTitle.get(facetField), facetValues));
+                    }
+                } catch (final IllegalArgumentException e) {
+                    log.debug("Could not get facets for field {}. Maybe field not used by documents?", facetField, e);
                 }
             }
 
             final long elapsedTime = System.currentTimeMillis() - startTime;
 
-            return new QueryResult(aQueryString, elapsedTime, documents, new ArrayList<>(), indexSize(), new ArrayList<>());
+            return new QueryResult(aQueryString, elapsedTime, documents, facetDimensions, indexSize(), new ArrayList<>());
 
         } catch (final Exception e) {
             throw new RuntimeException(e);

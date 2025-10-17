@@ -47,7 +47,7 @@
             <li th:each="dimension, iterStat : ${queryResult.facetDimensions}">
                 <input type="checkbox" th:id="'facet_' + ${iterStat.index}">
                 <label th:for="'facet_' + ${iterStat.index}">
-                    <a th:text="${dimension.name}">Dimension</a>
+                    <a th:text="${dimension.label}">Dimension</a>
                 </label>
                 <div class="menu">
                     <a th:each="facet : ${dimension.facets}"
