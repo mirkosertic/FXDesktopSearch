@@ -30,7 +30,7 @@
         <lucene.version>10.3.1</lucene.version>
         <tika.version>1.28.5</tika.version>
         <projectrelease.version>3.5.0</projectrelease.version>
-        <javafx.version>25</javafx.version>
+        <javafx.version>26-ea+11</javafx.version>
     </properties>
 
     <build>
