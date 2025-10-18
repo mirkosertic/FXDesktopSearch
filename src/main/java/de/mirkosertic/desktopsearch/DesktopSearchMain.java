@@ -31,6 +31,7 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
+import org.springframework.util.MultiValueMap;
 
 import java.awt.SystemTray;
 import java.awt.Toolkit;
@@ -38,8 +39,6 @@ import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 public class DesktopSearchMain extends Application {
@@ -172,8 +171,8 @@ public class DesktopSearchMain extends Application {
         stage.toFront();
     }
 
-    public QueryResult performQuery(final String theQueryString, final String string, final Map<String, Set<String>> theDrilldownDimensions) {
-        return backend.performQuery(theQueryString, string, theDrilldownDimensions);
+    public QueryResult performQuery(final String theQueryString, final MultiValueMap<String, String> theDrilldownDimensions) {
+        return backend.performQuery(theQueryString, theDrilldownDimensions);
     }
 
     public Suggestion[] findSuggestionTermsFor(final String term) {

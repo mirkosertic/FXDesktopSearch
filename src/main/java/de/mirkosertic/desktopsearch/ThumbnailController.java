@@ -32,7 +32,7 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Controller
-public class ThumbnailServlet {
+public class ThumbnailController {
 
     private static final String TYPE_ICON = "icon";
     private static final String TYPE_PREVIEW = "preview";
@@ -40,7 +40,7 @@ public class ThumbnailServlet {
     private final DesktopSearchMain desktopSearchMain;
     private final PreviewProcessor previewProcessor;
 
-    public ThumbnailServlet(final DesktopSearchMain desktopSearchMain, final PreviewProcessor aProcessor) {
+    public ThumbnailController(final DesktopSearchMain desktopSearchMain, final PreviewProcessor aProcessor) {
         this.desktopSearchMain = desktopSearchMain;
         this.previewProcessor = aProcessor;
     }

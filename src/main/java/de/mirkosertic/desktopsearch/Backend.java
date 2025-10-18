@@ -16,6 +16,7 @@
 package de.mirkosertic.desktopsearch;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.MultiValueMap;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -82,10 +82,15 @@ public class Backend implements ConfigurationChangeListener {
         public void fileDeleted(final Configuration.CrawlLocation aLocation, final Path aFile) {
             synchronized (this) {
                 try {
+                    log.info("File deleted {}", aFile);
                     if (contentExtractor.supportsFile(aFile.toString())) {
+                        log.info("Deleting file from index");
                         statistics.newDeletedFileJob();
 
                         processingPipeline.accept(new FileEvent(aLocation, aFile, null, FileEvent.EventType.DELETED));
+                        log.info("Deleting file done");
+                    } else {
+                        log.info("File {} has no supported file type", aFile);
                     }
                 } catch (final Exception e) {
                     log.error("Error processing file {}", aFile, e);
@@ -97,12 +102,17 @@ public class Backend implements ConfigurationChangeListener {
         public void fileCreatedOrModified(final Configuration.CrawlLocation aLocation, final Path aFile) {
             synchronized (this) {
                 try {
+                    log.info("File created or modified {}", aFile);
                     if (contentExtractor.supportsFile(aFile.toString())) {
+                        log.info("Reindexing file");
                         final var theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
 
                         statistics.newModifiedFileJob();
 
                         processingPipeline.accept(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
+                        log.info("Reindexing file done");
+                    } else {
+                        log.info("File {} has no supported file type", aFile);
                     }
                 } catch (final Exception e) {
                     log.error("Error processing file {}", aFile, e);
@@ -127,6 +137,7 @@ public class Backend implements ConfigurationChangeListener {
 
                 final var result = theUpdateCheckResult == UpdateCheckResult.UPDATED;
                 if (!result) {
+                    log.info("File seems not to have changed, skipping it ({}).", fileEvent.path);
                     statistics.jobSkipped();
                 }
                 return result;
@@ -144,7 +155,9 @@ public class Backend implements ConfigurationChangeListener {
             }
 
             final var thePath = fileEvent.path;
+            log.info("Extracting content from {}", thePath);
             final var theContent = contentExtractor.extractContentFrom(thePath, fileEvent.attributes);
+            log.info("Extracting content done");
             return new LuceneCommand(fileEvent, theContent);
         }
     }
@@ -313,8 +326,8 @@ public class Backend implements ConfigurationChangeListener {
         luceneIndexHandler.shutdown();
     }
 
-    public QueryResult performQuery(final String aQueryString, final String aBasePath, final Map<String, Set<String>> aDrilldownDimensions) {
-        return luceneIndexHandler.performQuery(aQueryString, aBasePath, configuration, aDrilldownDimensions);
+    public QueryResult performQuery(final String aQueryString, final MultiValueMap<String, String> aDrilldownDimensions) {
+        return luceneIndexHandler.performQuery(aQueryString, configuration, aDrilldownDimensions);
     }
 
     public Suggestion[] findSuggestionTermsFor(final String aTerm) {

@@ -15,11 +15,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.apache.lucene.util.Version;
-
 public interface IndexFields {
-
-    Version LUCENE_VERSION = Version.LATEST;
 
     String UNIQUEID = "id";
     String LANGUAGE = "language";

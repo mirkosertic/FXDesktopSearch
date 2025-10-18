@@ -15,32 +15,27 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpServletResponse;
+import javafx.application.Platform;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.IOException;
 
 @Controller
-public class SuggestionServlet  {
+public class BringToFrontController {
 
     private final DesktopSearchMain desktopSearchMain;
 
-    public SuggestionServlet(final DesktopSearchMain main) {
+    public BringToFrontController(final DesktopSearchMain main) {
         desktopSearchMain = main;
     }
 
-    @GetMapping("/suggestion")
-    public ResponseEntity<Suggestion[]> suggest(@RequestParam("term") final String term) {
-        final var theTerms = desktopSearchMain.findSuggestionTermsFor(term);
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json; charset=UTF-8");
-        headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.set("Pragma", "no-cache");
-        headers.setDate("Expires", 0);
-
-        return new ResponseEntity<>(theTerms, headers, HttpStatus.OK);
+    @GetMapping("/bringToFront")
+    protected void doGet(final HttpServletResponse aResponse) throws IOException {
+        Platform.runLater(desktopSearchMain::bringToFront);
+        aResponse.setStatus(HttpServletResponse.SC_OK);
+        aResponse.setContentType("text/plain");
+        aResponse.getWriter().print("Ok");
     }
 }
