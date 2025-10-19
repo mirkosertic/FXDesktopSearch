@@ -22,6 +22,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.KeywordField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
@@ -43,12 +44,8 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.highlight.Formatter;
-import org.apache.lucene.search.highlight.Fragmenter;
-import org.apache.lucene.search.highlight.Highlighter;
-import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
-import org.apache.lucene.search.highlight.SimpleSpanFragmenter;
+import org.apache.lucene.search.uhighlight.DefaultPassageFormatter;
+import org.apache.lucene.search.uhighlight.UnifiedHighlighter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
@@ -62,6 +59,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -70,12 +68,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 public class LuceneIndexHandler {
 
-    private static final int NUMBER_OF_FRAGMENTS = 5;
+    private static final int NUMBER_OF_HIGHLIGHT_PASSAGES = 5;
 
     private final Map<String, String> facetFieldToTitle;
     private final Configuration configuration;
@@ -88,6 +85,8 @@ public class LuceneIndexHandler {
     private final FacetsConfig facetsConfig;
     private final Map<String, SortedSetDocValuesReaderState> facetStatesCache;
 
+    private final FieldType contentFieldType;
+
     public LuceneIndexHandler(final Configuration aConfiguration, final PreviewProcessor aPreviewProcessor) throws IOException {
         previewProcessor = aPreviewProcessor;
         configuration = aConfiguration;
@@ -96,6 +95,11 @@ public class LuceneIndexHandler {
         facetFieldToTitle.put("attr_author", "Author");
         facetFieldToTitle.put("attr_last-modified-year", "Last modified");
         facetFieldToTitle.put("attr_" + IndexFields.EXTENSION, "File type");
+
+        contentFieldType = new FieldType(TextField.TYPE_STORED);
+        contentFieldType.setStoreTermVectors(true);
+        contentFieldType.setStoreTermVectorPositions(true);
+        contentFieldType.setStoreTermVectorOffsets(true);
 
         facetsConfig = new FacetsConfig();
         facetStatesCache = new HashMap<>();
@@ -190,11 +194,11 @@ public class LuceneIndexHandler {
             }
         });
 
-        theDocument.add(new TextField(IndexFields.CONTENT, aContent.getFileContent(), Field.Store.YES));
+        theDocument.add(new Field(IndexFields.CONTENT, aContent.getFileContent(), contentFieldType));
 
         try {
             final long start = System.currentTimeMillis();
-            indexWriter.addDocument(facetsConfig.build(theDocument));
+            indexWriter.addDocument(theDocument);
             final long duration = System.currentTimeMillis() - start;
             log.debug("Added document {} to index in {} ms", aContent.getFileName(), duration);
         } catch (final Exception e) {
@@ -288,12 +292,11 @@ public class LuceneIndexHandler {
 
             final List<QueryResultDocument> documents = new ArrayList<>();
 
-            final Formatter formatter = new SimpleHTMLFormatter("", "");
-            final QueryScorer scorer = new QueryScorer(query);
-            final Highlighter highlighter = new Highlighter(formatter, scorer);
-            final Fragmenter fragmenter = new SimpleSpanFragmenter(scorer, 300);
-            highlighter.setTextFragmenter(fragmenter);
-            highlighter.setMaxDocCharsToAnalyze(Integer.MAX_VALUE);
+            final UnifiedHighlighter highlighter = new UnifiedHighlighter.Builder(indexSearcher, analyzer)
+                    .withMaxLength(1_000_000)
+                    .withFormatter(new DefaultPassageFormatter())
+                    .withBreakIterator(() -> BreakIterator.getSentenceInstance(Locale.getDefault()))
+                    .build();
 
             final FacetsCollectorManager facetsCollectorManager = new FacetsCollectorManager();
             final BooleanQuery.Builder drillDownQueryBuilder = new BooleanQuery.Builder();
@@ -326,8 +329,22 @@ public class LuceneIndexHandler {
             log.info("Search for '{}' took {} ms", drilldownQuery, searchDuration);
             final StoredFields storedFields = indexSearcher.storedFields();
             final TopDocs topDocs = facetResult.topDocs();
+
+            // Perform highlighting
+            final long highlightStart = System.currentTimeMillis();
+            final String[] highlights = highlighter.highlight(IndexFields.CONTENT, query, topDocs, NUMBER_OF_HIGHLIGHT_PASSAGES);
+            final long highlightDuration = System.currentTimeMillis() - highlightStart;
+            log.info("Highlighting took {} ms", highlightDuration);
+
             final long docFetchStart = System.currentTimeMillis();
             for (final var scoreDoc : topDocs.scoreDocs) {
+                storedFields.prefetch(scoreDoc.doc);
+            }
+
+
+            for (int i = 0; i < topDocs.scoreDocs.length; i++) {
+                final var scoreDoc = topDocs.scoreDocs[i];
+
                 final long getStart = System.currentTimeMillis();
                 final Document doc = storedFields.document(scoreDoc.doc);
                 final long getDuration = System.currentTimeMillis() - getStart;
@@ -338,16 +355,6 @@ public class LuceneIndexHandler {
 
                 final var theNormalizedScore = (int) (
                         scoreDoc.score / topDocs.scoreDocs[0].score * 5);
-
-                final var theHighlight = new StringBuilder();
-
-                final String[] frags = highlighter.getBestFragments(analyzer, IndexFields.CONTENT, doc.get(IndexFields.CONTENT), 10);
-                for (final String frag : frags) {
-                    if (!theHighlight.isEmpty()) {
-                        theHighlight.append(" ... ");
-                    }
-                    theHighlight.append(frag.trim());
-                }
 
                 final var theFileOnDisk = new File(theFileName);
                 if (theFileOnDisk.exists()) {
@@ -378,7 +385,7 @@ public class LuceneIndexHandler {
                         }
                     }
 
-                    final var theDocument = new QueryResultDocument(scoreDoc.doc, theTitle, theFileName, theHighlight.toString().trim(),
+                    final var theDocument = new QueryResultDocument(scoreDoc.doc, theTitle, theFileName, highlights[i].trim(),
                             theStoredLastModified, theNormalizedScore, theFileName, thePreviewAvailable);
 
                     documents.add(theDocument);
