@@ -19,7 +19,7 @@ import java.io.File;
 
 public interface PreviewGenerator {
 
-    boolean supportsFile(File aFile);
+    boolean supportsFile(File fileToCheck);
 
-    Preview createPreviewFor(File aFile);
+    Preview createPreviewFor(File fileToGeneratePreviewFor);
 }

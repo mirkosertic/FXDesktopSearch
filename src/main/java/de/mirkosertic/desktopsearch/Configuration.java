@@ -59,7 +59,6 @@ public class Configuration {
     private int suggestionWindowBefore;
     private int suggestionWindowAfter;
     private boolean suggestionInOrder;
-    private boolean showSimilarDocuments;
     private boolean crawlOnStartup;
     private List<CrawlLocation> crawlLocations;
     private Set<SupportedLanguage> enabledLanguages;
@@ -77,7 +76,6 @@ public class Configuration {
         suggestionWindowBefore = 0;
         suggestionWindowAfter = 3;
         suggestionInOrder = true;
-        showSimilarDocuments = false;
         crawlOnStartup = true;
         crawlLocations = new ArrayList<>();
         enabledLanguages = new HashSet<>();
@@ -114,7 +112,6 @@ public class Configuration {
         suggestionWindowBefore = aConfiguration.suggestionWindowBefore;
         suggestionWindowAfter = aConfiguration.suggestionWindowAfter;
         suggestionInOrder = aConfiguration.suggestionInOrder;
-        showSimilarDocuments = aConfiguration.showSimilarDocuments;
         crawlLocations = new ArrayList<>(aConfiguration.crawlLocations);
         enabledLanguages = new HashSet<>(aConfiguration.enabledLanguages);
         enabledDocumentTypes = new HashSet<>(aConfiguration.enabledDocumentTypes);
@@ -136,10 +133,6 @@ public class Configuration {
 
     public int getNumberOfSearchResults() {
         return numberOfSearchResults;
-    }
-
-    public boolean isShowSimilarDocuments() {
-        return showSimilarDocuments;
     }
 
     public List<CrawlLocation> getCrawlLocations() {
@@ -199,12 +192,6 @@ public class Configuration {
     public Configuration removeLocation(final CrawlLocation aCrawlLocation) {
         final var theConfiguration = new Configuration(this);
         theConfiguration.crawlLocations.remove(aCrawlLocation);
-        return theConfiguration;
-    }
-
-    public Configuration updateIncludeSimilarDocuments(final boolean aValue) {
-        final var theConfiguration = new Configuration(this);
-        theConfiguration.showSimilarDocuments = aValue;
         return theConfiguration;
     }
 

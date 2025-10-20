@@ -65,13 +65,13 @@ public class LocalDirectoryWatcher {
     private final DirectoryWatcher directoryWatcher;
     private CompletableFuture<Void> watcherFuture;
 
-    public LocalDirectoryWatcher(final Configuration.CrawlLocation aFileSystemLocation, final int aWaitForAction, final DirectoryListener aDirectoryListener) throws IOException {
-        fileTimers = new HashMap<>();
-        waitForAction = aWaitForAction;
-        directoryListener = aDirectoryListener;
-        filesystemLocation = aFileSystemLocation;
+    public LocalDirectoryWatcher(final Configuration.CrawlLocation crawlLocation, final int waitForAction, final DirectoryListener directoryListener) throws IOException {
+        this.fileTimers = new HashMap<>();
+        this.waitForAction = waitForAction;
+        this.directoryListener = directoryListener;
+        this.filesystemLocation = crawlLocation;
 
-        directoryWatcher = DirectoryWatcher
+        this.directoryWatcher = DirectoryWatcher
                 .builder()
                 .path(filesystemLocation.getDirectory().toPath())
                 .logger(log)
@@ -79,7 +79,7 @@ public class LocalDirectoryWatcher {
                 .listener(event -> publishActionFor(event.path(), event.eventType()))
                 .build();
 
-        monitorThread = new Thread("Index-Monitor") {
+        this.monitorThread = new Thread("Index-Monitor") {
             @Override
             public void run() {
                 while (!isInterrupted()) {
@@ -98,17 +98,17 @@ public class LocalDirectoryWatcher {
             }
         };
 
-        actionTimer = new Timer();
+        this.actionTimer = new Timer();
     }
 
-    private void publishActionFor(final Path aPath, final DirectoryChangeEvent.EventType aEventType ) {
-        log.debug("Got event {} for path {}", aEventType, aPath);
+    private void publishActionFor(final Path filePath, final DirectoryChangeEvent.EventType eventType ) {
+        log.debug("Got event {} for path {}", eventType, filePath);
         synchronized (fileTimers) {
-            final var theTimer = fileTimers.get(aPath);
+            final var theTimer = fileTimers.get(filePath);
             if (theTimer == null) {
-                fileTimers.put(aPath, new ActionTimer(aEventType, waitForAction));
+                fileTimers.put(filePath, new ActionTimer(eventType, waitForAction));
             } else {
-                theTimer.reset(aEventType, waitForAction);
+                theTimer.reset(eventType, waitForAction);
             }
         }
     }

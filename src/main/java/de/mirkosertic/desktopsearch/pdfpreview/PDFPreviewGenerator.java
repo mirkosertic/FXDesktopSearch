@@ -41,8 +41,8 @@ public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
     }
 
     @Override
-    public Preview createPreviewFor(final File aFile) {
-        try(final var theDocument = Loader.loadPDF(aFile))  {
+    public Preview createPreviewFor(final File fileToGeneratePreviewFor) {
+        try(final var theDocument = Loader.loadPDF(fileToGeneratePreviewFor))  {
             final var thePages = theDocument.getPages();
             if (thePages.getCount() == 0) {
                 return null;
@@ -75,15 +75,15 @@ public class PDFPreviewGenerator implements PreviewGenerator, PreviewConstants {
             theGraphics.dispose();
             return new Preview(theImage);
         } catch (final Exception e) {
-            log.error("Error creating preview for {}", aFile, e);
+            log.error("Error creating preview for {}", fileToGeneratePreviewFor, e);
             return null;
         }
     }
 
     @Override
-    public boolean supportsFile(final File aFile) {
+    public boolean supportsFile(final File fileToCheck) {
         for (final var theType : suppportedDocumentTypes) {
-            if (theType.matches(aFile)) {
+            if (theType.matches(fileToCheck)) {
                 return true;
             }
         }

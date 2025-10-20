@@ -40,52 +40,52 @@ public class ContentExtractor {
     private final Configuration configuration;
     private final LanguageDetector languageDetector;
 
-    public ContentExtractor(final Configuration aConfiguration) {
+    public ContentExtractor(final Configuration configuration) {
 
         // TODO: auch korrekt dieses Muster verarbeiten :  Mon Feb 18 15:55:10 CET 2013
 
-        metaDataDatePattern = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})Z");
+        this.metaDataDatePattern = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})Z");
 
-        configuration = aConfiguration;
-        tika = new Tika();
-        tika.setMaxStringLength(1024 * 1024 * 5);
+        this.configuration = configuration;
+        this.tika = new Tika();
+        this.tika.setMaxStringLength(1024 * 1024 * 5);
 
         try {
-            languageDetector = LanguageDetector.getDefaultLanguageDetector();
-            languageDetector.loadModels();
+            this.languageDetector = LanguageDetector.getDefaultLanguageDetector();
+            this.languageDetector.loadModels();
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String harmonizeMetaDataName(String aName) {
-        final var p = aName.indexOf(":");
+    private String harmonizeMetaDataName(String metadataName) {
+        final var p = metadataName.indexOf(":");
         if (p>0) {
-            aName = aName.substring(p+1);
+            metadataName = metadataName.substring(p+1);
         }
 
-        final var theReplacement = configuration.getMetaDataNameReplacement().get(aName);
+        final var theReplacement = configuration.getMetaDataNameReplacement().get(metadataName);
         if (theReplacement != null) {
             return theReplacement;
         }
 
-        return aName;
+        return metadataName;
     }
 
-    public Content extractContentFrom(final Path aFile, final BasicFileAttributes aBasicFileAttributes) {
+    public Content extractContentFrom(final Path fileToExtractContentFrom, final BasicFileAttributes fileAttributes) {
         try {
             final var theMetaData = new Metadata();
 
             final String theStringData;
             // Files under 10 Meg are read into memory as a whole
-            if (aBasicFileAttributes.size() < 1024 * 1024 * 4) {
-                final var theData = Files.readAllBytes(aFile);
+            if (fileAttributes.size() < 1024 * 1024 * 4) {
+                final var theData = Files.readAllBytes(fileToExtractContentFrom);
                 theStringData = tika.parseToString(new ByteArrayInputStream(theData), theMetaData)
                         .replace('\n', ' ')
                         .replace('\r', ' ')
                         .replace('\t',' ');
             } else {
-                try (final var theStream = Files.newInputStream(aFile, StandardOpenOption.READ)) {
+                try (final var theStream = Files.newInputStream(fileToExtractContentFrom, StandardOpenOption.READ)) {
                     theStringData = tika.parseToString(new BufferedInputStream(theStream), theMetaData)
                             .replace('\n', ' ')
                             .replace('\r', ' ')
@@ -95,7 +95,7 @@ public class ContentExtractor {
 
             final var theLanguageResult = languageDetector.detect(theStringData);
 
-            final var theFileTime = aBasicFileAttributes.lastModifiedTime();
+            final var theFileTime = fileAttributes.lastModifiedTime();
             var theLanguage = SupportedLanguage.getDefault();
             try {
                 theLanguage = SupportedLanguage.valueOf(theLanguageResult.getLanguage());
@@ -105,7 +105,7 @@ public class ContentExtractor {
             } catch (final Exception e) {
                 log.info("Language {} was detected, but is not supported", theLanguageResult.getLanguage());
             }
-            final var theContent = new Content(aFile.toString(), theStringData, aBasicFileAttributes.size(), theFileTime.toMillis(), theLanguage);
+            final var theContent = new Content(fileToExtractContentFrom.toString(), theStringData, fileAttributes.size(), theFileTime.toMillis(), theLanguage);
             for (final var theName : theMetaData.names()) {
 
                 final var theMetaDataValue = theMetaData.get(theName);
@@ -135,7 +135,7 @@ public class ContentExtractor {
                 }
             }
 
-            final var theFileName = aFile.toString();
+            final var theFileName = fileToExtractContentFrom.toString();
             final var p = theFileName.lastIndexOf(".");
             if (p > 0) {
                 final var theExtension = theFileName.substring(p + 1);
@@ -144,15 +144,15 @@ public class ContentExtractor {
 
             return theContent;
         } catch (final Exception e) {
-            log.error("Error extracting content of {}", aFile, e);
+            log.error("Error extracting content of {}", fileToExtractContentFrom, e);
         }
 
         return null;
     }
 
-    public boolean supportsFile(final String aFilename) {
+    public boolean supportsFile(final String filenameToCheck) {
         for (final var theType : configuration.getEnabledDocumentTypes()) {
-            if (theType.supports(aFilename)) {
+            if (theType.supports(filenameToCheck)) {
                 return true;
             }
         }

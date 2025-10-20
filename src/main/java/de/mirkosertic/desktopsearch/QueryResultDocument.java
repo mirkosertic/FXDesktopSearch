@@ -15,21 +15,13 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class QueryResultDocument {
 
     private final String title;
 
     private final String fileName;
 
-    private final String highlightedSearchResult;
-
     private final long lastModified;
-
-    private final List<String> similarFiles;
 
     private final int documentID;
 
@@ -39,14 +31,12 @@ public class QueryResultDocument {
 
     private final boolean previewAvailable;
 
-    public QueryResultDocument(final int aDocumentID, final String aTitle, final String aFileName, final String aHighlighterResult, final long aLastModified, final int aNormalizedScore, final String aUniqueID, final boolean aPreviewAvailable) {
+    public QueryResultDocument(final int aDocumentID, final String aTitle, final String aFileName, final long aLastModified, final int aNormalizedScore, final String aUniqueID, final boolean aPreviewAvailable) {
         previewAvailable = aPreviewAvailable;
         title = aTitle;
         fileName = aFileName;
-        highlightedSearchResult = aHighlighterResult;
         lastModified = aLastModified;
         documentID = aDocumentID;
-        similarFiles = new ArrayList<>();
         normalizedScore = aNormalizedScore;
         uniqueID = aUniqueID;
     }
@@ -59,26 +49,12 @@ public class QueryResultDocument {
         return fileName;
     }
 
-    public String getHighlightedSearchResult() {
-        return highlightedSearchResult;
-    }
-
     public long getLastModified() {
         return lastModified;
     }
 
-    public List<String> getSimilarFiles() {
-        return Collections.unmodifiableList(similarFiles);
-    }
-
     public int getDocumentID() {
         return documentID;
-    }
-
-    public void addSimilarFile(final String aFileName) {
-        if (!similarFiles.contains(aFileName)) {
-            similarFiles.add(aFileName);
-        }
     }
 
     public int getNormalizedScore() {

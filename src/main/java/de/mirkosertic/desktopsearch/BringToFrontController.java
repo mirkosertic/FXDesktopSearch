@@ -32,10 +32,10 @@ public class BringToFrontController {
     }
 
     @GetMapping("/bringToFront")
-    protected void doGet(final HttpServletResponse aResponse) throws IOException {
+    protected void doGet(final HttpServletResponse response) throws IOException {
         Platform.runLater(desktopSearchMain::bringToFront);
-        aResponse.setStatus(HttpServletResponse.SC_OK);
-        aResponse.setContentType("text/plain");
-        aResponse.getWriter().print("Ok");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("text/plain");
+        response.getWriter().print("Ok");
     }
 }

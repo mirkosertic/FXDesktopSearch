@@ -72,7 +72,7 @@ public class SearchPhraseSuggester {
         final var theSpanQueries = theTokens.stream().map(s -> {
             if (QueryUtils.isWildCard(s)) {
                 final var theWildcardQuery = new WildcardQuery(new Term(aFieldName, s));
-                final var theWrapper = new SpanMultiTermQueryWrapper(theWildcardQuery);
+                final var theWrapper = new SpanMultiTermQueryWrapper<>(theWildcardQuery);
                 try {
                     return theWrapper.getRewriteMethod().rewrite(indexSearcher, theWildcardQuery);
                 } catch (final IOException e) {

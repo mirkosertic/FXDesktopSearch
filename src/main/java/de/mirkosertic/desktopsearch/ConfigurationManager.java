@@ -17,6 +17,8 @@ package de.mirkosertic.desktopsearch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,37 +30,47 @@ import java.util.Locale;
 import java.util.Set;
 
 @Slf4j
+@Component
 public class ConfigurationManager {
 
     private Configuration configuration;
     private final File configurationFile;
     private final Set<ConfigurationChangeListener> configurationChangeListeners;
 
-    public ConfigurationManager(final File aConfigDirectory) {
+    public ConfigurationManager() {
+        this(new File(SystemUtils.getUserHome(), "FXDesktopSearch"));
+    }
+
+    public ConfigurationManager(final File configDirectory) {
+
+        if (!configDirectory.mkdirs()) {
+            log.info("Directory {} could not be created. Maybe there is already a configuration?", configDirectory);
+        }
+
         configurationChangeListeners = new HashSet<>();
-        configurationFile = new File(aConfigDirectory, "configuration.json");
+        configurationFile = new File(configDirectory, "configuration.json");
         if (configurationFile.exists()) {
             try(final var theStream = new FileInputStream(configurationFile)) {
                 loadConfigurationFrom(theStream);
             } catch (final Exception e) {
-                initializeWithDefault(aConfigDirectory);
+                initializeWithDefault(configDirectory);
             }
         } else {
-            initializeWithDefault(aConfigDirectory);
+            initializeWithDefault(configDirectory);
         }
     }
 
-    private void initializeWithDefault(final File aConfigDirectory) {
+    private void initializeWithDefault(final File configDirectory) {
         try (final var theDefaultConfiguration = getClass().getResourceAsStream("/default-configuration.json")) {
             if (theDefaultConfiguration != null) {
                 loadConfigurationFrom(theDefaultConfiguration);
             } else {
                 log.error("No default configuration found");
-                configuration = new Configuration(aConfigDirectory);
+                configuration = new Configuration(configDirectory);
             }
         } catch (final Exception e) {
             log.error("Error loading default configuration, initializing with empty one", e);
-            configuration = new Configuration(aConfigDirectory);
+            configuration = new Configuration(configDirectory);
         }
 
         // By default, we enable only the english parser
@@ -88,19 +100,19 @@ public class ConfigurationManager {
         return configuration;
     }
 
-    public void updateConfiguration(final Configuration aConfiguration) {
-        configuration = aConfiguration;
+    public void updateConfiguration(final Configuration configuration) {
+        this.configuration = configuration;
         writeConfiguration();
         configurationChangeListeners.stream().forEach(l -> {try {
-            l.configurationUpdated(aConfiguration);
+            l.configurationUpdated(configuration);
         } catch (final Exception e) {
             log.error("Error notifying for configuration change", e);
         }});
     }
 
-    private void loadConfigurationFrom(final InputStream aStream) throws IOException {
+    private void loadConfigurationFrom(final InputStream streamToLoadFrom) throws IOException {
         final var theMapper = new ObjectMapper();
-        configuration = theMapper.readValue(aStream, Configuration.class);
+        configuration = theMapper.readValue(streamToLoadFrom, Configuration.class);
     }
 
     private void writeConfiguration() {

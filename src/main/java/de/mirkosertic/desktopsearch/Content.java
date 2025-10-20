@@ -39,13 +39,13 @@ public class Content {
     private final SupportedLanguage language;
 
     public Content(
-            final String aFileName, final String aFileContent, final long aFileSize, final long aLastModified, final SupportedLanguage aLanguage) {
-        fileName = aFileName;
-        fileSize = aFileSize;
-        lastModified = aLastModified;
-        metadata = new ArrayList<>();
-        fileContent = aFileContent;
-        language = aLanguage;
+            final String fileName, final String fileContent, final long fileSize, final long lastModified, final SupportedLanguage language) {
+        this.fileName = fileName;
+        this.fileSize = fileSize;
+        this.lastModified = lastModified;
+        this.metadata = new ArrayList<>();
+        this.fileContent = fileContent;
+        this.language = language;
     }
 
     public String getFileName() {

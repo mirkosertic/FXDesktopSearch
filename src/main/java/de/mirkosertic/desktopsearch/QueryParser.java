@@ -39,8 +39,8 @@ public class QueryParser {
 
     private final Analyzer analyzer;
 
-    public QueryParser(final Analyzer aAnalyzer) {
-        analyzer = aAnalyzer;
+    public QueryParser(final Analyzer analyzer) {
+        this.analyzer = analyzer;
     }
 
     private String toToken(final String aToken, final String aSearchField) throws IOException {

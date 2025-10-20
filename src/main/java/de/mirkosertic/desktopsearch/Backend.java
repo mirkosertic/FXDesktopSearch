@@ -15,7 +15,9 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.io.File;
@@ -31,6 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Slf4j
+@Component
 public class Backend implements ConfigurationChangeListener {
 
     public static class FileEvent {
@@ -42,11 +45,11 @@ public class Backend implements ConfigurationChangeListener {
         private final EventType type;
         private final BasicFileAttributes attributes;
 
-        public FileEvent(final Configuration.CrawlLocation aCrawlLocation, final Path aPath, final BasicFileAttributes aFileAttributes, final EventType aEventType) {
-            crawlLocation = aCrawlLocation;
-            path = aPath;
-            type = aEventType;
-            attributes = aFileAttributes;
+        public FileEvent(final Configuration.CrawlLocation crawlLocation, final Path crawlPath, final BasicFileAttributes fileAttributes, final EventType eventType) {
+            this.crawlLocation = crawlLocation;
+            path = crawlPath;
+            type = eventType;
+            attributes = fileAttributes;
         }
     }
 
@@ -55,9 +58,9 @@ public class Backend implements ConfigurationChangeListener {
         private final FileEvent fileEvent;
         private final Content content;
 
-        public LuceneCommand(final FileEvent aFileEvent, final Content aContent) {
-            fileEvent = aFileEvent;
-            content = aContent;
+        public LuceneCommand(final FileEvent fileEvent, final Content fileContent) {
+            this.fileEvent = fileEvent;
+            content = fileContent;
         }
     }
 
@@ -65,7 +68,6 @@ public class Backend implements ConfigurationChangeListener {
     private final ContentExtractor contentExtractor;
     private ProgressListener progressListener;
     private final Map<Configuration.CrawlLocation, LocalDirectoryWatcher> locations;
-    private final Notifier notifier;
     private final PreviewProcessor previewProcessor;
     private Configuration configuration;
     private final DirectoryListener directoryListener;
@@ -79,43 +81,43 @@ public class Backend implements ConfigurationChangeListener {
         }
 
         @Override
-        public void fileDeleted(final Configuration.CrawlLocation aLocation, final Path aFile) {
+        public void fileDeleted(final Configuration.CrawlLocation crawlLocation, final Path deletedFile) {
             synchronized (this) {
                 try {
-                    log.info("File deleted {}", aFile);
-                    if (contentExtractor.supportsFile(aFile.toString())) {
+                    log.info("File deleted {}", deletedFile);
+                    if (contentExtractor.supportsFile(deletedFile.toString())) {
                         log.info("Deleting file from index");
                         statistics.newDeletedFileJob();
 
-                        processingPipeline.accept(new FileEvent(aLocation, aFile, null, FileEvent.EventType.DELETED));
+                        processingPipeline.accept(new FileEvent(crawlLocation, deletedFile, null, FileEvent.EventType.DELETED));
                         log.info("Deleting file done");
                     } else {
-                        log.info("File {} has no supported file type", aFile);
+                        log.info("File {} has no supported file type", deletedFile);
                     }
                 } catch (final Exception e) {
-                    log.error("Error processing file {}", aFile, e);
+                    log.error("Error processing file {}", deletedFile, e);
                 }
             }
         }
 
         @Override
-        public void fileCreatedOrModified(final Configuration.CrawlLocation aLocation, final Path aFile) {
+        public void fileCreatedOrModified(final Configuration.CrawlLocation crawlLocation, final Path createdOrModifiedFile) {
             synchronized (this) {
                 try {
-                    log.info("File created or modified {}", aFile);
-                    if (contentExtractor.supportsFile(aFile.toString())) {
+                    log.info("File created or modified {}", createdOrModifiedFile);
+                    if (contentExtractor.supportsFile(createdOrModifiedFile.toString())) {
                         log.info("Reindexing file");
-                        final var theAttributes = Files.readAttributes(aFile, BasicFileAttributes.class);
+                        final var theAttributes = Files.readAttributes(createdOrModifiedFile, BasicFileAttributes.class);
 
                         statistics.newModifiedFileJob();
 
-                        processingPipeline.accept(new FileEvent(aLocation, aFile, theAttributes, FileEvent.EventType.UPDATED));
+                        processingPipeline.accept(new FileEvent(crawlLocation, createdOrModifiedFile, theAttributes, FileEvent.EventType.UPDATED));
                         log.info("Reindexing file done");
                     } else {
-                        log.info("File {} has no supported file type", aFile);
+                        log.info("File {} has no supported file type", createdOrModifiedFile);
                     }
                 } catch (final Exception e) {
-                    log.error("Error processing file {}", aFile, e);
+                    log.error("Error processing file {}", createdOrModifiedFile, e);
                 }
             }
         }
@@ -169,40 +171,59 @@ public class Backend implements ConfigurationChangeListener {
                 try {
                     luceneIndexHandler.removeFromIndex(command.fileEvent.path.toString());
 
-                    notifier.showInformation("Deleted " + command.fileEvent.path.getFileName());
+                    final String message = "Deleted " + command.fileEvent.path.getFileName();
+                    progressListener.infotext(message);
+
+                    log.info(message);
 
                 } catch (final Exception e) {
-                    notifier.showError("Error removing " + command.fileEvent.path.getFileName(), e);
+
+                    final String message = "Error deleting " + command.fileEvent.path.getFileName();
+                    progressListener.infotext(message);
+
+                    log.error(message, e);
                 }
             } else {
                 if (command.content != null) {
                     try {
                         luceneIndexHandler.addToIndex(command.fileEvent.crawlLocation.getId(), command.content);
 
-                        notifier.showInformation("Reindexed " + command.fileEvent.path.getFileName());
+                        final String message = "Reindexed " + command.fileEvent.path.getFileName();
+
+                        progressListener.infotext(message);
+
+                        log.info(message);
 
                     } catch (final Exception e) {
-                        notifier.showError("Error re-inxeding " + command.fileEvent.path.getFileName(), e);
+
+                        final String message = "Error re-inxeding " + command.fileEvent.path.getFileName();
+
+                        progressListener.infotext(message);
+
+                        log.error(message, e);
                     }
                 }
             }
         }
     }
 
-    public Backend(final Notifier aNotifier, final Configuration aConfiguration, final PreviewProcessor aPreviewProcessor) throws IOException {
-        notifier = aNotifier;
-        previewProcessor = aPreviewProcessor;
-        locations = new HashMap<>();
-        contentExtractor = new ContentExtractor(aConfiguration);
-        statistics = new Statistics();
+    public Backend(final ConfigurationManager configurationManager, final PreviewProcessor aPreviewProcessor) throws IOException {
+        this.previewProcessor = aPreviewProcessor;
+        this.locations = new HashMap<>();
 
-        directoryListener = new SimpleDirectoryListener();
+        final var configuration = configurationManager.getConfiguration();
+        configurationManager.addChangeListener(this);
+
+        this.contentExtractor = new ContentExtractor(configuration);
+        this.statistics = new Statistics();
+
+        this.directoryListener = new SimpleDirectoryListener();
 
         final UpdatedFilter updatedFilter = new UpdatedFilter();
         final EventContentExtractor eventContentExtractor = new EventContentExtractor();
         final IndexUpdater indexUpdater = new IndexUpdater();
 
-        processingPipeline = fileEvent -> {
+        this.processingPipeline = fileEvent -> {
             try {
                 if (updatedFilter.test(fileEvent)) {
                     final LuceneCommand theCommand = eventContentExtractor.apply(fileEvent);
@@ -213,19 +234,19 @@ public class Backend implements ConfigurationChangeListener {
             }
         };
 
-        configurationUpdated(aConfiguration);
+        configurationUpdated(configuration);
     }
 
     @Override
-    public void configurationUpdated(final Configuration aConfiguration) throws IOException {
+    public void configurationUpdated(final Configuration changedConfiguration) throws IOException {
 
-        setIndexLocation(aConfiguration);
+        setIndexLocation(changedConfiguration);
 
-        configuration = aConfiguration;
+        configuration = changedConfiguration;
         locations.values().forEach(LocalDirectoryWatcher::stopWatching);
         locations.clear();
 
-        aConfiguration.getCrawlLocations().forEach(e -> {
+        changedConfiguration.getCrawlLocations().forEach(e -> {
             final var theDirectory = e.getDirectory();
             if (theDirectory.exists() && theDirectory.isDirectory()) {
                 try {
@@ -237,8 +258,8 @@ public class Backend implements ConfigurationChangeListener {
         });
     }
 
-    public void setProgressListener(final ProgressListener aProgressListener) {
-        progressListener = aProgressListener;
+    public void setProgressListener(final ProgressListener progressListener) {
+        this.progressListener = progressListener;
 
         progressInfo = new Thread("ProgressInfo") {
             @Override
@@ -258,16 +279,16 @@ public class Backend implements ConfigurationChangeListener {
                     if (remaining > 0) {
                         if (lastRemaining == -1) {
                             lastMessage = remaining + " Files are still in the indexing queue.";
-                            progressListener.infotext(lastMessage);
+                            Backend.this.progressListener.infotext(lastMessage);
                         } else {
                             final var thruput = lastRemaining - remaining;
                             if (thruput > 0) {
                                 final var eta = ((double) remaining) / thruput;
                                 lastMessage = remaining + " Files are still in the indexing queue, " + format.format(eta) + " seconds remaining (ETA).";
-                                progressListener.infotext(lastMessage);
+                                Backend.this.progressListener.infotext(lastMessage);
                             } else {
                                 if (!lastMessage.isEmpty()) {
-                                    progressListener.infotext(lastMessage);
+                                    Backend.this.progressListener.infotext(lastMessage);
                                 }
                             }
                         }
@@ -280,7 +301,7 @@ public class Backend implements ConfigurationChangeListener {
                     try {
                         sleep(1000);
                     } catch (final InterruptedException e) {
-
+                        // Do nothing here...
                     }
                 }
             }
@@ -288,15 +309,15 @@ public class Backend implements ConfigurationChangeListener {
         progressInfo.start();
     }
 
-    private void add(final Configuration.CrawlLocation aLocation) throws IOException {
-        locations.put(aLocation, new LocalDirectoryWatcher(aLocation, LocalDirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener).startWatching());
+    private void add(final Configuration.CrawlLocation crawlLocation) throws IOException {
+        locations.put(crawlLocation, new LocalDirectoryWatcher(crawlLocation, LocalDirectoryWatcher.DEFAULT_WAIT_FOR_ACTION, directoryListener).startWatching());
     }
 
-    private void setIndexLocation(final Configuration aConfiguration) throws IOException {
+    private void setIndexLocation(final Configuration configuration) throws IOException {
         if (luceneIndexHandler != null) {
             shutdown();
         }
-        luceneIndexHandler = new LuceneIndexHandler(aConfiguration, previewProcessor);
+        luceneIndexHandler = new LuceneIndexHandler(configuration, previewProcessor);
     }
 
     public void crawlLocations() {
@@ -319,22 +340,29 @@ public class Backend implements ConfigurationChangeListener {
         theRunner.start();
     }
 
+
+    @PreDestroy
     public void shutdown() {
+        log.info("Shutting down backend");
         if (progressInfo != null) {
             progressInfo.interrupt();
         }
         luceneIndexHandler.shutdown();
     }
 
-    public QueryResult performQuery(final String aQueryString, final MultiValueMap<String, String> aDrilldownDimensions) {
-        return luceneIndexHandler.performQuery(aQueryString, configuration, aDrilldownDimensions);
+    public QueryResult performQuery(final String queryString, final MultiValueMap<String, String> drilldownDimensions) {
+        return luceneIndexHandler.performQuery(queryString, configuration, drilldownDimensions);
     }
 
-    public Suggestion[] findSuggestionTermsFor(final String aTerm) {
-        return luceneIndexHandler.findSuggestionTermsFor(aTerm);
+    public Suggestion[] findSuggestionTermsFor(final String term) {
+        return luceneIndexHandler.findSuggestionTermsFor(term);
     }
 
-    public File getFileOnDiskForDocument(final String aDocumentID) {
-        return luceneIndexHandler.getFileOnDiskForDocument(aDocumentID);
+    public File getFileOnDiskForDocument(final String luceneDocumentId) {
+        return luceneIndexHandler.getFileOnDiskForDocument(luceneDocumentId);
+    }
+
+    public String highlightMatch(final String queryString, final int luceneDocumentId) {
+        return luceneIndexHandler.highlight(queryString, luceneDocumentId);
     }
 }

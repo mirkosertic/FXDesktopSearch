@@ -23,12 +23,12 @@ import java.util.Optional;
 
 public abstract class PropertyEditorItem implements PropertySheet.Item {
 
-    private final Class type;
+    private final Class<?> type;
     private final String category;
     private final String name;
-    private final Class propertyEditor;
+    private final Class<? extends PropertyEditor<?>> propertyEditor;
 
-    public PropertyEditorItem(final Class aType, final String aCategory, final String aName, final Class aPropertyEditor) {
+    public PropertyEditorItem(final Class<?> aType, final String aCategory, final String aName, final Class<? extends PropertyEditor<?>> aPropertyEditor) {
         type = aType;
         category = aCategory;
         name = aName;

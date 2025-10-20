@@ -31,10 +31,10 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class SearchController {
 
-    private final DesktopSearchMain desktopSearchMain;
+    private final Backend backend;
 
-    public SearchController(final DesktopSearchMain main) {
-        desktopSearchMain = main;
+    public SearchController(final Backend backend) {
+        this.backend = backend;
     }
 
     @GetMapping("/search")
@@ -47,18 +47,18 @@ public class SearchController {
         return fillinSearchResult(response, querystring, params);
     }
 
-    private ModelAndView fillinSearchResult(final HttpServletResponse respomse, final String querystring, final MultiValueMap<String, String> params) {
+    private ModelAndView fillinSearchResult(final HttpServletResponse response, final String querystring, final MultiValueMap<String, String> params) {
 
-        respomse.setHeader(HttpHeaders.CACHE_CONTROL, CacheControl.noCache().mustRevalidate().getHeaderValue());
-        respomse.setHeader(HttpHeaders.PRAGMA, "no-cache");
-        respomse.setDateHeader(HttpHeaders.EXPIRES, 0);
+        response.setHeader(HttpHeaders.CACHE_CONTROL, CacheControl.noCache().mustRevalidate().getHeaderValue());
+        response.setHeader(HttpHeaders.PRAGMA, "no-cache");
+        response.setDateHeader(HttpHeaders.EXPIRES, 0);
 
         final ModelAndView modelAndView = new ModelAndView("index.html");
 
         if (!StringUtils.isEmpty(querystring)) {
             modelAndView.addObject("querystring", querystring);
             try {
-                modelAndView.addObject("queryResult", desktopSearchMain.performQuery(querystring, params));
+                modelAndView.addObject("queryResult", backend.performQuery(querystring, params));
             } catch (final Exception e) {
                 log.error("Error running query {}", querystring, e);
             }

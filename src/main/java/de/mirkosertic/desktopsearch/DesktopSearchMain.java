@@ -15,7 +15,6 @@
  */
 package de.mirkosertic.desktopsearch;
 
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,68 +23,31 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SystemUtils;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
-import org.springframework.util.MultiValueMap;
 
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
+import java.util.Objects;
 
 @Slf4j
-public class DesktopSearchMain extends Application {
+@SpringBootApplication
+public class DesktopSearchMain {
 
+    @Autowired
     private Backend backend;
+
+    @Autowired
     private Stage stage;
-    private ConfigurationManager configurationManager;
 
-    public DesktopSearchMain() {
-    }
-
-    @Override
-    public void start(final Stage aStage) throws Exception {
-
-        this.stage = aStage;
-
-        // This is our base directory
-        final var theBaseDirectory = new File(SystemUtils.getUserHome(), "FXDesktopSearch");
-        if (!theBaseDirectory.mkdirs()) {
-            log.info("Directory {} could not be created. Maybe there is already a configuration?", theBaseDirectory);
-        }
-
-        SplashScreen.showMe();
-
-        configurationManager = new ConfigurationManager(theBaseDirectory);
-
-        final var theNotifier = new Notifier();
-
-        // Create the known preview processors
-        final var thePreviewProcessor = new PreviewProcessor();
-
-        // Boot the search backend and set it up for listening to configuration changes
-        backend = new Backend(theNotifier, configurationManager.getConfiguration(), thePreviewProcessor);
-        configurationManager.addChangeListener(backend);
-
-        new SpringApplicationBuilder(DesktopSearch.class)
-                .initializers(new ApplicationContextInitializer<ConfigurableApplicationContext>() {
-                    @Override
-                    public void initialize(final ConfigurableApplicationContext applicationContext) {
-                        applicationContext.getBeanFactory().registerSingleton("desktopSearchMain", DesktopSearchMain.this);
-                    }
-                })
-                .sources(DesktopSearch.class)
-                .web(WebApplicationType.SERVLET)
-                .run(getParameters().getRaw().toArray(new String[0]));
-    }
-
+    @Autowired
+    private ConfigurableApplicationContext context;
 
     @EventListener
     public void fullyInitialize(final ApplicationStartedEvent startedEvent) {
@@ -99,16 +61,17 @@ public class DesktopSearchMain extends Application {
                 stage.initStyle(StageStyle.TRANSPARENT);
 
                 final var theLoader = new FXMLLoader(getClass().getResource("/scenes/mainscreen.fxml"));
+                theLoader.setControllerFactory(context::getBean);
                 final AnchorPane theMainScene = theLoader.load();
 
                 final DesktopSearchController theController = theLoader.getController();
-                theController.configure(this, backend, "http://localhost:8080/search", stage.getOwner());
+                theController.initialize("http://localhost:8080/search");
 
                 final var theScene = new Scene(theMainScene);
 
                 stage.initStyle(StageStyle.DECORATED);
                 stage.setScene(theScene);
-                stage.getIcons().add(new Image(getClass().getResourceAsStream("/fds.png")));
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fds.png"))));
 
                 if (SystemTray.isSupported()) {
                     Platform.setImplicitExit(false);
@@ -145,8 +108,14 @@ public class DesktopSearchMain extends Application {
 
                 SplashScreen.hideMe();
 
-                stage.setMaximized(true);
                 stage.show();
+
+                Platform.runLater(() -> {
+                    final Scene scene = stage.getScene();
+                    scene.getRoot().resize(scene.getWidth(), scene.getHeight());
+                    scene.getRoot().requestLayout();
+                });
+
             } catch (final Exception e) {
                 throw new RuntimeException(e);
             }
@@ -162,24 +131,12 @@ public class DesktopSearchMain extends Application {
         System.exit(0);
     }
 
-    public ConfigurationManager getConfigurationManager() {
-        return configurationManager;
-    }
-
     public void bringToFront() {
         stage.show();
         stage.toFront();
     }
 
-    public QueryResult performQuery(final String theQueryString, final MultiValueMap<String, String> theDrilldownDimensions) {
-        return backend.performQuery(theQueryString, theDrilldownDimensions);
-    }
-
     public Suggestion[] findSuggestionTermsFor(final String term) {
         return backend.findSuggestionTermsFor(term);
-    }
-
-    public File getFileOnDiskForDocument(final String theDocumentID) {
-        return backend.getFileOnDiskForDocument(theDocumentID);
     }
 }

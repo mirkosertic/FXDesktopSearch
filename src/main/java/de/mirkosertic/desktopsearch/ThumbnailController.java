@@ -37,11 +37,11 @@ public class ThumbnailController {
     private static final String TYPE_ICON = "icon";
     private static final String TYPE_PREVIEW = "preview";
 
-    private final DesktopSearchMain desktopSearchMain;
+    private final Backend backend;
     private final PreviewProcessor previewProcessor;
 
-    public ThumbnailController(final DesktopSearchMain desktopSearchMain, final PreviewProcessor aProcessor) {
-        this.desktopSearchMain = desktopSearchMain;
+    public ThumbnailController(final Backend backend, final PreviewProcessor aProcessor) {
+        this.backend = backend;
         this.previewProcessor = aProcessor;
     }
 
@@ -74,7 +74,7 @@ public class ThumbnailController {
         final var theDocumentID = theFilename.substring(0, theDot);
         final var theFileType = theFilename.substring(theDot + 1);
 
-        final var theFileOnDisk = desktopSearchMain.getFileOnDiskForDocument(theDocumentID);
+        final var theFileOnDisk = backend.getFileOnDiskForDocument(theDocumentID);
 
         if (theFileOnDisk != null && theFileOnDisk.exists()) {
 

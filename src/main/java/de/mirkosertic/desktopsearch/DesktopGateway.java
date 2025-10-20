@@ -25,9 +25,9 @@ public class DesktopGateway {
     private final Application application;
     private final DesktopSearchController controller;
 
-    DesktopGateway(final Application aApplication, final DesktopSearchController aController) {
-        application = aApplication;
-        controller = aController;
+    DesktopGateway(final Application application, final DesktopSearchController desktopSearchController) {
+        this.application = application;
+        this.controller = desktopSearchController;
     }
 
     public void openFile(final String aFile) {

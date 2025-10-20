@@ -80,12 +80,12 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
     }
 
     @Override
-    public boolean supportsFile(final File aFile) {
+    public boolean supportsFile(final File fileToCheck) {
         if (!enabled) {
             return false;
         }
         for (final var theType : suppportedDocumentTypes) {
-            if (theType.matches(aFile)) {
+            if (theType.matches(fileToCheck)) {
                 return true;
             }
         }
@@ -93,7 +93,7 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
     }
 
     @Override
-    public Preview createPreviewFor(final File aFile) {
+    public Preview createPreviewFor(final File fileToGeneratePreviewFor) {
         File theTempFile = null;
         SocketOpenOfficeConnection theConnection = null;
         try {
@@ -103,7 +103,7 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
             final var theConverter = new OpenOfficeDocumentConverter(theConnection, documentFormatRegistry);
             // Convert to OfficeOpen file
             theTempFile = File.createTempFile("jodtemp", ".odt");
-            theConverter.convert(aFile, theTempFile);
+            theConverter.convert(fileToGeneratePreviewFor, theTempFile);
 
             // Now we need to extract the thumbnail from the newly converted file
             final ZipFile theZipFile;
@@ -123,7 +123,7 @@ public class JODPreviewGenerator implements PreviewGenerator, PreviewConstants {
             final var theImage = ImageIO.read(new BufferedInputStream(theZipFile.getInputStream(theThumbnailEntry)));
             return new Preview(ImageUtils.rescale(theImage, THUMB_WIDTH, THUMB_HEIGHT, ImageUtils.RescaleMethod.RESIZE_FIT_ONE_DIMENSION));
         } catch (final Exception e) {
-            log.error("Error converting file {}", aFile, e);
+            log.error("Error converting file {}", fileToGeneratePreviewFor, e);
             return null;
         } finally {
             theTempFile.delete();

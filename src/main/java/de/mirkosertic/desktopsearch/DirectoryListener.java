@@ -18,7 +18,7 @@ package de.mirkosertic.desktopsearch;
 import java.nio.file.Path;
 
 public interface DirectoryListener {
-    void fileDeleted(Configuration.CrawlLocation aLocation, Path aFile);
+    void fileDeleted(Configuration.CrawlLocation crawlLocation, Path deletedFile);
 
-    void fileCreatedOrModified(Configuration.CrawlLocation aLocation, Path aFile);
+    void fileCreatedOrModified(Configuration.CrawlLocation crawlLocation, Path createdOrModifiedFile);
 }

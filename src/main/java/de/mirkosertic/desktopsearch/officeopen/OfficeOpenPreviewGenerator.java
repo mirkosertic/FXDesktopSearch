@@ -41,9 +41,9 @@ public class OfficeOpenPreviewGenerator implements PreviewGenerator, PreviewCons
     }
 
     @Override
-    public boolean supportsFile(final File aFile) {
+    public boolean supportsFile(final File fileToCheck) {
         for (final var theType : suppportedDocumentTypes) {
-            if (theType.matches(aFile)) {
+            if (theType.matches(fileToCheck)) {
                 return true;
             }
         }
@@ -51,25 +51,25 @@ public class OfficeOpenPreviewGenerator implements PreviewGenerator, PreviewCons
     }
 
     @Override
-    public Preview createPreviewFor(final File aFile) {
+    public Preview createPreviewFor(final File fileToGeneratePreviewFor) {
         final ZipFile theZipFile;
         try {
-            theZipFile = new ZipFile(aFile);
+            theZipFile = new ZipFile(fileToGeneratePreviewFor);
         } catch (final IOException e) {
-            log.error("Error opening {}", aFile, e);
+            log.error("Error opening {}", fileToGeneratePreviewFor, e);
             return null;
         }
         try {
             final var theThumbnailEntry = theZipFile.getEntry("Thumbnails/thumbnail.png");
             if (theThumbnailEntry == null) {
-                log.error("Cannot find thumbnail in {}", aFile);
+                log.error("Cannot find thumbnail in {}", fileToGeneratePreviewFor);
                 return null;
             }
 
             final var theImage = ImageIO.read(new BufferedInputStream(theZipFile.getInputStream(theThumbnailEntry)));
             return new Preview(ImageUtils.rescale(theImage, THUMB_WIDTH, THUMB_HEIGHT, ImageUtils.RescaleMethod.RESIZE_FIT_ONE_DIMENSION));
         } catch (final IOException e) {
-            log.error("Error reading thumbnail from {}", aFile, e);
+            log.error("Error reading thumbnail from {}", fileToGeneratePreviewFor, e);
             return null;
         } finally {
             try {

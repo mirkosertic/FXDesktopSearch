@@ -15,11 +15,11 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -28,20 +28,18 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
 import netscape.javascript.JSObject;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
-public class DesktopSearchController implements Initializable {
+@JavaFXController
+public class DesktopSearchController {
 
     @FXML
     WebView webView;
@@ -51,12 +49,6 @@ public class DesktopSearchController implements Initializable {
 
     @FXML
     TextField statusText;
-
-    private DesktopSearchMain application;
-
-    private Backend backend;
-
-    private Window window;
 
     class ProgressWatcherThread extends Thread {
 
@@ -112,29 +104,44 @@ public class DesktopSearchController implements Initializable {
             }
         }
 
-        @Override public void infotext(final String aInfoText) {
+        @Override
+        public void infotext(final String infoTextToDisplay) {
             wakeupThread();
             watcherThread.notifyProgress();
-            Platform.runLater(() -> statusText.setText(aInfoText));
+            Platform.runLater(() -> statusText.setText(infoTextToDisplay));
         }
 
-        @Override public void crawlingFinished() {
+        @Override
+        public void crawlingFinished() {
             Platform.runLater(() -> statusText.setText(""));
         }
     }
 
     private ProgressWatcherThread watcherThread;
 
-    private DesktopGateway gateway;
+    private final DesktopGateway gateway;
 
-    public void configure(final DesktopSearchMain aApplication, final Backend aBackend, final String aSearchURL, final Window aWindow) {
-        gateway = new DesktopGateway(aApplication, DesktopSearchController.this);
-        window = aWindow;
-        application = aApplication;
-        backend = aBackend;
-        backend.setProgressListener(new FXProgressListener());
-        watcherThread = new ProgressWatcherThread();
+    private final ConfigurationManager configurationManager;
+
+    private final Backend backend;
+
+    private final ConfigurableApplicationContext context;
+
+    private final Application application;
+
+    public DesktopSearchController(final ConfigurableApplicationContext applicationContext, final Application application, final ConfigurationManager configurationManager, final Backend backend) {
+        this.configurationManager = configurationManager;
+        this.context = applicationContext;
+        this.gateway = new DesktopGateway(application, this);
+        this.application = application;
+        this.backend = backend;
+        this.backend.setProgressListener(new FXProgressListener());
+        this.watcherThread = new ProgressWatcherThread();
+    }
+
+    public void initialize(final String aUrl) {
         webView.getEngine().setJavaScriptEnabled(true);
+        webView.getEngine().load(aUrl);
         webView.getEngine().getLoadWorker().stateProperty().addListener((ov, t, t1) -> {
             if (t1 == State.SUCCEEDED) {
                 final var windowGlobalJSNamespace = (JSObject) webView.getEngine().executeScript("window");
@@ -142,10 +149,9 @@ public class DesktopSearchController implements Initializable {
             }
         });
         webView.setContextMenuEnabled(false);
-        webView.getEngine().load(aSearchURL);
         webView.getEngine().setJavaScriptEnabled(true);
 
-        if (aApplication.getConfigurationManager().getConfiguration().isCrawlOnStartup()) {
+        if (configurationManager.getConfiguration().isCrawlOnStartup()) {
             // Scedule a crawl run 5 seconds after startup...
             final var theTimer = new Timer();
             theTimer.schedule(new TimerTask() {
@@ -155,19 +161,17 @@ public class DesktopSearchController implements Initializable {
                 }
             }, 5000);
         }
-    }
-
-    @Override public void initialize(final URL aUrl, final ResourceBundle aResourceBundle) {
-        Objects.requireNonNull(webView);
-        Objects.requireNonNull(statusBar);
-        Objects.requireNonNull(statusText);
 
         statusBar.setManaged(false);
         statusBar.setVisible(false);
     }
 
     public void close() {
-        application.shutdown();
+        try {
+            application.stop();
+        } catch (final Exception e) {
+            log.error("Error stopping application", e);
+        }
     }
 
     public void recrawl() {
@@ -189,14 +193,16 @@ public class DesktopSearchController implements Initializable {
 
             final var theLoader = new FXMLLoader(getClass().getResource("/scenes/configuration.fxml"));
             theLoader.setClassLoader(DesktopSearchController.class.getClassLoader());
+            theLoader.setControllerFactory(context::getBean);
             final Parent theConfigurationRoot = theLoader.load();
             stage.setScene(new Scene(theConfigurationRoot));
             stage.setTitle("Configuration");
             stage.initModality(Modality.APPLICATION_MODAL);
 
             final ConfigurationController theConfigController = theLoader.getController();
-            theConfigController.initialize(application.getConfigurationManager(), stage);
-            stage.initOwner(window);
+            theConfigController.initialize(stage);
+
+            stage.initOwner(stage.getOwner());
             stage.show();
         } catch (final IOException e) {
             log.error("Error running configuration dialog", e);

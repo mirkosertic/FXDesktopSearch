@@ -37,18 +37,18 @@ public class PreviewProcessor {
         }
     }
 
-    public Preview computePreviewFor(final File aFile) {
+    public Preview computePreviewFor(final File file) {
         for (final var theGenerator : generators) {
-            if (theGenerator.supportsFile(aFile)) {
-                return theGenerator.createPreviewFor(aFile);
+            if (theGenerator.supportsFile(file)) {
+                return theGenerator.createPreviewFor(file);
             }
         }
         return null;
     }
 
-    public boolean previewAvailableFor(final File aFile) {
+    public boolean previewAvailableFor(final File file) {
         for (final var theGenerator : generators) {
-            if (theGenerator.supportsFile(aFile)) {
+            if (theGenerator.supportsFile(file)) {
                 return true;
             }
         }

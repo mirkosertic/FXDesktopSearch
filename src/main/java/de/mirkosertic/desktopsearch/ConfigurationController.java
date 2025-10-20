@@ -21,11 +21,13 @@ import javafx.scene.control.ListView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.controlsfx.control.PropertySheet;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
+@JavaFXController
 public class ConfigurationController {
 
     private static final String CATEGORY_COMMON = "Common";
@@ -34,7 +36,7 @@ public class ConfigurationController {
     private static final String CATEGORY_FILEFORMATS = "File formats";
 
     @FXML
-    ListView indexedDirectories;
+    ListView<Configuration.CrawlLocation> indexedDirectories;
 
     @FXML
     Button buttonAdd;
@@ -48,20 +50,23 @@ public class ConfigurationController {
     @FXML
     Button buttonOk;
 
-    private ConfigurationManager configurationManager;
-    private Stage stage;
+    @Autowired
+    ConfigurationManager configurationManager;
+
+    Stage stage;
+
     private Configuration currentConfiguration;
 
-    public void initialize(final ConfigurationManager aConfigurationManager, final Stage aStage) {
+    public void initialize(final Stage stage) {
         Objects.requireNonNull(propertySheet);
         Objects.requireNonNull(buttonOk);
+
+        this.stage = stage;
 
         buttonRemove.setOnAction(actionEvent -> removeSelectedLocation());
         buttonAdd.setOnAction(actionEvent -> addNewLocation());
         buttonOk.setOnAction(actionEvent -> ok());
 
-        stage = aStage;
-        configurationManager = aConfigurationManager;
         currentConfiguration = configurationManager.getConfiguration();
 
         indexedDirectories.getItems().addAll(currentConfiguration.getCrawlLocations());
@@ -88,18 +93,6 @@ public class ConfigurationController {
             @Override
             public void setValue(final Object o) {
                 currentConfiguration = currentConfiguration.updateCrawlOnStartup((Boolean) o);
-            }
-        });
-        propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Show similar documents", BooleanPropertyEditor.class) {
-
-            @Override
-            public Object getValue() {
-                return currentConfiguration.isShowSimilarDocuments();
-            }
-
-            @Override
-            public void setValue(final Object o) {
-                currentConfiguration = currentConfiguration.updateIncludeSimilarDocuments((Boolean) o);
             }
         });
         propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Use title from metadata as filename", BooleanPropertyEditor.class) {
@@ -223,7 +216,7 @@ public class ConfigurationController {
 
     private void removeSelectedLocation() {
 
-        final var theLocation = (Configuration.CrawlLocation) indexedDirectories.getSelectionModel().getSelectedItem();
+        final var theLocation = indexedDirectories.getSelectionModel().getSelectedItem();
         indexedDirectories.getItems().remove(theLocation);
 
         currentConfiguration = currentConfiguration.removeLocation(theLocation);

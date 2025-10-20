@@ -42,8 +42,10 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.TotalHits;
 import org.apache.lucene.search.uhighlight.DefaultPassageFormatter;
 import org.apache.lucene.search.uhighlight.UnifiedHighlighter;
 import org.apache.lucene.store.Directory;
@@ -68,6 +70,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class LuceneIndexHandler {
@@ -87,37 +90,39 @@ public class LuceneIndexHandler {
 
     private final FieldType contentFieldType;
 
-    public LuceneIndexHandler(final Configuration aConfiguration, final PreviewProcessor aPreviewProcessor) throws IOException {
-        previewProcessor = aPreviewProcessor;
-        configuration = aConfiguration;
-        facetFieldToTitle = new HashMap<>();
-        facetFieldToTitle.put(IndexFields.LANGUAGE, "Language");
-        facetFieldToTitle.put("attr_author", "Author");
-        facetFieldToTitle.put("attr_last-modified-year", "Last modified");
-        facetFieldToTitle.put("attr_" + IndexFields.EXTENSION, "File type");
+    public LuceneIndexHandler(final Configuration configuration, final PreviewProcessor previewProcessor) throws IOException {
+        this.previewProcessor = previewProcessor;
+        this.configuration = configuration;
+        this.facetFieldToTitle = new HashMap<>();
+        this.facetFieldToTitle.put(IndexFields.LANGUAGE, "Language");
+        this.facetFieldToTitle.put("attr_author", "Author");
+        this.facetFieldToTitle.put("attr_last-modified-year", "Last modified");
+        this.facetFieldToTitle.put("attr_" + IndexFields.EXTENSION, "File type");
 
-        contentFieldType = new FieldType(TextField.TYPE_STORED);
-        contentFieldType.setStoreTermVectors(true);
-        contentFieldType.setStoreTermVectorPositions(true);
-        contentFieldType.setStoreTermVectorOffsets(true);
+        this.contentFieldType = new FieldType(TextField.TYPE_STORED);
+        this.contentFieldType.setStoreTermVectors(true);
+        this.contentFieldType.setStoreTermVectorPositions(true);
+        this.contentFieldType.setStoreTermVectorOffsets(true);
 
-        facetsConfig = new FacetsConfig();
-        facetStatesCache = new HashMap<>();
+        this.facetsConfig = new FacetsConfig();
+        this.facetStatesCache = new HashMap<>();
 
-        final var theIndexDirectory = new File(aConfiguration.getConfigDirectory(), "index");
-        theIndexDirectory.mkdirs();
+        final var theIndexDirectory = new File(configuration.getConfigDirectory(), "index");
+        if (!theIndexDirectory.mkdirs()) {
+            log.warn("Could not create index directory {}", theIndexDirectory.getAbsolutePath());
+        }
 
         // Try to open or create a new lucene index
         final Directory directory = FSDirectory.open(theIndexDirectory.toPath());
-        analyzer = new StandardAnalyzer();
+        this.analyzer = new StandardAnalyzer();
         final IndexWriterConfig config = new IndexWriterConfig(analyzer);
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
 
-        indexWriter = new IndexWriter(directory, config);
-        indexReader = DirectoryReader.open(indexWriter);
-        indexSearcher = new IndexSearcher(indexReader);
+        this.indexWriter = new IndexWriter(directory, config);
+        this.indexReader = DirectoryReader.open(indexWriter);
+        this.indexSearcher = new IndexSearcher(indexReader);
 
-        queryParser = new QueryParser(analyzer);
+        this.queryParser = new QueryParser(analyzer);
     }
 
     private String[] facetFields() {
@@ -132,19 +137,19 @@ public class LuceneIndexHandler {
     public void crawlingStarts() {
     }
 
-    public void addToIndex(final String aLocationId, final Content aContent) throws IOException {
+    public void addToIndex(final String locationId, final Content fileContent) throws IOException {
 
-        final var theLanguage = aContent.getLanguage();
+        final var theLanguage = fileContent.getLanguage();
 
         final var theDocument = new Document();
-        theDocument.add(new StringField(IndexFields.UNIQUEID, aContent.getFileName(), Field.Store.YES));
-        theDocument.add(new StringField(IndexFields.LOCATIONID, aLocationId, Field.Store.YES));
-        theDocument.add(new StringField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(aContent.getFileContent()), Field.Store.YES));
-        theDocument.add(new StringField(IndexFields.FILESIZE, Long.toString(aContent.getFileSize()), Field.Store.YES));
-        theDocument.add(new StringField(IndexFields.LASTMODIFIED, Long.toString(aContent.getLastModified()), Field.Store.YES));
+        theDocument.add(new StringField(IndexFields.UNIQUEID, fileContent.getFileName(), Field.Store.YES));
+        theDocument.add(new StringField(IndexFields.LOCATIONID, locationId, Field.Store.YES));
+        theDocument.add(new StringField(IndexFields.CONTENTMD5, DigestUtils.md5Hex(fileContent.getFileContent()), Field.Store.YES));
+        theDocument.add(new StringField(IndexFields.FILESIZE, Long.toString(fileContent.getFileSize()), Field.Store.YES));
+        theDocument.add(new StringField(IndexFields.LASTMODIFIED, Long.toString(fileContent.getLastModified()), Field.Store.YES));
         theDocument.add(new KeywordField(IndexFields.LANGUAGE, new BytesRef(theLanguage.name()), Field.Store.YES));
 
-        aContent.getMetadata().forEach(theEntry -> {
+        fileContent.getMetadata().forEach(theEntry -> {
             if (!StringUtils.isEmpty(theEntry.key)) {
                 final var theValue = theEntry.value;
                 if (theValue instanceof String) {
@@ -194,25 +199,25 @@ public class LuceneIndexHandler {
             }
         });
 
-        theDocument.add(new Field(IndexFields.CONTENT, aContent.getFileContent(), contentFieldType));
+        theDocument.add(new Field(IndexFields.CONTENT, fileContent.getFileContent(), contentFieldType));
 
         try {
             final long start = System.currentTimeMillis();
             indexWriter.addDocument(theDocument);
             final long duration = System.currentTimeMillis() - start;
-            log.debug("Added document {} to index in {} ms", aContent.getFileName(), duration);
+            log.debug("Added document {} to index in {} ms", fileContent.getFileName(), duration);
         } catch (final Exception e) {
             throw new IOException(e);
         }
     }
 
-    public void removeFromIndex(final String aFileName) throws IOException {
+    public void removeFromIndex(final String fileName) throws IOException {
         try {
             // Create a Term for the field and value
-            final Term term = new Term(IndexFields.UNIQUEID, aFileName);
+            final Term term = new Term(IndexFields.UNIQUEID, fileName);
             // Delete all documents matching this term
             final long deletedCount = indexWriter.deleteDocuments(term);
-            log.debug("Deleted {} documents for file {}", deletedCount, aFileName);
+            log.debug("Deleted {} documents for file {}", deletedCount, fileName);
         } catch (final Exception e) {
             throw new IOException(e);
         }
@@ -229,9 +234,9 @@ public class LuceneIndexHandler {
         }
     }
 
-    public UpdateCheckResult checkIfModified(final String aFilename, final long aLastModified) throws IOException {
+    public UpdateCheckResult checkIfModified(final String fileName, final long lastModifiedTimestamp) throws IOException {
 
-        final Term term = new Term(IndexFields.UNIQUEID, aFilename);
+        final Term term = new Term(IndexFields.UNIQUEID, fileName);
 
         try {
             final TopDocs topDocs = indexSearcher.search(new TermQuery(term), 1000);
@@ -239,7 +244,7 @@ public class LuceneIndexHandler {
                 final Document doc = indexSearcher.storedFields().document(scoreDoc.doc);
 
                 final var theStoredLastModified = Long.parseLong(doc.get(IndexFields.LASTMODIFIED));
-                if (theStoredLastModified != aLastModified) {
+                if (theStoredLastModified != lastModifiedTimestamp) {
                     return UpdateCheckResult.UPDATED;
                 }
                 return UpdateCheckResult.UNMODIFIED;
@@ -254,15 +259,15 @@ public class LuceneIndexHandler {
         return indexReader.numDocs();
     }
 
-    private String getOrDefault(final Document aDocument, final String aFieldName, final String aDefault) {
-        final String value = aDocument.get(aFieldName);
+    private String getOrDefault(final Document document, final String fieldName, final String defaultValue) {
+        final String value = document.get(fieldName);
         if (value == null || value.trim().isEmpty()) {
-            return aDefault;
+            return defaultValue;
         }
         return value;
     }
 
-    public QueryResult performQuery(final String aQueryString, final Configuration aConfiguration, final MultiValueMap<String, String> aDrilldownFields) {
+    public QueryResult performQuery(final String queryString, final Configuration configuration, final MultiValueMap<String, String> drilldownFields) {
 
         try {
             indexWriter.flush();
@@ -288,22 +293,16 @@ public class LuceneIndexHandler {
             }
 
             final long startTime = System.currentTimeMillis();
-            final Query query = queryParser.parse(aQueryString, IndexFields.CONTENT);
+            final Query query = queryParser.parse(queryString, IndexFields.CONTENT);
 
             final List<QueryResultDocument> documents = new ArrayList<>();
-
-            final UnifiedHighlighter highlighter = new UnifiedHighlighter.Builder(indexSearcher, analyzer)
-                    .withMaxLength(1_000_000)
-                    .withFormatter(new DefaultPassageFormatter())
-                    .withBreakIterator(() -> BreakIterator.getSentenceInstance(Locale.getDefault()))
-                    .build();
 
             final FacetsCollectorManager facetsCollectorManager = new FacetsCollectorManager();
             final BooleanQuery.Builder drillDownQueryBuilder = new BooleanQuery.Builder();
             drillDownQueryBuilder.add(query, BooleanClause.Occur.MUST);
 
             final List<QueryFilter> activeFilters = new ArrayList<>();
-            for (final Map.Entry<String, List<String>> entry : aDrilldownFields.entrySet()) {
+            for (final Map.Entry<String, List<String>> entry : drilldownFields.entrySet()) {
                 final String key = entry.getKey();
                 if (key.startsWith("filter")) {
                     final String dim = key.substring("filter".length());
@@ -311,7 +310,7 @@ public class LuceneIndexHandler {
                         drillDownQueryBuilder.add(KeywordField.newExactQuery(dim, value), BooleanClause.Occur.MUST);
 
                         final UriComponentsBuilder linkBuilder = UriComponentsBuilder.fromPath("/search");
-                        for (final Map.Entry<String, List<String>> e : aDrilldownFields.entrySet()) {
+                        for (final Map.Entry<String, List<String>> e : drilldownFields.entrySet()) {
                             if (!e.getKey().equals(key)) {
                                 linkBuilder.queryParam(e.getKey(), e.getValue());
                             }
@@ -324,31 +323,28 @@ public class LuceneIndexHandler {
 
             final long searchStart = System.currentTimeMillis();
             final Query drilldownQuery = drillDownQueryBuilder.build();
-            final FacetsCollectorManager.FacetsResult facetResult = FacetsCollectorManager.search(indexSearcher, drilldownQuery, configuration.getNumberOfSearchResults(), facetsCollectorManager);
+            final FacetsCollectorManager.FacetsResult facetResult = FacetsCollectorManager.search(indexSearcher, drilldownQuery, this.configuration.getNumberOfSearchResults(), facetsCollectorManager);
             final long searchDuration = System.currentTimeMillis() - searchStart;
             log.info("Search for '{}' took {} ms", drilldownQuery, searchDuration);
             final StoredFields storedFields = indexSearcher.storedFields();
             final TopDocs topDocs = facetResult.topDocs();
-
-            // Perform highlighting
-            final long highlightStart = System.currentTimeMillis();
-            final String[] highlights = highlighter.highlight(IndexFields.CONTENT, query, topDocs, NUMBER_OF_HIGHLIGHT_PASSAGES);
-            final long highlightDuration = System.currentTimeMillis() - highlightStart;
-            log.info("Highlighting took {} ms", highlightDuration);
 
             final long docFetchStart = System.currentTimeMillis();
             for (final var scoreDoc : topDocs.scoreDocs) {
                 storedFields.prefetch(scoreDoc.doc);
             }
 
-
             for (int i = 0; i < topDocs.scoreDocs.length; i++) {
                 final var scoreDoc = topDocs.scoreDocs[i];
 
-                final long getStart = System.currentTimeMillis();
-                final Document doc = storedFields.document(scoreDoc.doc);
-                final long getDuration = System.currentTimeMillis() - getStart;
-                log.info("Fetching single document took {} ms", getDuration);
+                final Document doc = storedFields.document(scoreDoc.doc,
+                        Set.of(IndexFields.UNIQUEID,
+                               IndexFields.LASTMODIFIED,
+                               "attr_" + DublinCore.TITLE,
+                               "attr_title",
+                               "attr_" + PDF.DOC_INFO_TITLE.getName(),
+                               "attr_" + TikaCoreProperties.TITLE.getName(),
+                               "attr_" + DublinCore.SUBJECT.getName()));
 
                 final var theFileName = doc.get(IndexFields.UNIQUEID);
                 final var theStoredLastModified = Long.parseLong(doc.get(IndexFields.LASTMODIFIED));
@@ -363,7 +359,7 @@ public class LuceneIndexHandler {
 
                     // Try to extract the title from the metadata
                     var theTitle = theFileName;
-                    if (aConfiguration.isUseTitleAsFilename()) {
+                    if (configuration.isUseTitleAsFilename()) {
                         theTitle = getOrDefault(doc, "attr_" + DublinCore.TITLE, "");
                         if (theTitle == null || theTitle.trim().isEmpty()) {
                             theTitle = getOrDefault(doc, "attr_" + PDF.DOC_INFO_TITLE.getName(), "");
@@ -375,9 +371,6 @@ public class LuceneIndexHandler {
                             theTitle = getOrDefault(doc,"attr_" + TikaCoreProperties.TITLE.getName(), "");
                         }
                         if (theTitle == null || theTitle.trim().isEmpty()) {
-                            theTitle = getOrDefault(doc,"attr_" + DublinCore.TITLE.getName(), "");
-                        }
-                        if (theTitle == null || theTitle.trim().isEmpty()) {
                             theTitle = getOrDefault(doc, "attr_" + DublinCore.SUBJECT.getName(), "");
                         }
                         if (theTitle == null || theTitle.trim().isEmpty()) {
@@ -385,8 +378,7 @@ public class LuceneIndexHandler {
                         }
                     }
 
-                    final var theDocument = new QueryResultDocument(scoreDoc.doc, theTitle, theFileName, highlights[i].trim(),
-                            theStoredLastModified, theNormalizedScore, theFileName, thePreviewAvailable);
+                    final var theDocument = new QueryResultDocument(scoreDoc.doc, theTitle, theFileName, theStoredLastModified, theNormalizedScore, theFileName, thePreviewAvailable);
 
                     documents.add(theDocument);
 
@@ -402,22 +394,21 @@ public class LuceneIndexHandler {
             final List<FacetDimension> facetDimensions = new ArrayList<>();
             for (final Map.Entry<String, SortedSetDocValuesReaderState> entry : facetStatesCache.entrySet()) {
                 final String filterParam = "filter" + entry.getKey();
-                if (!aDrilldownFields.containsKey(filterParam)) {
+                if (!drilldownFields.containsKey(filterParam)) {
                     final String facetField = entry.getKey();
                     final SortedSetDocValuesReaderState state = entry.getValue();
                     final Facets facets = new SortedSetDocValuesFacetCounts(state, facetResult.facetsCollector());
                     final List<Facet> facetValues = new ArrayList<>();
-                    for (final FacetResult facet : facets.getAllDims(configuration.getFacetCount())) {
+                    for (final FacetResult facet : facets.getAllDims(this.configuration.getFacetCount())) {
 
                         // Querystring is already part of the map
-                        final MultiValueMap<String, String> linkParams = new LinkedMultiValueMap<>(aDrilldownFields);
+                        final MultiValueMap<String, String> linkParams = new LinkedMultiValueMap<>(drilldownFields);
                         linkParams.add(filterParam, facet.dim);
 
                         final UriComponentsBuilder linkBuilder = UriComponentsBuilder.fromPath("/search");
                         for (final Map.Entry<String, List<String>> e : linkParams.entrySet()) {
                             linkBuilder.queryParam(e.getKey(), e.getValue());
                         }
-                        // TODO: Compute selection link
                         facetValues.add(new Facet(facet.dim, facet.value.longValue(), linkBuilder.encode().toUriString()));
                     }
                     if (!facetValues.isEmpty()) {
@@ -431,19 +422,46 @@ public class LuceneIndexHandler {
             final long elapsedTime = System.currentTimeMillis() - startTime;
             log.info("Complete query took {} ms", elapsedTime);
 
-            return new QueryResult(aQueryString, elapsedTime, documents, facetDimensions, indexSize(), activeFilters);
+            return new QueryResult(queryString, elapsedTime, documents, facetDimensions, indexSize(), activeFilters);
 
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Suggestion[] findSuggestionTermsFor(final String aTerm) {
+    public Suggestion[] findSuggestionTermsFor(final String term) {
         // TODO: Implement this...
         return new Suggestion[0];
     }
 
     public File getFileOnDiskForDocument(final String aUniqueID) {
         return new File(aUniqueID);
+    }
+
+    public String highlight(final String queryString, final int luceneDocumentId) {
+
+        final UnifiedHighlighter highlighter = new UnifiedHighlighter.Builder(indexSearcher, analyzer)
+                .withMaxLength(1_000_000)
+                .withFormatter(new DefaultPassageFormatter())
+                .withBreakIterator(() -> BreakIterator.getSentenceInstance(Locale.getDefault()))
+                .build();
+
+        final TotalHits totalHits = new TotalHits(1, TotalHits.Relation.EQUAL_TO);
+        final ScoreDoc scoreDoc = new ScoreDoc(luceneDocumentId, 1.0f);
+        final TopDocs topDocs = new TopDocs(totalHits, new ScoreDoc[] {scoreDoc});
+
+        try {
+            final Query query = queryParser.parse(queryString, IndexFields.CONTENT);
+
+            // Perform highlighting
+            final long highlightStart = System.currentTimeMillis();
+            final String[] highlights = highlighter.highlight(IndexFields.CONTENT, query, topDocs, NUMBER_OF_HIGHLIGHT_PASSAGES);
+            final long highlightDuration = System.currentTimeMillis() - highlightStart;
+            log.info("Highlighting took {} ms", highlightDuration);
+
+            return highlights[0];
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

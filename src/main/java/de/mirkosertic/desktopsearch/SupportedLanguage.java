@@ -60,6 +60,6 @@ public enum SupportedLanguage {
     }
 
     public Locale toLocale() {
-        return new Locale(name());
+        return Locale.of(name());
     }
 }

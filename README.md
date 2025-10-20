@@ -16,10 +16,7 @@ FXDesktopSearch can crawl the local and remote filesystems. It also watches alre
 Download
 --------
 
-Releases are available [at GitHub](https://github.com/mirkosertic/FXDesktopSearch/releases) or
-
-[![](documentation/MSStore.png)](https://www.microsoft.com/en-us/p/fxdesktopsearch/9p0m8n1b3dsp)
-
+Releases are available [at GitHub](https://github.com/mirkosertic/FXDesktopSearch/releases).
 
 Installation
 ------------
@@ -28,8 +25,6 @@ Windows
 -------
 
 Installation on Windows systems is quite easy. Download the .exe installer and execute it with administrator permissions. This will install FXDesktopSearch and the required Java runtime on your machine.
-
-Starting with Windows 10, you can also install FXDesktopSearch from Microsoft App Store.
 
 Linux
 -----
@@ -62,7 +57,6 @@ The following options are available:
 
 Option                                         | Description                                       
 -----------------------------------------------|-------------------------------------------
-Show similar search results                    | Can be enabled if you want to include similar search results for every match. Please not that this is very processing insensitive.
 Limit search results to                        | This is the number of search results presented to the user.
 Number of suggestions                          | This is the number of search phrase suggestions. They are shown as soon as you start to type words into the query text field.
 Number of words before suggestion span         | Include this number of words in the search phrase suggestion before a matching word
@@ -99,7 +93,7 @@ Under the hood
 --------------
 
 FXDesktopSearch has a hybrid JavaFX2/HTML5 user interface. This means that the UI is basically a JavaFX scene with an embedded JavaFX WebView. The WebView renders a HTML page,
-which is delivered by an embedded Jetty WebServer. Using HTML allows us to generate and style complex user interfaces without creating new JavaFX controls.
+which is delivered by an embedded Spring Boot application. Using HTML allows us to generate and style complex user interfaces without creating new JavaFX controls.
 
 Under the hood FXDesktopSearch uses Apache Lucene to build the fulltext index for the crawled documents. It also uses Apache Tika for content and metadata extraction.
 
@@ -108,4 +102,4 @@ The ContentExtractor extracts the content and the metadata and passes the result
 
 Modified files are tracked by the Java NIO WatchService API. Every file modification is send to the ContentExtractor and the final results are also updated by the LuceneIndexHandler in the fulltext index.
 
-The embedded webserver is available by opening http://127.0.0.1:4711/search
+The embedded webserver is available by opening http://127.0.0.1:8080/search

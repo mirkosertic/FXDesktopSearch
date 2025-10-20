@@ -76,19 +76,15 @@
                    th:onclick="'desktopsearch.openFile(event)'"
                    th:text="${document.title}">Title</a>
 
-                <a class="filename"
-                   th:each="similarFile : ${document.similarFiles}"
-                   th:attr="data-filename=${document.fileName}"
-                   th:onclick="'desktopsearch.openFile(event)'"
-                   th:text="${queryResult.getSimpleFileName(similarFile)}">Similar File</a>
-
                 <div class="starsouter">
                     <th:block th:each="index : ${#numbers.sequence(1, 5)}">
                         <span th:if="${document.normalizedScore >= index}" class="stars-full"></span>
                         <span th:unless="${document.normalizedScore >= index}" class="stars-empty"></span>
                     </th:block>
                 </div>
-                <div class="entrytext" th:utext="${document.highlightedSearchResult}">Search result</div>
+                <div class="entrytext lazyhighlight"
+                     th:attr="data-query=${queryResult.searchTerm},data-docid=${document.documentID}"><img src="loading.gif"/>
+                </div>
             </div>
         </div>
     </div>
