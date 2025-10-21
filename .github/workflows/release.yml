@@ -23,7 +23,7 @@ jobs:
          distribution: "temurin"
          cache: maven
      - run: mvn verify
-     - uses: actions/upload-artifact@v1
+     - uses: actions/upload-artifact@v4
        with:
            name: ${{ matrix.releasename }}
            path: 'target/release'
