@@ -119,6 +119,30 @@ public class ConfigurationController {
                 currentConfiguration = currentConfiguration.updateFacetCount((Integer) o);
             }
         });
+        propertySheet.getItems().add(new PropertyEditorItem(boolean.class, CATEGORY_COMMON, "Use Fuzzy Search as default", BooleanPropertyEditor.class) {
+
+            @Override
+            public Object getValue() {
+                return currentConfiguration.isDefaultFuzzySearch();
+            }
+
+            @Override
+            public void setValue(final Object o) {
+                currentConfiguration = currentConfiguration.updateDefaultFuzzySearch((Boolean) o);
+            }
+        });
+        propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_COMMON, "Fuzzy Search edit distance", SpinnerPropertyEditor.class) {
+
+            @Override
+            public Object getValue() {
+                return currentConfiguration.getFuzzySearchEditDistance();
+            }
+
+            @Override
+            public void setValue(final Object o) {
+                currentConfiguration = currentConfiguration.updateFuzzySearchEditDistance((Integer) o);
+            }
+        });
         propertySheet.getItems().add(new PropertyEditorItem(Integer.class, CATEGORY_SUGGEST, "Max number of suggestions", SpinnerPropertyEditor.class) {
 
             @Override

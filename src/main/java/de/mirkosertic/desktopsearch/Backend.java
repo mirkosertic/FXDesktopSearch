@@ -17,6 +17,7 @@ package de.mirkosertic.desktopsearch;
 
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -74,6 +75,7 @@ public class Backend implements ConfigurationChangeListener {
     private final Statistics statistics;
     private Thread progressInfo;
     private final Consumer<FileEvent> processingPipeline;
+
 
     class SimpleDirectoryListener implements DirectoryListener {
 
@@ -227,6 +229,7 @@ public class Backend implements ConfigurationChangeListener {
             try {
                 if (updatedFilter.test(fileEvent)) {
                     final LuceneCommand theCommand = eventContentExtractor.apply(fileEvent);
+
                     indexUpdater.accept(theCommand);
                 }
             } catch (final Exception e) {
@@ -235,6 +238,13 @@ public class Backend implements ConfigurationChangeListener {
         };
 
         configurationUpdated(configuration);
+    }
+
+    @Scheduled(fixedDelay = 60000) // 60 seconds
+    private void commitDataJob() {
+        if (this.luceneIndexHandler != null) {
+            this.luceneIndexHandler.commitDataJob();
+        }
     }
 
     @Override
@@ -344,10 +354,10 @@ public class Backend implements ConfigurationChangeListener {
     @PreDestroy
     public void shutdown() {
         log.info("Shutting down backend");
+        luceneIndexHandler.shutdown();
         if (progressInfo != null) {
             progressInfo.interrupt();
         }
-        luceneIndexHandler.shutdown();
     }
 
     public QueryResult performQuery(final String queryString, final MultiValueMap<String, String> drilldownDimensions) {

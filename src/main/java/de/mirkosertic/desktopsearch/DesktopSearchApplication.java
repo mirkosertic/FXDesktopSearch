@@ -46,6 +46,7 @@ public class DesktopSearchApplication extends Application {
                 })
                 .sources(DesktopSearchMain.class)
                 .web(WebApplicationType.SERVLET)
+                .registerShutdownHook(true)
                 .run(getParameters().getRaw().toArray(new String[0]));
 
         log.info("Spring Boot application started");
@@ -55,6 +56,8 @@ public class DesktopSearchApplication extends Application {
     public void stop() {
         log.info("Stopping Spring Boot application");
         context.close();
+
+        log.info("Terminating JVM");
         System.exit(0);
     }
 }

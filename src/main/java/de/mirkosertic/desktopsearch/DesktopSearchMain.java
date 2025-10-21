@@ -15,6 +15,7 @@
  */
 package de.mirkosertic.desktopsearch;
 
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -28,6 +29,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.awt.SystemTray;
 import java.awt.Toolkit;
@@ -38,6 +40,7 @@ import java.util.Objects;
 
 @Slf4j
 @SpringBootApplication
+@EnableScheduling
 public class DesktopSearchMain {
 
     @Autowired
@@ -48,6 +51,9 @@ public class DesktopSearchMain {
 
     @Autowired
     private ConfigurableApplicationContext context;
+
+    @Autowired
+    private Application application;
 
     @EventListener
     public void fullyInitialize(final ApplicationStartedEvent startedEvent) {
@@ -123,12 +129,15 @@ public class DesktopSearchMain {
     }
 
     public void shutdown() {
-
         backend.shutdown();
         stage.hide();
 
-        // Raw shutdown of all threads
-        System.exit(0);
+        try {
+            application.stop();
+        } catch (final Exception e) {
+            log.error("Error stopping application", e);
+            System.exit(1);
+        }
     }
 
     public void bringToFront() {

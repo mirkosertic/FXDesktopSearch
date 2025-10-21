@@ -31,7 +31,7 @@ var desktopsearch = {
 
                                 var a = document.createElement('a');
                                 a.innerHTML = s.label;
-                                a.href = "/search/" + s.value;
+                                a.href = "/search?querystring=" + encodeURIComponent(s.value);
                                 datalist.appendChild(a);
                             }
                             datalist.classList.remove("hidden")

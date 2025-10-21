@@ -2,6 +2,7 @@ package de.mirkosertic.desktopsearch;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -11,6 +12,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class OllamaClient {
     
     private final HttpClient httpClient;
@@ -38,11 +40,11 @@ public class OllamaClient {
      * Detaillierte Analyse mit Relevanz-Score
      */
     public AnalysisResult extractContent(final String context) throws Exception {
-        final String systemPrompt = """
-                        Analysiere den User-Prompt. Und fasse darin enthaltene, wichtige Konzepte in Schlüsselwörtern zusammen. Liefer nur diese Schlüsselworte als Antwort zurück.
-        """;
+        final String prompt = String.format("""
+                        Extrahiere sehr kurze Schlagworte aus folgendem Text. Gib nur die Schlagworte als kommaseparierte Liste zurück, sonst nichts. Der Text ist: %s\s
+        """, context);
 
-        final String response = generate(systemPrompt, context, 100);
+        final String response = generate("", prompt, 100);
         return parseAnalysisResult(response);
     }
 

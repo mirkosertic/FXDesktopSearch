@@ -67,6 +67,8 @@ public class Configuration {
     private File configDirectory;
     private int facetCount;
     private boolean useTitleAsFilename;
+    private boolean defaultFuzzySearch;
+    private int fuzzySearchEditDistance;
 
     private Configuration() {
         // Needed by Jackson
@@ -102,6 +104,8 @@ public class Configuration {
         metaDataNameReplacement.put("slide-count", "page-count");
         facetCount = 10;
         useTitleAsFilename = true;
+        defaultFuzzySearch = true;
+        fuzzySearchEditDistance = 2;
     }
 
     private Configuration(final Configuration aConfiguration) {
@@ -120,6 +124,8 @@ public class Configuration {
         crawlOnStartup = aConfiguration.crawlOnStartup;
         facetCount = aConfiguration.facetCount;
         useTitleAsFilename = aConfiguration.useTitleAsFilename;
+        defaultFuzzySearch = aConfiguration.defaultFuzzySearch;
+        fuzzySearchEditDistance = aConfiguration.fuzzySearchEditDistance;
     }
 
     public Configuration(final File aConfigDirectory) {
@@ -270,6 +276,26 @@ public class Configuration {
     public Configuration updateCrawlOnStartup(final boolean aValue) {
         final var theConfiguration = new Configuration(this);
         theConfiguration.crawlOnStartup = aValue;
+        return theConfiguration;
+    }
+
+    public boolean isDefaultFuzzySearch() {
+        return defaultFuzzySearch;
+    }
+
+    public Configuration updateDefaultFuzzySearch(final boolean defaultFuzzySearch) {
+        final var theConfiguration = new Configuration(this);
+        theConfiguration.defaultFuzzySearch = defaultFuzzySearch;
+        return theConfiguration;
+    }
+
+    public int getFuzzySearchEditDistance() {
+        return fuzzySearchEditDistance;
+    }
+
+    public Configuration updateFuzzySearchEditDistance(final int fuzzySearchEditDistance) {
+        final var theConfiguration = new Configuration(this);
+        theConfiguration.fuzzySearchEditDistance = fuzzySearchEditDistance  ;
         return theConfiguration;
     }
 }

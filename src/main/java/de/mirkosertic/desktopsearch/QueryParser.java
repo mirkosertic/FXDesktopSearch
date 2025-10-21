@@ -55,13 +55,13 @@ public class QueryParser {
     }
 
     private void addToBooleanQuery(
-            final List<String> aTermList, final String aFieldName, final BooleanQuery.Builder aQuery, final BooleanClause.Occur aOccour)
+            final List<String> aTermList, final String aFieldName, final BooleanQuery.Builder aQuery, final BooleanClause.Occur aOccour, final boolean defaultFuzzy, final int fuzzyEditDistance)
             throws IOException {
         for (final var theTerm : aTermList) {
             if (QueryUtils.isWildCard(theTerm)) {
                 aQuery.add(new WildcardQuery(new Term(aFieldName, theTerm)), aOccour);
-            } else if (QueryUtils.isFuzzy(theTerm)) {
-                aQuery.add(new FuzzyQuery(new Term(aFieldName, theTerm)), aOccour);
+            } else if (QueryUtils.isFuzzy(theTerm) || defaultFuzzy) {
+                aQuery.add(new FuzzyQuery(new Term(aFieldName, theTerm), fuzzyEditDistance), aOccour);
             } else {
                 final var theTokenizedTerm = toToken(theTerm, aFieldName);
                 if (!StringUtils.isEmpty(theTokenizedTerm)) {
@@ -72,11 +72,11 @@ public class QueryParser {
 
     }
 
-    public Query parse(final String aQuery, final String aSearchField) throws IOException {
+    public Query parse(final String aQuery, final String aSearchField, final boolean defaultFuzzy, final int fuzzyEditDistance) throws IOException {
 
         final var theTokenizer = new QueryTokenizer(aQuery);
 
-        // Now we have the terms, lets construct the query
+        // Now we have the terms, lets construct the query#
 
         final var theResult = new BooleanQuery.Builder();
 
@@ -86,8 +86,8 @@ public class QueryParser {
             for (final var theTerm : theTokenizer.getRequiredTerms()) {
                 if (QueryUtils.isWildCard(theTerm)) {
                     theSpans.add(new SpanMultiTermQueryWrapper<>(new WildcardQuery(new Term(aSearchField, theTerm))));
-                } else if (QueryUtils.isFuzzy(theTerm)) {
-                    theSpans.add(new SpanMultiTermQueryWrapper<>(new FuzzyQuery(new Term(aSearchField, theTerm))));
+                } else if (QueryUtils.isFuzzy(theTerm) || defaultFuzzy) {
+                    theSpans.add(new SpanMultiTermQueryWrapper<>(new FuzzyQuery(new Term(aSearchField, theTerm), fuzzyEditDistance)));
                 } else {
                     // Ok, we need to check of the token would be removed due to stopwords and so on
                     final var theTokenizedTerm = toToken(theTerm, aSearchField);
@@ -114,12 +114,11 @@ public class QueryParser {
             // Finally, we just add simple term queries, but do not boost them
             // This makes sure that at least the searched terms
             // are found in the document
-            addToBooleanQuery(theTokenizer.getRequiredTerms(), aSearchField, theResult, BooleanClause.Occur.MUST);
+            addToBooleanQuery(theTokenizer.getRequiredTerms(), aSearchField, theResult, BooleanClause.Occur.MUST, defaultFuzzy, fuzzyEditDistance);
         }
 
-
         // Finally, add the terms that must not occur in the search result
-        addToBooleanQuery(theTokenizer.getNotRequiredTerms(), aSearchField, theResult, BooleanClause.Occur.MUST_NOT);
+        addToBooleanQuery(theTokenizer.getNotRequiredTerms(), aSearchField, theResult, BooleanClause.Occur.MUST_NOT, defaultFuzzy, fuzzyEditDistance);
 
         return theResult.build();
     }

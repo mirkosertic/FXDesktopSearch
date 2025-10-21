@@ -46,6 +46,9 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TotalHits;
+import org.apache.lucene.search.spell.LuceneDictionary;
+import org.apache.lucene.search.suggest.Lookup;
+import org.apache.lucene.search.suggest.analyzing.AnalyzingInfixSuggester;
 import org.apache.lucene.search.uhighlight.DefaultPassageFormatter;
 import org.apache.lucene.search.uhighlight.UnifiedHighlighter;
 import org.apache.lucene.store.Directory;
@@ -71,6 +74,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 public class LuceneIndexHandler {
@@ -87,10 +91,13 @@ public class LuceneIndexHandler {
     private final Analyzer analyzer;
     private final FacetsConfig facetsConfig;
     private final Map<String, SortedSetDocValuesReaderState> facetStatesCache;
+    private Directory suggestDirectory;
+    private final AtomicReference<AnalyzingInfixSuggester> suggester;
 
     private final FieldType contentFieldType;
 
     public LuceneIndexHandler(final Configuration configuration, final PreviewProcessor previewProcessor) throws IOException {
+        this.suggester = new AtomicReference<>();
         this.previewProcessor = previewProcessor;
         this.configuration = configuration;
         this.facetFieldToTitle = new HashMap<>();
@@ -120,9 +127,79 @@ public class LuceneIndexHandler {
 
         this.indexWriter = new IndexWriter(directory, config);
         this.indexReader = DirectoryReader.open(indexWriter);
+        IndexSearcher.setMaxClauseCount(8192);
         this.indexSearcher = new IndexSearcher(indexReader);
 
         this.queryParser = new QueryParser(analyzer);
+
+        rebuildSuggester();
+    }
+
+    private void rebuildSuggester() {
+        try {
+            final var suggestDirectoryFile = new File(configuration.getConfigDirectory(), "suggester");
+            if (!suggestDirectoryFile.mkdirs()) {
+                log.warn("Could not suggest index directory {}", suggestDirectoryFile.getAbsolutePath());
+            }
+
+            new Thread(() -> {
+                try {
+                    if (suggestDirectory != null) {
+                        suggestDirectory.close();
+                    }
+                    suggestDirectory = FSDirectory.open(suggestDirectoryFile.toPath());
+                    final AnalyzingInfixSuggester sugg = new AnalyzingInfixSuggester(suggestDirectory, analyzer);
+                    final LuceneDictionary dictionary = new LuceneDictionary(indexSearcher.getIndexReader(), IndexFields.CONTENT);
+                    final long suggestStart = System.currentTimeMillis();
+                    log.info("Loading suggester...");
+                    sugg.build(dictionary);
+                    final long suggestDuration = System.currentTimeMillis() - suggestStart;
+                    log.info("Loading suggester took {} ms", suggestDuration);
+
+                    suggester.set(sugg);
+                } catch (final Exception e) {
+                    log.error("Error while rebuilding suggester", e);
+                }
+            }).start();
+
+        } catch (final Exception e) {
+            log.error("Error while rebuilding suggester", e);
+        }
+    }
+
+    public synchronized void commitDataJob() {
+        log.info("Committing data job");
+
+        try {
+            indexWriter.flush();
+            indexWriter.commit();
+
+            final DirectoryReader newReader = DirectoryReader.openIfChanged(indexReader);
+            if (newReader != null) {
+                indexReader.close();
+                indexReader = newReader;
+                indexSearcher = new IndexSearcher(indexReader);
+                facetStatesCache.clear();
+
+                suggester.set(null);
+                rebuildSuggester();
+            }
+
+            if (facetStatesCache.isEmpty()) {
+                for (final String facetField : facetFields()) {
+                    try {
+                        final SortedSetDocValuesReaderState state = new DefaultSortedSetDocValuesReaderState(indexSearcher.getIndexReader(), facetField, facetsConfig);
+                        facetStatesCache.put(facetField, state);
+                    } catch (final IllegalArgumentException e) {
+                        log.debug("Could not get facets for field {}. Maybe field not used by documents?", facetField, e);
+                    }
+                }
+            }
+        } catch (final Exception e) {
+            log.error("Error while committing data job", e);
+        }
+
+        log.info("Done");
     }
 
     private String[] facetFields() {
@@ -229,6 +306,11 @@ public class LuceneIndexHandler {
             indexWriter.commit();
             indexReader.close();
             indexWriter.close();
+
+            final AnalyzingInfixSuggester sugg = suggester.get();
+            if (sugg != null) {
+                sugg.close();
+            }
         } catch (final Exception e) {
             log.error("Error while closing IndexWriter", e);
         }
@@ -259,41 +341,19 @@ public class LuceneIndexHandler {
         return indexReader.numDocs();
     }
 
-    private String getOrDefault(final Document document, final String fieldName, final String defaultValue) {
+    private String getOrNull(final Document document, final String fieldName) {
         final String value = document.get(fieldName);
         if (value == null || value.trim().isEmpty()) {
-            return defaultValue;
+            return null;
         }
         return value;
     }
 
-    public QueryResult performQuery(final String queryString, final Configuration configuration, final MultiValueMap<String, String> drilldownFields) {
+    public synchronized QueryResult performQuery(final String queryString, final Configuration configuration, final MultiValueMap<String, String> drilldownFields) {
 
         try {
-            indexWriter.flush();
-            indexWriter.commit();
-
-            final DirectoryReader newReader = DirectoryReader.openIfChanged(indexReader);
-            if (newReader != null) {
-                indexReader.close();
-                indexReader = newReader;
-                indexSearcher = new IndexSearcher(indexReader);
-                facetStatesCache.clear();
-            }
-
-            if (facetStatesCache.isEmpty()) {
-                for (final String facetField : facetFields()) {
-                    try {
-                        final SortedSetDocValuesReaderState state = new DefaultSortedSetDocValuesReaderState(indexSearcher.getIndexReader(), facetField, facetsConfig);
-                        facetStatesCache.put(facetField, state);
-                    } catch (final IllegalArgumentException e) {
-                        log.debug("Could not get facets for field {}. Maybe field not used by documents?", facetField, e);
-                    }
-                }
-            }
-
             final long startTime = System.currentTimeMillis();
-            final Query query = queryParser.parse(queryString, IndexFields.CONTENT);
+            final Query query = queryParser.parse(queryString, IndexFields.CONTENT, configuration.isDefaultFuzzySearch(), configuration.getFuzzySearchEditDistance());
 
             final List<QueryResultDocument> documents = new ArrayList<>();
 
@@ -360,20 +420,20 @@ public class LuceneIndexHandler {
                     // Try to extract the title from the metadata
                     var theTitle = theFileName;
                     if (configuration.isUseTitleAsFilename()) {
-                        theTitle = getOrDefault(doc, "attr_" + DublinCore.TITLE, "");
-                        if (theTitle == null || theTitle.trim().isEmpty()) {
-                            theTitle = getOrDefault(doc, "attr_" + PDF.DOC_INFO_TITLE.getName(), "");
+                        theTitle = getOrNull(doc, "attr_" + DublinCore.TITLE);
+                        if (theTitle == null) {
+                            theTitle = getOrNull(doc, "attr_" + PDF.DOC_INFO_TITLE.getName());
                         }
-                        if (theTitle == null || theTitle.trim().isEmpty()) {
-                            theTitle = getOrDefault(doc, "attr_title", "");
+                        if (theTitle == null) {
+                            theTitle = getOrNull(doc, "attr_title");
                         }
-                        if (theTitle == null || theTitle.trim().isEmpty()) {
-                            theTitle = getOrDefault(doc,"attr_" + TikaCoreProperties.TITLE.getName(), "");
+                        if (theTitle == null) {
+                            theTitle = getOrNull(doc,"attr_" + TikaCoreProperties.TITLE.getName());
                         }
-                        if (theTitle == null || theTitle.trim().isEmpty()) {
-                            theTitle = getOrDefault(doc, "attr_" + DublinCore.SUBJECT.getName(), "");
+                        if (theTitle == null) {
+                            theTitle = getOrNull(doc, "attr_" + DublinCore.SUBJECT.getName());
                         }
-                        if (theTitle == null || theTitle.trim().isEmpty()) {
+                        if (theTitle == null) {
                             theTitle = theFileName;
                         }
                     }
@@ -430,8 +490,23 @@ public class LuceneIndexHandler {
     }
 
     public Suggestion[] findSuggestionTermsFor(final String term) {
-        // TODO: Implement this...
-        return new Suggestion[0];
+        try {
+            final List<Suggestion> result = new ArrayList<>();
+
+            // Check if suggest is already built
+            final AnalyzingInfixSuggester sug = suggester.get();
+            if (sug != null) {
+                final List<Lookup.LookupResult> lookupResults = sug.lookup(term, configuration.getNumberOfSuggestions(), true, true);
+                for (final Lookup.LookupResult lookupResult : lookupResults) {
+                    final Suggestion suggestion = new Suggestion(lookupResult.highlightKey.toString(), lookupResult.key.toString());
+                    result.add(suggestion);
+                }
+            }
+            return result.toArray(new Suggestion[0]);
+        } catch (final Exception e) {
+            log.error("Error while looking up suggestions for term {}", term, e);
+            return new Suggestion[0];
+        }
     }
 
     public File getFileOnDiskForDocument(final String aUniqueID) {
@@ -451,7 +526,7 @@ public class LuceneIndexHandler {
         final TopDocs topDocs = new TopDocs(totalHits, new ScoreDoc[] {scoreDoc});
 
         try {
-            final Query query = queryParser.parse(queryString, IndexFields.CONTENT);
+            final Query query = queryParser.parse(queryString, IndexFields.CONTENT, configuration.isDefaultFuzzySearch(), configuration.getFuzzySearchEditDistance());
 
             // Perform highlighting
             final long highlightStart = System.currentTimeMillis();
