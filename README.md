@@ -97,9 +97,6 @@ which is delivered by an embedded Spring Boot application. Using HTML allows us 
 
 Under the hood FXDesktopSearch uses Apache Lucene to build the fulltext index for the crawled documents. It also uses Apache Tika for content and metadata extraction.
 
-The FileCrawler reads from a parallel Java 8 stream of files and passes them to the ContentExtractor. 
-The ContentExtractor extracts the content and the metadata and passes the result to the LuceneIndexHandler which uses the Lucene Near-Realtime-Search Feature(NRT). The LuceneIndexHandler writes or updates the file in the Lucene index and also generates the search facets for later drilldown queries.
-
 Modified files are tracked by the Java NIO WatchService API. Every file modification is send to the ContentExtractor and the final results are also updated by the LuceneIndexHandler in the fulltext index.
 
-The embedded webserver is available by opening http://127.0.0.1:8080/search
+The embedded webserver is available by opening http://localhost:4711/search

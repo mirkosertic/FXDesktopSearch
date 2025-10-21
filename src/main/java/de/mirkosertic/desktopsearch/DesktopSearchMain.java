@@ -71,7 +71,7 @@ public class DesktopSearchMain {
                 final AnchorPane theMainScene = theLoader.load();
 
                 final DesktopSearchController theController = theLoader.getController();
-                theController.initialize("http://localhost:8080/search");
+                theController.initialize("http://localhost:" + context.getEnvironment().getProperty("server.port") + "/search");
 
                 final var theScene = new Scene(theMainScene);
 
