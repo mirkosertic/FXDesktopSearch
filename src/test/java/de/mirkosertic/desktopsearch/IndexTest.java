@@ -34,7 +34,7 @@ public class IndexTest {
         final File tempDirectory = new File("target/test-classes/test-data/temp");
         tempDirectory.mkdirs();
         final Directory directory = FSDirectory.open(tempDirectory.toPath());
-        final Analyzer analyzer = new StandardAnalyzer();
+        final Analyzer analyzer = new DesktopSearchAnalyzer();
         final IndexWriterConfig config = new IndexWriterConfig(analyzer);
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 
