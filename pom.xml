@@ -181,7 +181,7 @@
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
-            <version>11.2.3</version>
+            <version>11.2.4</version>
         </dependency>
 
         <dependency>
