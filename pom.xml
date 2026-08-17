@@ -27,7 +27,7 @@
 
     <properties>
         <java.version>25</java.version>
-        <lucene.version>10.3.2</lucene.version>
+        <lucene.version>10.5.1</lucene.version>
         <tika.version>3.3.2</tika.version>
         <projectrelease.version>3.5.0</projectrelease.version>
         <javafx.version>25.0.2</javafx.version>
